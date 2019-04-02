@@ -9,6 +9,7 @@ You should expect tree like
     - character_traits
 	  - data__
 	  - yourname
+
 If your mod doesn't introduce changes to some of those tables, it's okay, don't worry. But don't forget to export data__.
 * agent_subtypes
 * character_trait_levels
