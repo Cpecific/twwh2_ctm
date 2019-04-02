@@ -32,6 +32,8 @@ Run `/index.php` and copy result in new file (ex. __tables.lua). Then add code b
 CpecificTraitsManager.SetData(require('script/~path/__tables'))
 ```
 
+Beware, I didn't check if it works, so if you can't make this shit work, contact me vahonin.prog@gmail.com
+
 # UI Layout Parser
 So, i fucked up a lot with wasting time. It's another example in recent years that Google is shit.
 There is parser by Alpaca, which I found, when already completed my parser (not like i wouldn't need to spend weeks of hard work on this project, but it could save me a couple of weeks).
