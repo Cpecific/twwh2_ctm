@@ -29,7 +29,9 @@ For those who are not familiar with web servers, just install Denwer or XAMPP an
 
 Run `/index.php` and copy result in new file (ex. __tables.lua). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
 ```lua
-CpecificTraitsManager.SetData(require('script/~path/__tables'))
+if CpecificTraitsManager ~= nil then
+	CpecificTraitsManager.SetData(require('script/~path/__tables'))
+end
 ```
 
 Beware, I didn't check if it works, so if you can't make this shit work, contact me vahonin.prog@gmail.com
