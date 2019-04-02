@@ -28,7 +28,9 @@ If your mod introduces new traits of type "Defeated some noname lord", then you 
 For those who are not familiar with web, then just install Denwer or XAMPP.
 
 Run `/index.php` and copy result in new file (ex. __tables.lua). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
-`CpecificTraitsManager.SetData(require('script/~path/__tables'))`
+```lua
+CpecificTraitsManager.SetData(require('script/~path/__tables'))
+```
 
 # UI Layout Parser
 So, i fucked up a lot with wasting time. It's another example in recent years that Google is shit.
