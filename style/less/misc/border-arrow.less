@@ -1,0 +1,13 @@
+.border-arrow(@dir, @width, @height, @color){
+	border-width: (@height / 2) (@width / 2) (@height / 2) (@width / 2);
+	border-style: solid;
+	border-color: transparent;
+	& when (@dir = "down"){
+		border-bottom-width: 0;
+		border-top-color: @color;
+	}
+	& when (@dir = "right"){
+		border-right-width: 0;
+		border-left-color: @color;
+	}
+}

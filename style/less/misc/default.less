@@ -1,0 +1,33 @@
+.fl() { float: left; }
+.fr() { float: right; }
+.cl() { clear: both; }
+.pseudo-block() {
+	content: "";
+	display: block;
+}
+.cla() {
+	&:after{
+		.pseudo-block();
+		clear: both;
+	}
+}
+.c() { text-align: center; }
+.pr() { position: relative; }
+.pa() { position: absolute; }
+.pf() { position: fixed; }
+.nowr() { white-space: nowrap; }
+.brw() { word-break: break-word; overflow-wrap: break-word; }
+.bra() { word-break: break-all; overflow-wrap: break-all; }
+.pre() { white-space: pre; }
+.vm() { vertical-align: middle; }
+.oh() { overflow: hidden; }
+.ovs() { overflow-y: scroll; }
+.ova() { overflow-y: auto; }
+.oe() { text-overflow: ellipsis; }
+.ma() { margin: 0 auto; }
+.l() { text-align: left; }
+.c() { text-align: center; }
+.r() { text-align: right; }
+.none() { display: none; }
+.block() { display: block; }
+.hand() { cursor: pointer; }

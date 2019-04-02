@@ -1,0 +1,600 @@
+//---------------------------------------------------
+//  LESS Prefixer
+//---------------------------------------------------
+//
+//  All of the CSS3 fun, none of the prefixes!
+//
+//  As a rule, you can use the CSS properties you
+//  would expect just by adding a '.':
+//
+//  box-shadow => .box-shadow(@args)
+//
+//  Also, when shorthand is available, arguments are
+//  not parameterized. Learn CSS, not LESS Prefixer.
+//
+//  -------------------------------------------------
+//  TABLE OF CONTENTS
+//  (*) denotes a syntax-sugar helper
+//  -------------------------------------------------
+//
+//		.noselect()
+//      .keyframes(@name; @args)
+//      .animation(@args)
+//          .animation-delay(@delay)
+//          .animation-direction(@direction)
+//          .animation-duration(@duration)
+//          .animation-fill-mode(@mode)
+//          .animation-iteration-count(@count)
+//          .animation-name(@name)
+//          .animation-play-state(@state)
+//          .animation-timing-function(@function)
+//      .background-size(@args)
+
+//      .border-radius(@args)
+//		.border-top-left-radius(@arg)
+//		.border-left-top-radius(@arg)
+//		.border-top-right-radius(@arg)
+//		.border-right-top-radius(@arg)
+//		.border-bottom-left-radius(@arg)
+//		.border-left-bottom-radius(@arg)
+//		.border-bottom-right-radius(@arg)
+//		.border-right-bottom-radius(@arg)
+//		.border-top-radius(@arg)
+//		.border-right-radius(@arg)
+//		.border-bottom-radius(@arg)
+//		.border-left-radius(@arg)
+
+//      .box-shadow(@args)
+//          .inner-shadow(@args) *
+//      .box-sizing(@args)
+//          .border-box() *
+//          .content-box() *
+//      .columns(@args)
+//          .column-count(@count)
+//          .column-gap(@gap)
+//          .column-rule(@args)
+//          .column-width(@width)
+//      .filter(@args)
+//      .gradient(@start,@stop) *
+//          .linear-gradient-top(@color1,@stop1,@color2,@stop2,[@color3,@stop3,@color4,@stop4])*
+//          .linear-gradient-left(@color1,@stop1,@color2,@stop2,[@color3,@stop3,@color4,@stop4])*
+//      .keyframes(@name; @args)
+//      .opacity(@factor)
+//      .transform(@args)
+//          .transform-origin(@args)
+//          .transform-style(@style)
+//          .rotate(@deg)
+//          .scale(@factor)
+//          .translate(@x,@y)
+//          .translate3d(@x,@y,@z)
+//          .translateHardware(@x,@y) *
+//      .text-shadow(@args)
+//      .transition(@args)
+//          .transition-delay(@delay)
+//          .transition-duration(@duration)
+//          .transition-property(@property)
+//          .transition-timing-function(@function)
+//      Flexbox: 
+//          .flex-block()
+//          .flex-inline()
+//              .flex-flow(@direction: row, @wrap: nowrap)
+//                  .flex-direction(@direction: row)
+//                  .flex-wrap(@wrap: nowrap)
+//              .justify-content(@justification)
+//              .align-items(@mode)
+//              .align-content(@alignment)
+//              .flex(@args: none)
+//                  .flex-grow(@grow: 1)
+//                  .flex-shrink(@shrink: 1)
+//                  .flex-basis(@basis: auto)
+//              .order(@num: 0)
+//              .align-self(@align: auto)
+//
+//  Credit to LESS Elements for the motivation and
+//  to CSS3Please.com for implementation.
+//
+//  Copyright (c) 2012 Joel Sutherland
+//  MIT Licensed:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+//---------------------------------------------------
+@vendor: false;
+
+.noselect() {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+// Animation
+.keyframes(@name; @args) {
+	@-webkit-keyframes @name {
+		@args();
+	}
+	@keyframes @name {
+		@args();
+	}
+}
+
+.animation(@args) {
+	& when (@vendor = true){
+		-webkit-animation: @args;
+	}
+	animation: @args;
+}
+
+.animation-delay(@delay) {
+	& when (@vendor = true){
+		-webkit-animation-delay: @delay;
+	}
+	animation-delay: @delay;
+}
+
+.animation-direction(@direction) {
+	& when (@vendor = true){
+		-webkit-animation-direction: @direction;
+		-o-animation-direction: @direction;
+	}
+	animation-direction: @direction;
+}
+
+.animation-duration(@duration) {
+	& when (@vendor = true){
+		-webkit-animation-duration: @duration;
+		-o-animation-duration: @duration;
+	}
+	animation-duration: @duration;
+}
+
+.animation-fill-mode(@mode) {
+	& when (@vendor = true){
+		-webkit-animation-fill-mode: @mode;
+	}
+	animation-fill-mode: @mode;
+}
+
+.animation-iteration-count(@count) {
+	& when (@vendor = true){
+		-webkit-animation-iteration-count: @count;
+	}
+	animation-iteration-count: @count;
+}
+
+.animation-name(@name) {
+	& when (@vendor = true){
+		-webkit-animation-name: @name;
+	}
+	animation-name: @name;
+}
+
+.animation-play-state(@state) {
+	& when (@vendor = true){
+		-webkit-animation-play-state: @state;
+	}
+	animation-play-state: @state;
+}
+
+.animation-timing-function(@function) {
+	& when (@vendor = true){
+		-webkit-animation-timing-function: @function;
+	}
+	animation-timing-function: @function;
+}
+
+// Background Size
+.background-size(@args) {
+	background-size: @args;
+}
+
+// Border Radius
+.border-radius(@args, @fix: "") {
+	& when (@vendor = true){
+		-webkit-border-radius: @args;
+		-moz-border-radius: @args;
+	}
+	border-radius: @args;
+	background-clip: padding-box;
+}
+
+.border-radius-vendor(@arg, @a, @b) {
+	& when (@vendor = true) {
+		-webkit-border-@{a}-@{b}-radius: @arg;
+		-moz-border-radius-@{a}@{b}: @arg;
+	}
+	border-@{a}-@{b}-radius: @arg;
+}
+.border-top-left-radius(@arg) { .border-radius-vendor(@arg, ~"top", ~"left"); }
+.border-left-top-radius(@arg) { .border-radius-vendor(@arg, ~"top", ~"left"); }
+
+.border-top-right-radius(@arg) { .border-radius-vendor(@arg, ~"top", ~"right"); }
+.border-right-top-radius(@arg) { .border-radius-vendor(@arg, ~"top", ~"right"); }
+
+.border-bottom-left-radius(@arg) { .border-radius-vendor(@arg, ~"bottom", ~"left"); }
+.border-left-bottom-radius(@arg) { .border-radius-vendor(@arg, ~"bottom", ~"left"); }
+
+.border-bottom-right-radius(@arg) { .border-radius-vendor(@arg, ~"bottom", ~"right"); }
+.border-right-bottom-radius(@arg) { .border-radius-vendor(@arg, ~"bottom", ~"right"); }
+
+.border-top-radius(@arg) {
+	.border-top-left-radius(@arg);
+	.border-top-right-radius(@arg);
+}
+.border-right-radius(@arg) {
+	.border-top-right-radius(@arg);
+	.border-bottom-right-radius(@arg);
+}
+.border-bottom-radius(@arg) {
+	.border-bottom-left-radius(@arg);
+	.border-bottom-right-radius(@arg);
+}
+.border-left-radius(@arg) {
+	.border-top-left-radius(@arg);
+	.border-bottom-left-radius(@arg);
+}
+
+// Box Shadows
+.box-shadow(@args) {
+	& when (@vendor = true) {
+		-webkit-box-shadow: @args;
+		-moz-box-shadow: @args;
+	}
+	box-shadow: @args;
+}
+
+.inner-shadow(@args) {
+	.box-shadow(inset @args);
+}
+
+// Box Sizing
+.box-sizing(@args) {
+	& when (@vendor = true) {
+		-webkit-box-sizing: @args;
+		-moz-box-sizing: @args;
+	}
+	box-sizing: @args;
+}
+
+.border-box() {
+	.box-sizing(border-box);
+}
+
+.content-box() {
+	.box-sizing(content-box);
+}
+
+// Columns
+.columns(@args) {
+	& when (@vendor = true) {
+		-webkit-columns: @args;
+		-moz-columns: @args;
+	}
+	columns: @args;
+}
+
+.column-count(@count) {
+	& when (@vendor = true) {
+		-webkit-column-count: @count;
+		-moz-column-count: @count;
+	}
+	column-count: @count;
+}
+
+.column-gap(@gap) {
+	& when (@vendor = true) {
+		-webkit-column-gap: @gap;
+		-moz-column-gap: @gap;
+	}
+	column-gap: @gap;
+}
+
+.column-width(@width) {
+	& when (@vendor = true) {
+		-webkit-column-width: @width;
+		-moz-column-width: @width;
+	}
+	column-width: @width;
+}
+
+.column-rule(@args) {
+	& when (@vendor = true) {
+		-webkit-column-rule: @args;
+		-moz-column-rule: @args;
+	}
+	column-rule: @args;
+}
+
+// Filter
+.filter(@args) {
+	& when (@vendor = true) {
+		-webkit-filter: @args;
+	}
+    filter: @args;
+}
+
+// Gradients
+.gradient(@start: #EEE, @stop: #FFF) {
+	.linear-gradient-top(@start, 0%, @stop, 100%);
+}
+
+.linear-gradient-top(@color1, @stop1, @color2, @stop2) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(top, @color1 @stop1, @color2 @stop2);
+	}
+	background-image: linear-gradient(top, @color1 @stop1, @color2 @stop2);
+}
+
+.linear-gradient-top(@color1, @stop1, @color2, @stop2, @color3, @stop3) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+	}
+	background-image: linear-gradient(top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+}
+
+.linear-gradient-top(@color1, @stop1, @color2, @stop2, @color3, @stop3, @color4, @stop4) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(top, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+	}
+	background-image: linear-gradient(top, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+}
+
+.linear-gradient-left(@color1, @stop1, @color2, @stop2) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(left, @color1 @stop1, @color2 @stop2);
+	}
+	background-image: linear-gradient(left, @color1 @stop1, @color2 @stop2);
+}
+
+.linear-gradient-left(@color1, @stop1, @color2, @stop2, @color3, @stop3) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(left, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+	}
+	background-image: linear-gradient(left, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+}
+
+.linear-gradient-left(@color1, @stop1, @color2, @stop2, @color3, @stop3, @color4, @stop4) {
+	& when (@vendor = true) {
+		background-image: -webkit-linear-gradient(left, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+	}
+	background-image: linear-gradient(left, @color1 @stop1, @color2 @stop2, @color3 @stop3, @color4 @stop4);
+}
+
+// UserSelect
+.user-select(@select: auto) {
+	& when (@vendor = true) {
+		-webkit-user-select: @select;
+		-moz-user-select: @select;
+		-ms-user-select: @select;
+	}
+	user-select: @select;
+}
+
+// Opacity
+.opacity(@factor) {
+	@factor100: @factor * 100;
+	& when (@vendor = true) {
+		//-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@{factor100})";
+		//.filter("alpha(opacity=@{factor100})");
+		-moz-opacity: @factor;
+		-khtml-opacity: @factor;
+	}
+	opacity: @factor;
+}
+
+// Text Shadow
+.text-shadow(@args) {
+	text-shadow: @args;
+}
+
+// Transforms
+.transform(@args) {
+	& when (@vendor = true) {
+		-webkit-transform: @args;
+		-ms-transform: @args;
+	}
+	transform: @args;
+}
+
+.transform-origin(@args) {
+	& when (@vendor = true) {
+		-webkit-transform-origin: @args;
+		-ms-transform-origin: @args;
+	}
+	transform-origin: @args;
+}
+
+.transform-style(@style) {
+	& when (@vendor = true) {
+		-webkit-transform-style: @style;
+		-ms-transform-style: @style;
+	}
+	transform-style: @style;
+}
+
+.rotate(@deg: 45deg) {
+	.transform(rotate(@deg));
+}
+
+.scale(@factor: .5) {
+	.transform(scale(@factor));
+}
+
+.translate(@x, @y) {
+	.transform(translate(@x, @y));
+}
+
+.translateX(@x) {
+	.transform(traslateX(@x));
+}
+
+.translateY(@y) {
+	.transform(translateY(@y));
+}
+
+.translate3d(@x, @y, @z) {
+	.transform(translate3d(@x, @y, @z));
+}
+
+.translateHardware(@x, @y) {
+	.translate(@x, @y);
+	& when (@vendor = true) {
+		-webkit-transform: translate3d(@x, @y, 0);
+		-o-transform: translate3d(@x, @y, 0);
+	}
+	transform: translate3d(@x, @y, 0);
+}
+
+// Transitions
+.transition(@args: 200ms) {
+	transition: @args;
+}
+
+.transition-delay(@delay: 0) {
+	transition-delay: @delay;
+}
+
+.transition-duration(@duration: 200ms) {
+	transition-duration: @duration;
+}
+
+.transition-property(@property: all) {
+	transition-property: @property;
+}
+
+.transition-timing-function(@function: ease) {
+	transition-timing-function: @function;
+}
+
+// Flexbox
+.flex-block() {
+	& when (@vendor = true) {
+		display: -ms-flexbox;
+		display: -webkit-flex;
+	}
+	display: flex;
+}
+
+.flex-inline() {
+	& when (@vendor = true) {
+		display: -ms-inline-flexbox;
+		display: -webkit-inline-flex;
+	}
+	display: inline-flex;
+}
+
+.flex-flow(@direction: row, @wrap: nowrap) {
+	& when (@vendor = true) {
+		-moz-flex-flow: @direction @wrap;
+		-ms-flex-direction: @direction;
+		-ms-flex-wrap: @wrap;
+		-webkit-flex-flow: @direction @wrap;
+	}
+	flex-flow: @direction @wrap;
+}
+
+.align-content(@alignment) {
+	& when (@vendor = true) {
+		-moz-align-content: @alignment;
+		-ms-align-content: @alignment;
+		-webkit-align-content: @alignment;
+	}
+	align-content: @alignment;
+}
+
+.flex-direction(@direction: row) {
+	& when (@vendor = true) {
+		-webkit-flex-direction: @direction;
+		-moz-flex-direction: @direction;
+		-ms-flex-direction: @direction;
+	}
+	flex-direction: @direction;
+}
+
+.flex-wrap(@wrap: nowrap) {
+	& when (@vendor = true) {
+		-webkit-flex-wrap: @wrap;
+		-moz-flex-wrap: @wrap;
+		-ms-flex-wrap: @wrap;
+	}
+	flex-wrap: @wrap;
+}
+
+.justify-content(@justification) {
+	& when (@vendor = true) {
+		-webkit-box-pack: @justification;
+		-moz-box-pack: @justification;
+		-ms-flex-pack: replace(@justification, "flex-", "");
+		-webkit-justify-content: @justification;
+	}
+	justify-content: @justification;
+}
+
+.align-items(@mode) {
+	& when (@vendor = true) {
+		-webkit-box-align: @mode;
+		-moz-box-align: @mode;
+		-ms-flex-align: @mode;
+		-webkit-align-items: @mode;
+	}
+	align-items: @mode;
+}
+
+.flex(@args: none) {
+	& when (@vendor = true) {
+		-moz-flex: @args;
+		-ms-flex: @args;
+		-webkit-flex: @args;
+	}
+	flex: @args;
+}
+
+.order(@order: 0) {
+	& when (@vendor = true) {
+		-webkit-box-ordinal-group: @order;
+		-moz-box-ordinal-group: @order;
+		-ms-box-ordinal-group: @order;
+		-ms-flex-order: @order;
+		-webkit-order: @order;
+		-moz-order: @order;
+		-ms-order: @order;
+	}
+	order: @order;
+}
+
+.flex-grow(@grow: 1) {
+	& when (@vendor = true) {
+		-moz-flex-grow: @grow;
+		-ms-flex-grow: @grow;
+		-webkit-flex-grow: @grow;
+	}
+	flex-grow: @grow;
+}
+
+.flex-shrink(@shrink: 1) {
+	& when (@vendor = true) {
+		-moz-flex-shrink: @shrink;
+		-ms-flex-shrink: @shrink;
+		-webkit-flex-shrink: @shrink;
+	}
+	flex-shrink: @shrink;
+}
+
+.flex-basis(@basis: auto) {
+	& when (@vendor = true) {
+		-moz-flex-basis: @basis;
+		-ms-flex-basis: @basis;
+		-webkit-flex-basis: @basis;
+	}
+	flex-basis: @basis;
+}
+
+.align-self(@align: auto) {
+	& when (@vendor = true) {
+		-moz-align-self: @align;
+		-ms-align-self: @align;
+		-webkit-align-self: @align;
+	}
+	align-self: @align;
+}

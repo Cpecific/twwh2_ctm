@@ -1,0 +1,180 @@
+@import "misc/all.less";
+@import "misc/border-arrow.less";
+
+* { padding: 0; margin: 0; outline: 0; }
+@media print {
+	* { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+body, html { m2in-height:100%; cursor: default; }
+html { height: 100%; }
+body, html, input, textarea { font-family: segoe ui; font-size: 14px; }
+body { overflow-y: scroll; }
+h1, h2, h3, h4, h5, h6, h7 {
+	&.header {
+		padding: 0 0 4px 12px; //margin: 0 0 6px; bord2er-bottom: 1px dashed #bbb;
+	}
+}
+h1, h2, h3, h4, h5, h6, h7 {
+	> .header-span {
+		background: #eee; .border-radius(3px); padding: 4px 10px;
+	}
+}
+h1 { font-size: 42px; color: #000; }
+h2 { font-size: 30px; color: #0c0c0c; }
+h3 { font-size: 24px; color: #111; }
+h4 { font-size: 20px; color: #1c1c1c; }
+h5 { font-size: 17px; color: #222; }
+h6 { font-size: 14px; color: #2c2c2c; }
+h7 { font-size: 10px; color: #333; }
+table { border-collapse: collapse; }
+td { vertical-align: top; }
+th { font-weight: normal; text-align: left; }
+hr { margin: 6px 0; border: 0 solid #aaa; border-top-width: 1px; }
+p { margin: 12px; }
+table.wide { width: 100%; }
+
+.fl { .fl(); }
+.fr { .fr(); }
+.cl { .cl(); }
+.cla { .cla(); }
+.c { .c(); }
+.pr { .pr(); }
+.pa { .pa(); }
+.pf { .pf(); }
+.nowr { .nowr(); }
+.brw { .brw(); }
+.bra { .bra(); }
+.pre { .pre(); }
+.vm { .vm(); }
+.oh { .oh(); }
+.ovs { .ovs(); }
+.ova { .ova(); }
+.oe { .oe(); }
+.ma { .ma(); }
+.l { .l(); }
+.c { .c(); }
+.r { .r(); }
+.noselect { .noselect(); }
+.block { .block(); }
+.none { .none(); }
+.hand { .hand(); }
+
+a, a:link, a:visited, a:hover { text-decoration: none; }
+a, a:link, a:visited { color: #1b98e0; }
+a:hover{color:#e26a6a;}
+.underline a {
+	&:link, &:visited, &:hover { text-decoration: underline; }
+}
+
+.js-error { .none(); z-index: 10000; background: #e64a4a; color: #fff; top: 0; left: 0; .border-radius(0 0 4px 0); padding: 8px 16px; border: 1px solid #c12c2c; border-width: 0 1px 1px 0; }
+
+input, textarea, select { .box-sizing(border-box); font-fa2mily: tahoma,arial; font-size: 14px; }
+input[type="button"], input[type="submit"] { font-size: 14px; }
+.textarea {
+	width: 100%; padding: 6px 10px; border: 1px solid #ddd; .border-radius(2px); .transition(border-color 100ms linear); resize: vertical; min-height: 33px;
+	&:hover  { border-color: #aba7e4; }
+	&:focus { border-color: #8883d6; .box-shadow(0 1px 5px 1px rgba(136, 131, 214, .2)); }
+}
+
+
+.btn {
+	.block(); padding: 6px 10px; bor2der-radius: 3px; border: 1px solid transparent; text-shadow: 0 -1px 0 rgba(0, 0, 0, .25); cursor: pointer;
+	&:link, &:visited { color: #fff; }
+	&-big { font-size: 17px; padding: 10px 20px; }
+}
+
+.btn-success {
+	background: #e05656; border: 1px solid #e05656; color: #fff;
+	&:hover, &:focus { border-color: #bd3c3c; }
+	&:focus { background: #d44343; }
+}
+
+.btn-primary {
+	&, &:link, &:visited { background: #2686bd; color: #fff; }
+	&:hover { background: #277daf; }
+	&.disabled, &[disabled] {
+		&, &:link, &:visited, &:hover { background: #6d8b9c; color: #eee; }
+	}
+}
+
+.btn-danger {
+	color: #aaa; background: #333333; border-color: #000;
+	&:not(.disabled) {
+		&:hover, &:active, &.active { color: #fff; }
+		&:active, &.active { background: #565656; }
+	}
+	&.disabled { cursor: default; }
+}
+
+.btn-link {
+	.border-radius(2px); background: rgba(80, 80, 80, .14); .text-shadow(0 -1px 0 rgba(255, 255, 255, .25));
+	&:hover { background: rgba(80, 80, 80, .1); }
+	&:link, &:visited { color: #000; }
+}
+
+.btn-svg-icon {
+	padding: 5px 5px 6px; cursor: pointer; background: rgba(80, 80, 80, 0.14);
+	&:hover { background: rgba(80, 80, 80, 0.1); }
+}
+
+
+
+
+.bg-primary, .bg-success, .bg-info, .bg-warning, .bg-danger { padding: 15px; margin: 10px 0; .border-radius(3px); }
+.bg-primary { color: #fff; background-color: #337ab7; }
+a.bg-primary:hover { background-color: #286090; }
+.bg-success { background-color: #dff0d8; }
+a.bg-success:hover { background-color: #c1e2b3; }
+.bg-info { background-color: #d9edf7; }
+a.bg-info:hover { background-color: #afd9ee; }
+.bg-warning { background-color: #fcf8e3; }
+a.bg-warning:hover { background-color: #f7ecb5; }
+.bg-danger { background-color: #f2dede; }
+a.bg-danger:hover { background-color: #e4b9b9; }
+.descr { .opacity(.7); *font-size: .9em; font-weight: normal; }
+.required { color: green; font-weight: 700; }
+
+.text, .select { background: #fff; padding: 5px 6px; border: 1px solid transparent; .border-radius(3px); .transition(~"border-color 300ms, box-shadow 300ms"); }
+.text[type="date"] { resize: none; padding: 4px 6px 3px; }
+.text { resize: vertical; }
+.text { wid2th: 100%; cursor: default; }
+.text, .select {
+	&:hover { border-color: #848484; .box-shadow(inset 0 2px 4px rgba(0, 0, 0, .18)); }
+	&:focus { border-color: #c54f4f; .box-shadow(inset 0 2px 5px rgba(167, 4, 4, .18)); }
+	&[disabled] { background: #f0f0f0; }
+	&, &[disabled]:hover, &[disabled]:focus { border-color: #b5b5b5; .box-shadow(inset 0 2px 4px rgba(0, 0, 0, .1)); }
+}
+.text:focus { cursor: auto; }
+
+.checkbox-container{padding:5px 10px 5px 5px;cursor:pointer;}
+.checkbox-container:hover,.checkbox-positive,.checkbox-negative{color:#e26a6a;}
+.checkbox-div{width:12px;height:12px;border:1px solid #2c3e50;border-radius:2px;margin:5px 12px 0 0;}
+.checkbox-negative .checkbox-div{border-color:green;}
+.checkbox-positive .checkbox-div > div{width:6px;height:6px;margin:3px;background:green;border-radius:1px;}
+.checkbox-negative .checkbox-div{border-color:#e26a6a;}
+.checkbox-negative .checkbox-div > div{width:8px;height:2px;margin:5px 2px;background:#e26a6a;border-radius:1px;}
+
+.table { .ma(); width: 100%; }
+.table td { border: 1px solid #ddd; border-width: 1px 0; padding: 5px 10px; font-size: 14px; }
+
+.comment-tag {
+	padding: 1px 6px 2px; .border-radius(4px); margin: 0 2px;
+	&--grey { background: #888; color: #fff; }
+	&--yellow { background: #ffeb3b; }
+	&--cyan { background: #00bcd4; color: #fff; }
+	&--orange { background: #ff9800; color: #fff; }
+	&--red { background: #d41a1a; color: #fff; }
+	&--green { background: #4caf50; color: #fff; }
+	&--blue { background: #3f51b5; color: #fff; }
+	&--black { background: #000; color: #fff; }
+	&--brown { background: #795548; color: #eef3af; }
+	&--liquid { background: #6d8b9c; color: #fff; }
+	&--liquid-red { background: #9c6d78; color: #fff; }
+	&--liquid-transparent { background: rgba(109, 139, 156, .6); color: #fff; }
+}
+
+
+
+
+
+
