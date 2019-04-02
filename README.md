@@ -27,7 +27,7 @@ If your mod introduces new traits of type "Defeated some noname lord", then you 
 
 For those who are not familiar with web servers, just install Denwer or XAMPP and put files of repository somewhere, where it will work ;)
 
-Run `/index.php` and copy result in new file (ex. __tables.lua). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
+Run `/index.php` and copy result in new file (ex. `__tables.lua`). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
 ```lua
 if CpecificTraitsManager ~= nil then
 	CpecificTraitsManager.SetData(require('script/~path/__tables'))
@@ -38,7 +38,7 @@ Beware, I didn't check if it works, so if you can't make this shit work, contact
 
 # UI Layout Parser
 So, i fucked up a lot with wasting time. It's another example in recent years that Google is shit and I can't find anything useful in it.
-There is parser by Alpaca, which I found, when already completed my parser (not like i wouldn't need to spend weeks of hard work on this project, but it could save me a couple of weeks).
+There is parser by __Alpaca__ and his inheritor __taw__, which I found, when already completed my parser (not like i wouldn't need to spend weeks of hard work on this project, but it could save me a couple of weeks).
 
 Anyway, my parser "supports" version from 70 to 119 (mostly from 100 to 119), has a lot of deciphered fields, examples of use in `export.php` and easier web representation (rather than xml).
 You need to export (preferably the whole) `/ui` folder with Pack Manager into `/game`.
