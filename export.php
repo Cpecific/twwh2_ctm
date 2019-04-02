@@ -312,7 +312,7 @@ if (0){
 
 // CTM_scroll_list
 // CTM_panel
-if (1){
+if (0){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
@@ -578,7 +578,7 @@ if (true){
 }
 
 // CTM_lord_btn
-if (0){
+if (1){
 	$h = fopen($DIR_DATA['frontend']['DIR'] . 'sp_grand_campaign', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
@@ -618,10 +618,19 @@ if (0){
 	$s_inactive->uid = 'D5 BB 9D 01';
 	$s_selected_inactive->uid = 'FF AD 05 20';
 	
+	// active
+	$a = $s_active;
+	$a->mouse[] = new UIC__State_Mouse(array(
+		'mouse_state' => 2,
+		'state_uid' => $s_down->uid,
+		'b0' => '00 00 00 00 00 00 00 00'
+	), $a);
+	
 	// down
 	$a = $s_down;
-	$b = $a->mouse[0];
-	$b->state_uid = $s_selected_hover->uid;
+	array_splice($a->mouse, 0, 1);
+	// $b = $a->mouse[0];
+	// $b->state_uid = $s_selected_hover->uid;
 	
 	// selected
 	$a = $s_selected;
@@ -631,6 +640,11 @@ if (0){
 			'mouse_state' => 0,
 			'state_uid' => $s_selected_hover->uid,
 			'b0' => 'C8 00 00 00 | 40 00 00 00'
+		), $a),
+		new UIC__State_Mouse(array(
+			'mouse_state' => 2,
+			'state_uid' => $s_selected_down->uid,
+			'b0' => '00 00 00 00 00 00 00 00'
 		), $a)
 	);
 	
@@ -733,7 +747,7 @@ if (0){
 }
 
 // CTM_traits_button
-if (1){
+if (0){
 	// $h = fopen($DIR_DATA['campaign']['DIR'] . 'character_details_panel', 'r');
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'character_information', 'r');
 	if (!$h){ throw new Exception('FILE'); }
