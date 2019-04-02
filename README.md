@@ -1,5 +1,5 @@
-# twwh2_ctm
-Total War Warhammer 2 Mod "Cpecific's Traits Manager" (UI Layout Parser is included)
+# About
+Total War Warhammer 2 Mod "Cpecific's Traits Manager" (UI Layout Parser is included).
 
 # How to use Traits Manager with your mod
 Export all database tables listed below through Pack Manager in Binary format into /game folder (and you need data__ of main game too).
