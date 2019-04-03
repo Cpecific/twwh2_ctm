@@ -25,7 +25,7 @@ If your mod doesn't introduce changes to some of those tables, it's okay, don't 
 
 If your mod introduces new traits of type "Defeated some noname lord", then you will need to add your data (by hand) into `$tables['_political_parties_lords_defeated']` in `index.php`.
 
-For those who are not familiar with web servers, just install Denwer or XAMPP and put files of repository somewhere, where it will work ;)
+For those who are not familiar with web servers, just install XAMPP, make subfolder in htdocs, and put files there. You can access them at `localhost/[yourfolder]/[file].php`
 
 Run `/index.php` and copy result in new file (ex. `__tables.lua`). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
 ```lua
