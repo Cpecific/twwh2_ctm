@@ -1,5 +1,7 @@
 <?php
 
+header('');
+
 $mini = 2;
 
 $exclude = array();
@@ -95,6 +97,8 @@ function my_print($a, $level, $mini){
 
 echo '<pre style="word-break: break-all; white-space: pre-wrap;">';
 
+$do_experimental = false;
+
 // SCHEMA
 if (1){
 $tables_info = array(
@@ -139,6 +143,17 @@ $tables_info = array(
 			array( 'NAME' => 'icon',						'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'ui',							'TYPE' => 'int' ),
 			array( 'NAME' => 'pre_battle_speech_parameter',	'TYPE' => 'optstring',		'EXCLUDE' => true )
+		)
+	),
+	// когда эффект ссылается на абилку, и мы ставим иконку картинки (unit_abilities)
+	'effect_bonus_value_unit_ability_junctions' => array(
+		'DIR' => 'effect_bonus_value_unit_ability_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique' ),
+		'SCHEMA' => array(
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'unit_ability',				'TYPE' => 'string_ascii' )
 		)
 	),
 	'effects' => array(
@@ -240,6 +255,24 @@ $tables_info = array(
 			array( 'NAME' => 'trait',		'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'antitrait',	'TYPE' => 'string_ascii' )
 		)
+	),
+	'unit_abilities' => array(
+		'DIR' => 'unit_abilities_tables',
+		'HEADER_SIZE' => 91,
+		'KEY' => array( 0 => 'unique' ),
+		'SCHEMA' => array(
+			array( 'NAME' => 'key',							'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'supercedes_ability',			'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'requires_effect_enabling',	'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'icon_name',					'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'overpower_option',			'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'type',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'video',						'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'uniqueness',					'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'is_unit_upgrade',				'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'is_hidden_in_ui',				'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'source_type',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
 	)
 );
 }
@@ -250,13 +283,19 @@ if (!isset($tables)){
 
 foreach ($tables_info as $tbl_name => $tbl_data){
 	$tbl_key = $tbl_data['KEY'];
-	$_tbl_data = array();
+	$tables[ $tbl_name ] = $_tbl_data = array();
 	
-	$dir = realpath(__DIR__ .'/game/db/'. $tbl_data['DIR'] .'/') .'\\';
+	if (!isset($tbl_data['DIR'])){ continue; }
+	
+	$dir = __DIR__ .'/game/db/'. $tbl_data['DIR'] .'/';
+	if (!is_dir($dir)){ continue; }
+	
 	foreach (scandir($dir, 1) as $file){
 		if ($file === '.' || $file === '..' || is_dir($dir . $file)){ continue; }
 		
 		$_data = array();
+		$path = realpath($dir . $file);
+		// var_dump($tbl_name .' = '. $dir, $file);
 		$h = fopen($dir . $file, 'r');
 		if (!$h){ continue; }
 		fread($h, $tbl_data['HEADER_SIZE'] - 4);
@@ -956,6 +995,7 @@ foreach ($tables['character_trait_levels'] as $file_1 => $file_table_1){
 	}
 }
 
+// excluding data
 foreach ($tables as $key => &$data){
 	if (isset($exclude[ $key ])){
 		foreach ($exclude[ $key ] as $file){
@@ -963,6 +1003,7 @@ foreach ($tables as $key => &$data){
 		}
 	}
 }
+
 
 // Подготовка данных для вывода
 if (1){
@@ -1006,6 +1047,23 @@ foreach ($tables['character_traits'] as $file => &$file_table){
 	$file_table = array_values($file_table);
 	// $keyed['character_traits'][ $file ] = $table;
 	unset($entry, $file_table);
+}
+
+if ($do_experimental){
+	foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => &$file_table){
+		foreach ($file_table as $i => &$entry){
+			if (!$used['effects'][ $entry[0] ]){
+				unset($file_table[ $i ]);
+				continue;
+			}
+			// effect
+			$entry[0] = $StringHolder->Add($entry[0]);
+			// unit_ability
+			$entry[1] = $StringHolder->Add($entry[1]);
+		}
+		$file_table = array_values($file_table);
+		unset($entry, $file_table);
+	}
 }
 
 foreach ($tables['effects'] as $file => &$file_table){
@@ -1144,6 +1202,19 @@ foreach ($tables['trait_to_antitraits'] as $file => &$file_table){
 	// $keyed['trait_to_antitraits'][ $file ] = $table;
 	unset($entry, $file_table);
 }
+
+if ($do_experimental){
+	foreach ($tables['unit_abilities'] as $file => &$file_table){
+		foreach ($file_table as $i => &$entry){
+			// effect
+			$entry[0] = $StringHolder->Add($entry[0]);
+			// unit_ability
+			$entry[1] = $StringHolder->Add($entry[1]);
+		}
+		$file_table = array_values($file_table);
+		unset($entry, $file_table);
+	}
+}
 }
 
 
@@ -1162,13 +1233,12 @@ foreach ($StringHolder->ref as $cur){
 }
 echo '
 local ', implode(',', $left), ' = ', implode(',', $right);
-foreach ($tables as $key => &$data){
+foreach ($tables as $key => $data){
 	if (empty($data)){
-		unset($keyed[ $key ]);
+		unset($tables[ $key ]);
 		continue;
 	}
 }
-unset($data);
 echo '
 return ', my_print($tables, "\t", $mini);
 
