@@ -42,6 +42,6 @@ There is parser by __Alpaca__ and his inheritor __taw__, which I found, when alr
 
 Anyway, my parser "supports" version from 70 to 119 (mostly from 100 to 119), has a lot of deciphered fields, examples of use in `export.php` and easier web representation (rather than xml).
 You need to export (preferably the whole) `/ui` folder with Pack Manager into `/game`.
-For viewing files run `/ui.php`, for debuggin run `/dump.php`.
+For viewing files run `/ui.php`, for debugging run `/dump.php`.
 
 But beware pioneers, CA's UI is pain in the ass.
