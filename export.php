@@ -310,21 +310,31 @@ if (0){
 	file_put_contents('export/CTM_character_tooltip_effect_template', $uic->dumpFile());
 }
 
-// CTM_scroll_list
-// CTM_panel
-if (0){
-	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
+// deleted this chunk of code by mistake,
+// and now cannot remember where got it from, so just let it be
+// CTM_slider_list
+/*if (0){
+	$h = fopen($DIR_DATA['export']['DIR'] . 'CTM_panel', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
 	$uic = new UIC();
 	$uic->read($h);
 	fclose($h);
 	
-	$h = fopen($DIR_DATA['export']['DIR'] . 'CTM_slider_list', 'r');
+	$ch = $uic->child[0]->child[1]->child[0];
+	$uic->child = array($ch);
+	
+	file_put_contents('export/CTM_slider_list', $uic->dumpFile());
+}*/
+
+// CTM_scroll_list
+// CTM_panel
+if (1){
+	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
-	$uic_s = new UIC();
-	$uic_s->read($h);
+	$uic = new UIC();
+	$uic->read($h);
 	fclose($h);
 	
 	// preview_map
@@ -425,7 +435,14 @@ if (true){
 	$total_width += $left_width - $intersection;
 	
 	$ch_lroot->images = array(
-		$image = new UIC__Image($ch->images[0], $ch_lroot)
+		$image = new UIC__Image(array(
+			'uid' => 'C0 BC 57 36',
+			'path' => 'ui\\skins\\default\\CTM_leather.png',
+			'width' => 212,
+			'height' => 213,
+			'extra' => '00'
+			
+		), $ch_lroot)
 	);
 	$ch_l->images = array();
 	$ch_l->states[0]->bgs = array();
@@ -477,7 +494,13 @@ if (true){
 	$total_height = $height + $padding * 2;
 	
 	$ch_rroot->images = array(
-		$image = new UIC__Image($ch_r->images[0], $ch_lroot)
+		$image = new UIC__Image(array(
+			'uid' => '11 BA 52 02',
+			'path' => 'ui\\skins\\default\\CTM_parchment_texture.png',
+			'width' => 256,
+			'height' => 256,
+			'extra' => '00'
+		), $ch_lroot)
 	);
 	$image->uid = '11 BA 52 02';
 	$image->path = 'ui\\skins\\default\\CTM_parchment_texture.png';
@@ -578,7 +601,7 @@ if (true){
 }
 
 // CTM_lord_btn
-if (1){
+if (0){
 	$h = fopen($DIR_DATA['frontend']['DIR'] . 'sp_grand_campaign', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	

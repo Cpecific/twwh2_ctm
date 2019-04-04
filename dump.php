@@ -37,7 +37,7 @@ function extractData($uic){
 	// list($path, $_, $v) = $file_info;
 	// $file = mb_substr($path, strrpos($path, '/') + 1);
 foreach ($DIR_DATA as $dir_key => $arr){
-	if (in_array($dir_key, array('export'))){ continue; }
+	if (!in_array($dir_key, array('export'))){ continue; }
 	
 	$dir = $arr['DIR'];
 	
@@ -45,7 +45,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		$path = $dir . $file;
 		
 		// if ($file !== 'CTM_lord_btn'){ continue; }
-		// if ($file !== 'CTM_traits_button'){ continue; }
+		if ($file !== 'CTM_traits_button'){ continue; }
 		
 		// var_dump($path);
 		$h = fopen($path, 'r');

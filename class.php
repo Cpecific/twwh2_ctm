@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL ^ E_NOTICE);
+
 function my_assert($bool, $obj = null){
 	if ($bool){ return; }
 	$obj->error = true;
@@ -12,7 +14,7 @@ function my_assert($bool, $obj = null){
 function tohex($str){
 	return strtoupper(implode(' ', str_split(bin2hex($str), 2)));
 }
-function hex2bin($hexstr){ 
+/*function hex2bin($hexstr){ 
 	$n = strlen($hexstr);
 	$sbin = '';
 	for ($i = 0; $i < $n; $i += 2){
@@ -22,7 +24,7 @@ function hex2bin($hexstr){
 		else{ $sbin .= $c; }
 	}
 	return $sbin;
-} 
+}*/
 function fromhex($str){
 	if (is_array($str)){
 		$res = '';
