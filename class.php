@@ -225,7 +225,7 @@ class UIC {
 			// since we have no idea how to use it.
 			$this->events = read_string($h, 1, $this); // CustomTooltip (tooltip_effect_bundle)
 		} else if ($v >= 110 && $v < 120){
-			$num_events = array_shift(unpack('L1', fread($h, 4)));
+			$num_events = array_shift(unpack('l', fread($h, 4)));
 			$this->num_events = $num_events;
 			my_assert($this->num_events < 20, $this);
 			for ($i = 0; $i < $num_events; ++$i){
@@ -235,7 +235,7 @@ class UIC {
 		
 		// относительно parent (разумеется)
 		list($this->offset['left'],
-			$this->offset['top']) = array_values(unpack('L2', fread($h, 4 * 2)));
+			$this->offset['top']) = array_values(unpack('l2', fread($h, 4 * 2)));
 		
 		if ($v >= 70 && $v < 90){ $this->b1 = tohex(fread($h, 1)); }
 		
@@ -266,7 +266,7 @@ class UIC {
 		$this->tooltip_id = read_utf8_string($h, 1, $this); // sort_happines_Tooltip_5a0034
 		list($this->docking,
 			$this->dock_offset['left'],
-			$this->dock_offset['top']) = array_values(unpack('L3', fread($h, 4 * 3)));
+			$this->dock_offset['top']) = array_values(unpack('l3', fread($h, 4 * 3)));
 			
 		// component_anchor_point
 		// priority
@@ -275,7 +275,7 @@ class UIC {
 		// sometimes it's zeros. but don't worry, it still selects a (first?) state.
 		$this->default_state = tohex(fread($h, 4));
 		
-		$this->num_images = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_images = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_images < 20, $this);
 		for ($i = 0; $i < $this->num_images; ++$i){
 			$this->images[] = $a = new UIC__Image();
@@ -297,14 +297,14 @@ class UIC {
 		// marked_for_deletion
 		// comment
 		
-		$this->num_states = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_states = array_shift(unpack('l', fread($h, 4)));
 		// my_assert($this->num_states < 64, $this);
 		for ($i = 0; $i < $this->num_states; ++$i){
 			$this->states[] = $a = new UIC__State();
 			$a->read($h, $this);
 		}
 		
-		$this->num_dynamic = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_dynamic = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_dynamic < 20, $this);
 		for ($i = 0; $i < $this->num_dynamic; ++$i){
 			$this->dynamic[] = $a = new UIC__Dynamic();
@@ -314,7 +314,7 @@ class UIC {
 		// (suppose confirmed) priority?
 		$this->b6 = tohex($num_sth = fread($h, 4)); // unknown
 		
-		$this->num_funcs = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_funcs = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_funcs < 20, $this);
 		global $has;
 		if ($this->num_funcs > 0){ $has['funcs'] = true; }
@@ -323,7 +323,7 @@ class UIC {
 			$a->read($h, $this);
 		}
 		
-		$this->num_child = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_child = array_shift(unpack('l', fread($h, 4)));
 		
 		if ($v >= 70 && $v < 100){
 			for ($i = 0; $i < $this->num_child; ++$i){
@@ -369,7 +369,7 @@ class UIC {
 				$a = array();
 				
 				$a[] = 'num_sth = '. tohex($num_sth = fread($h, 4));
-				$num_sth = array_shift(unpack('L1', $num_sth));
+				$num_sth = array_shift(unpack('l', $num_sth));
 				my_assert($num_sth < 10, $this);
 				$b = array();
 				for ($i = 0; $i < $num_sth; ++$i){
@@ -410,7 +410,7 @@ class UIC {
 			$a = array();
 			
 			$a[] = 'num_sth = '. tohex($num_sth = fread($h, 4));
-			$num_sth = array_shift(unpack('L1', $num_sth));
+			$num_sth = array_shift(unpack('l', $num_sth));
 			my_assert($num_sth < 10, $this);
 			// array of floats - strange values: several hundreds
 			// or maybe they are not floats?
@@ -424,20 +424,20 @@ class UIC {
 			$a[] = $b;
 			
 			// values: 0, -5
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			// values: 0, 1, 4, 5, 14
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			// bool
 			$a[] = tohex(fread($h, 1));
 			// values: 1, 3, 20
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			// {00 00 | 01 00}
 			$a[] = tohex(fread($h, 2));
 			// margins?
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			
 			$len = 19;
 			if ($v >= 100 && $v < 110){
@@ -475,29 +475,29 @@ class UIC {
 			$has['hlist'] = true;
 			$a = array();
 			
-			$a[] = 'num_sth = '. ($num_sth = array_shift(unpack('L1', fread($h, 4))));
+			$a[] = 'num_sth = '. ($num_sth = array_shift(unpack('l', fread($h, 4))));
 			$b = array();
 			for ($i = 0; $i < $num_sth; ++$i){
 				$b[] = array_shift(unpack('f1', fread($h, 4)));
 			}
 			$a[] = $b;
 			
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			$a[] = tohex(fread($h, 5));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			$a[] = array_shift(unpack('S1', fread($h, 2)));
 			
 			// padding = {left, right, top, bottom} (for actual content)
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			
-			$a[] = array_shift(unpack('L1', fread($h, 4)));
+			$a[] = array_shift(unpack('l', fread($h, 4)));
 			$a[] = array_shift(unpack('S1', fread($h, 2)));
 			
 			if ($v >= 105){
-				$a[] = array_shift(unpack('L1', fread($h, 4)));
+				$a[] = array_shift(unpack('l', fread($h, 4)));
 				$a[] = tohex(fread($h, 1));
 			}
 			
@@ -530,11 +530,11 @@ class UIC {
 			$has['table'] = true;
 			$a = array();
 			// #attention need to be checked what comes first: rows or columns
-			$a[] = 'num_rows = '. ($num_rows = array_shift(unpack('L1', fread($h, 4))));
+			$a[] = 'num_rows = '. ($num_rows = array_shift(unpack('l', fread($h, 4))));
 			$b = array();
 			for ($i = 0; $i < $num_rows; ++$i){
 				$b_val = array();
-				$b_val[] = 'num_columns = '. ($num_columns = array_shift(unpack('L1', fread($h, 4))));
+				$b_val[] = 'num_columns = '. ($num_columns = array_shift(unpack('l', fread($h, 4))));
 				$c = array();
 				for ($j = 0; $j < $num_rows; ++$j){
 					// float, float
@@ -562,7 +562,7 @@ class UIC {
 			$this->after[] = read_string($h, 1, $this);
 			$this->after[] = $bit = tohex(fread($h, 1));
 			if ($bit === '01'){
-				$this->after[] = 'num_sth = '. ($num_sth = array_shift(unpack('L1', fread($h, 4))));
+				$this->after[] = 'num_sth = '. ($num_sth = array_shift(unpack('l', fread($h, 4))));
 				$a = array();
 				for ($i = 0; $i < $num_sth; ++$i){
 					$a[] = tohex(fread($h, 4));
@@ -586,14 +586,14 @@ class UIC {
 					// byte (bool?)
 					// float, float, float?, float, float (angle), float (angle), float
 					$a[] = tohex(fread($h, 74));
-					$a[] = 'num_models = '. ($num_models = array_shift(unpack('L1', fread($h, 4))));
+					$a[] = 'num_models = '. ($num_models = array_shift(unpack('l', fread($h, 4))));
 					$models = array();
 					for ($i = 0; $i < $num_models; ++$i){
 						$b = array();
 						$b[] = read_string($h, 1, $this);
 						$b[] = read_string($h, 1, $this);
 						$b[] = tohex(fread($h, 1));
-						$b[] = 'num_anim = '. ($num_anim = array_shift(unpack('L1', fread($h, 4))));
+						$b[] = 'num_anim = '. ($num_anim = array_shift(unpack('l', fread($h, 4))));
 						$anim = array();
 						for ($j = 0; $j < $num_anim; ++$j){
 							$c = array();
@@ -767,13 +767,13 @@ class UIC {
 			$res .= write_string($this->events);
 		}
 		else if ($v >= 110 && $v < 120){
-			$res .= pack('L', sizeof($this->events));
+			$res .= pack('l', sizeof($this->events));
 			foreach ($this->events as $event){
 				$res .= write_string($event);
 			}
 		}
 		
-		$res .= pack('L2',	$this->offset['left'],
+		$res .= pack('l2',	$this->offset['left'],
 							$this->offset['top']);
 		
 		if ($v >= 70 && $v < 90){ $res .= fromhex($this->b1); }
@@ -783,14 +783,14 @@ class UIC {
 		$res .= write_utf8_string($this->tooltip_text);
 		$res .= write_utf8_string($this->tooltip_id);
 		
-		$res .= pack('L3',	$this->docking,
+		$res .= pack('l3',	$this->docking,
 							$this->dock_offset['left'],
 							$this->dock_offset['top']);
 		
 		$res .= fromhex($this->b3);
 		$res .= fromhex($this->default_state);
 		
-		$res .= pack('L', sizeof($this->images));
+		$res .= pack('l', sizeof($this->images));
 		foreach ($this->images as $image){
 			$res .= $image->dumpFile();
 		}
@@ -800,24 +800,24 @@ class UIC {
 			$res .= fromhex($this->b5);
 		}
 		
-		$res .= pack('L', sizeof($this->states));
+		$res .= pack('l', sizeof($this->states));
 		foreach ($this->states as $state){
 			$res .= $state->dumpFile();
 		}
 		
-		$res .= pack('L', sizeof($this->dynamic));
+		$res .= pack('l', sizeof($this->dynamic));
 		foreach ($this->dynamic as $dynamic){
 			$res .= $dynamic->dumpFile();
 		}
 		
 		$res .= fromhex($this->b6);
 		
-		$res .= pack('L', sizeof($this->funcs));
+		$res .= pack('l', sizeof($this->funcs));
 		foreach ($this->funcs as $funcs){
 			$res .= $funcs->dumpFile();
 		}
 		
-		$res .= pack('L', sizeof($this->child));
+		$res .= pack('l', sizeof($this->child));
 		foreach ($this->child as $child){
 			$res .= $child->dumpFile();
 		}
@@ -838,7 +838,7 @@ class UIC {
 		if ($v >= 70 && $v < 80){
 			$a = $this->after[ $i++ ];
 			
-			$res .= pack('L', sizeof($a[1]));
+			$res .= pack('l', sizeof($a[1]));
 			// sth
 			foreach ($a[1] as $b){
 				$res .= fromhex($b);
@@ -864,19 +864,19 @@ class UIC {
 		if ($type === 'List'){
 			$a = $this->after[ $i++ ];
 			
-			$res .= pack('L', sizeof($a[1]));
+			$res .= pack('l', sizeof($a[1]));
 			// sth
 			foreach ($a[1] as $b){
 				$res .= pack('f1', $b);
 			}
 			
 			$j = 2;
-			$res .= pack('L2',	$a[ $j++ ],
+			$res .= pack('l2',	$a[ $j++ ],
 								$a[ $j++ ]);
 			$res .= fromhex($a[ $j++ ]);
-			$res .= pack('L1',	$a[ $j++ ]);
+			$res .= pack('l',	$a[ $j++ ]);
 			$res .= fromhex($a[ $j++ ]);
-			$res .= pack('L4',	$a[ $j++ ],
+			$res .= pack('l4',	$a[ $j++ ],
 								$a[ $j++ ],
 								$a[ $j++ ],
 								$a[ $j++ ]);
@@ -892,7 +892,7 @@ class UIC {
 		else if ($type === 'HorizontalList'){
 			$a = $this->after[ $i++ ];
 			
-			$res .= pack('L', sizeof($a[1]));
+			$res .= pack('l', sizeof($a[1]));
 			// sth
 			foreach ($a[1] as $b){
 				$res .= pack('f1', $b);
@@ -900,21 +900,21 @@ class UIC {
 			
 			$j = 2;
 			
-			$res .= pack('L1', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
 			$res .= fromhex($a[ $j++ ]);
-			$res .= pack('L1', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
 			
 			$res .= pack('S1', $a[ $j++ ]);
-			$res .= pack('L1', $a[ $j++ ]);
-			$res .= pack('L1', $a[ $j++ ]);
-			$res .= pack('L1', $a[ $j++ ]);
-			$res .= pack('L1', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
 			
-			$res .= pack('L1', $a[ $j++ ]);
+			$res .= pack('l', $a[ $j++ ]);
 			$res .= pack('S1', $a[ $j++ ]);
 			
 			if ($v >= 105){
-				$res .= pack('L1', $a[ $j++ ]);
+				$res .= pack('l', $a[ $j++ ]);
 				$res .= fromhex($a[ $j++ ]);
 			}
 			
@@ -944,7 +944,7 @@ class UIC {
 			
 			if ($bit === '01'){
 				$i++; // num_sth
-				$res .= pack('L', sizeof($this->after[ $i ]));
+				$res .= pack('l', sizeof($this->after[ $i ]));
 				foreach ($this->after[ $i ] as $a){
 					$res .= fromhex($a);
 				}
@@ -957,13 +957,13 @@ class UIC {
 				if (!empty($str)){
 					$a = $this->after[ $i++ ];
 					$res .= fromhex($a[0]);
-					$res .= pack('L', sizeof($a[2]));
+					$res .= pack('l', sizeof($a[2]));
 					// models
 					foreach ($a[2] as $b){
 						$res .= write_string($b[0]);
 						$res .= write_string($b[1]);
 						$res .= fromhex($b[2]);
-						$res .= pack('L', sizeof($b[4]));
+						$res .= pack('l', sizeof($b[4]));
 						// anim
 						foreach ($b[4] as $c){
 							$res .= write_string($c[0]);
@@ -1058,8 +1058,8 @@ class UIC__Image {
 		
 		$this->uid = tohex(fread($h, 4));
 		$this->path = read_string($h, 1, $this);
-		$this->width = array_shift(unpack('L1', fread($h, 4)));
-		$this->height = array_shift(unpack('L1', fread($h, 4)));
+		$this->width = array_shift(unpack('l', fread($h, 4)));
+		$this->height = array_shift(unpack('l', fread($h, 4)));
 		if ($v >= 80){
 			$this->extra = tohex(fread($h, 1));
 		}
@@ -1089,7 +1089,7 @@ class UIC__Image {
 		
 		$res .= fromhex($this->uid);
 		$res .= write_string($this->path);
-		$res .= pack('L2', $this->width, $this->height);
+		$res .= pack('l2', $this->width, $this->height);
 		if ($v >= 80){
 			$res .= fromhex($this->extra);
 		}
@@ -1166,7 +1166,7 @@ class UIC__State {
 		$this->uid = tohex(fread($h, 4)); // uid
 		$this->name = read_string($h, 1, $my); // NewState
 		
-		$this->bounds = array_values(unpack('L2', fread($h, 8)));
+		$this->bounds = array_values(unpack('l2', fread($h, 8)));
 		
 		$this->text = read_utf8_string($h, 1, $my);
 		// if (strpos($this->text, '[[') !== false){
@@ -1179,7 +1179,7 @@ class UIC__State {
 			// 0 - left, 1 - center, 2 - right
 			$this->textalign['horizontal'],
 			// 1 - top, 2 - middle, 3 - bottom
-			$this->textalign['vertical']) = array_values(unpack('L4', fread($h, 4 * 4)));
+			$this->textalign['vertical']) = array_values(unpack('l4', fread($h, 4 * 4)));
 		// texthbehaviour
 		$this->b1 = tohex(fread($h, 1));
 		
@@ -1212,17 +1212,17 @@ class UIC__State {
 		
 		list($this->font_m_size,
 			$this->font_m_leading,
-			$this->font_m_tracking) = array_values(unpack('L3', fread($h, 4 * 3)));
+			$this->font_m_tracking) = array_values(unpack('l3', fread($h, 4 * 3)));
 		$this->font_m_colour = tohex(fread($h, 4));
 		
 		$this->fontcat_name = read_string($h, 1, $my); // Default Font category
 		
 		if ($v >= 70 && $v < 80){
 			// left-right, top-bottom?
-			$this->textoffset = array_values(unpack('L2', fread($h, 4 * 2)));
+			$this->textoffset = array_values(unpack('l2', fread($h, 4 * 2)));
 		} else if ($v >= 80 && $v < 120){
 			// left, right, top, bottom
-			$this->textoffset = array_values(unpack('L4', fread($h, 4 * 4)));
+			$this->textoffset = array_values(unpack('l4', fread($h, 4 * 4)));
 		}
 		
 		// focustype
@@ -1286,7 +1286,7 @@ class UIC__State {
 		unset($a);
 		
 		// imagemetrics
-		$this->num_bgs = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_bgs = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_bgs < 20, $my);
 		global $has;
 		if ($this->num_bgs > 0){ $has['bgs'] = true; }
@@ -1299,7 +1299,7 @@ class UIC__State {
 		$this->b_mouse = tohex(fread($h, 8)); // unknown
 		
 		// mouse states?
-		$this->num_mouse = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_mouse = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_mouse < 20, $my);
 		for ($i = 0; $i < $this->num_mouse; ++$i){
 			$this->mouse[] = $a = new UIC__State_Mouse();
@@ -1378,12 +1378,12 @@ class UIC__State {
 		$res .= fromhex($this->uid);
 		$res .= write_string($this->name);
 		
-		$res .= pack('L2', $this->bounds[0], $this->bounds[1]);
+		$res .= pack('l2', $this->bounds[0], $this->bounds[1]);
 		
 		$res .= write_utf8_string($this->text);
 		$res .= write_utf8_string($this->tooltip);
 		
-		$res .= pack('L4',	$this->textbounds['width'],
+		$res .= pack('l4',	$this->textbounds['width'],
 							$this->textbounds['height'],
 							$this->textalign['horizontal'],
 							$this->textalign['vertical']);
@@ -1416,7 +1416,7 @@ class UIC__State {
 		}
 		
 		$res .= write_string($this->font_m_font_name);
-		$res .= pack('L3',	$this->font_m_size,
+		$res .= pack('l3',	$this->font_m_size,
 							$this->font_m_leading,
 							$this->font_m_tracking);
 		$res .= fromhex($this->font_m_colour);
@@ -1424,11 +1424,11 @@ class UIC__State {
 		$res .= write_string($this->fontcat_name);
 		
 		if ($v >= 70 && $v < 80){
-			$res .= pack('L4',	$this->textoffset[0],
+			$res .= pack('l4',	$this->textoffset[0],
 								$this->textoffset[1]);
 		}
 		else if ($v >= 80 && $v < 120){
-			$res .= pack('L4',	$this->textoffset[0],
+			$res .= pack('l4',	$this->textoffset[0],
 								$this->textoffset[1],
 								$this->textoffset[2],
 								$this->textoffset[3]);
@@ -1453,14 +1453,14 @@ class UIC__State {
 							$this->textshadervars[2],
 							$this->textshadervars[3]);
 		
-		$res .= pack('L', sizeof($this->bgs));
+		$res .= pack('l', sizeof($this->bgs));
 		foreach ($this->bgs as $bg){
 			$res .= $bg->dumpFile();
 		}
 		
 		$res .= fromhex($this->b_mouse);
 		
-		$res .= pack('L', sizeof($this->mouse));
+		$res .= pack('l', sizeof($this->mouse));
 		foreach ($this->mouse as $mouse){
 			$res .= $mouse->dumpFile();
 		}
@@ -1511,8 +1511,8 @@ class UIC__State_Background {
 		// componentimage
 		$this->uid = tohex(fread($h, 4));
 		list($this->offset['left'],
-			$this->offset['top']) = array_values(unpack('L2', fread($h, 4 * 2)));
-		$this->bounds = array_values(unpack('L2', fread($h, 8)));
+			$this->offset['top']) = array_values(unpack('l2', fread($h, 4 * 2)));
+		$this->bounds = array_values(unpack('l2', fread($h, 8)));
 		
 		$this->colour = tohex(fread($h, 4));
 		
@@ -1533,10 +1533,10 @@ class UIC__State_Background {
         // |7|8|9|
 		list($this->x_flipped,
 			$this->y_flipped,
-			$this->dockpoint) = array_values(unpack('C2a/L1b', fread($h, 2 + 4)));
+			$this->dockpoint) = array_values(unpack('C2a/l1b', fread($h, 2 + 4)));
 		
 		list($this->dock_offset['left'],
-			$this->dock_offset['top']) = array_values(unpack('L2', fread($h, 4 * 2)));
+			$this->dock_offset['top']) = array_values(unpack('l2', fread($h, 4 * 2)));
 		
 		// canresizeheight, canresizewidth
 		list($this->dock['right'],
@@ -1614,9 +1614,9 @@ class UIC__State_Background {
 		$res = '';
 		
 		$res .= fromhex($this->uid);
-		$res .= pack('L2',	$this->offset['left'],
+		$res .= pack('l2',	$this->offset['left'],
 							$this->offset['top']);
-		$res .= pack('L2',	$this->bounds[0],
+		$res .= pack('l2',	$this->bounds[0],
 							$this->bounds[1]);
 		$res .= fromhex($this->colour);
 		
@@ -1627,9 +1627,9 @@ class UIC__State_Background {
 							$this->x_flipped,
 							$this->y_flipped);
 		
-		$res .= pack('L1',	$this->dockpoint);
+		$res .= pack('l',	$this->dockpoint);
 		
-		$res .= pack('L2',	$this->dock_offset['left'],
+		$res .= pack('l2',	$this->dock_offset['left'],
 							$this->dock_offset['top']);
 		
 		$res .= pack('C2',	$this->dock['right'],
@@ -1709,12 +1709,12 @@ class UIC__State_Mouse {
 		// 2 - mousedown
 		// 3 - mouseup (click)
 		// 8 - mouseup (blur?)
-		$this->mouse_state = array_shift(unpack('L1', fread($h, 4)));
+		$this->mouse_state = array_shift(unpack('l', fread($h, 4)));
 		$this->state_uid = tohex(fread($h, 4));
 		// гипотеза: аудио?
 		$this->b0 = tohex(fread($h, 8)); // ?, ?
 		
-		$this->num_sth = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_sth = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_sth < 20, $my);
 		for ($i = 0; $i < $this->num_sth; ++$i){
 			$a = array();
@@ -1748,11 +1748,11 @@ class UIC__State_Mouse {
 		// $v = $this->state->my->version;
 		$res = '';
 		
-		$res .= pack('L1', $this->mouse_state);
+		$res .= pack('l', $this->mouse_state);
 		$res .= fromhex($this->state_uid);
 		$res .= fromhex($this->b0);
 		
-		$res .= pack('L', sizeof($this->sth));
+		$res .= pack('l', sizeof($this->sth));
 		foreach ($this->sth as $sth){
 			$res .= fromhex($sth[0]);
 			$res .= write_string($sth[1]);
@@ -1840,7 +1840,7 @@ class UIC__Func {
 		// propagate, makenoninteractive, totalloops
 		$this->b0 = tohex(fread($h, 2)); // ?
 		
-		$this->num_anim = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_anim = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_anim < 20, $my);
 		for ($j = 0; $j < $this->num_anim; ++$j){
 			$this->anim[] = $a = new UIC__Func_Anim();
@@ -1902,7 +1902,7 @@ class UIC__Func {
 		$res .= write_string($this->name);
 		$res .= fromhex($this->b0);
 		
-		$res .= pack('L', sizeof($this->anim));
+		$res .= pack('l', sizeof($this->anim));
 		foreach ($this->anim as $anim){
 			$res .= $anim->dumpFile();
 		}
@@ -2009,21 +2009,21 @@ class UIC__Func_Anim {
 		
 		
 		// targetmetrics_m_height, targetmetrics_m_width
-		$this->bounds = array_values(unpack('L2', fread($h, 8)));
+		$this->bounds = array_values(unpack('l2', fread($h, 8)));
 		// targetmetrics_m_colour
 		$this->colour = tohex(fread($h, 4));
 		
 		$this->m_shadervars = array_values(unpack('f4', fread($h, 4 * 4)));
 		$this->m_rotation_angle = array_shift(unpack('f1', fread($h, 4)));
 		list($this->m_imageindex1,
-			$this->m_imageindex2) = array_values(unpack('L2', fread($h, 4 * 2)));
+			$this->m_imageindex2) = array_values(unpack('l2', fread($h, 4 * 2)));
 		
 		if ($v >= 110 && $v < 120){
 			$this->m_font_scale = array_shift(unpack('f1', fread($h, 4)));
 		}
 		
 		list($this->interpolationtime,
-			$this->interpolationpropertymask) = array_values(unpack('L2', fread($h, 4 * 2)));
+			$this->interpolationpropertymask) = array_values(unpack('l2', fread($h, 4 * 2)));
 		
 		$this->easing_weight = array_shift(unpack('f1', fread($h, 4)));
 		
@@ -2033,7 +2033,7 @@ class UIC__Func_Anim {
 		$this->linear = read_string($h, 1, $my);
 		
 		// triggers
-		$this->num_attr = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_attr = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_attr < 20, $my);
 		for ($i = 0; $i < $this->num_attr; ++$i){
 			$this->attr[] = $a = new UIC__Func_Anim_Attr();
@@ -2132,27 +2132,27 @@ class UIC__Func_Anim {
 		}
 		
 		$res .= pack('f2', $this->offset['left'], $this->offset['top']);
-		$res .= pack('L2', $this->bounds[0], $this->bounds[1]);
+		$res .= pack('l2', $this->bounds[0], $this->bounds[1]);
 		$res .= fromhex($this->colour);
 		
-		$res .= pack('L4',	$this->m_shadervars[0],
+		$res .= pack('l4',	$this->m_shadervars[0],
 							$this->m_shadervars[1],
 							$this->m_shadervars[2],
 							$this->m_shadervars[3]);
 		
 		$res .= pack('f1', $this->m_rotation_angle);
-		$res .= pack('L2', $this->m_imageindex1, $this->m_imageindex2);
+		$res .= pack('l2', $this->m_imageindex1, $this->m_imageindex2);
 		if ($v >= 110 && $v < 120){
 			$res .= pack('f1', $this->m_font_scale);
 		}
 		
-		$res .= pack('L1', $this->interpolationtime);
-		$res .= pack('L1', $this->interpolationpropertymask);
+		$res .= pack('l', $this->interpolationtime);
+		$res .= pack('l', $this->interpolationpropertymask);
 		$res .= pack('f1', $this->easing_weight);
 		
 		$res .= write_string($this->linear);
 		
-		$res .= pack('L', sizeof($this->attr));
+		$res .= pack('l', sizeof($this->attr));
 		foreach ($this->attr as $attr){
 			$res .= $attr->dumpFile();
 		}
@@ -2299,14 +2299,14 @@ class UIC_Template {
 		// $this->uic_t = $uic_t->debug();
 		$uic_t = $uic_t->child[0];
 		
-		$this->num_template = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_template = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_template < 64, $this);
 		for ($i = 0; $i < $this->num_template; ++$i){
 			$this->template[] = $a = new UI_Template_Child();
 			$a->read($h, $this, $uic_t);
 		}
 		
-		$this->num_child = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_child = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_child < 20, $this);
 		for ($i = 0; $i < $this->num_child; ++$i){
 			$this->child[] = $a = new UIC();
@@ -2377,12 +2377,12 @@ class UIC_Template {
 		$uic_t->read($h_t);
 		$uic_t = $uic_t->child[0];
 		
-		$res .= pack('L', sizeof($this->template));
+		$res .= pack('l', sizeof($this->template));
 		foreach ($this->template as $template){
 			$res .= $template->dumpFile();
 		}
 		
-		$res .= pack('L', sizeof($this->child));
+		$res .= pack('l', sizeof($this->child));
 		foreach ($this->child as $child){
 			$res .= $child->dumpFile();
 		}
@@ -2456,7 +2456,7 @@ class UI_Template_Child {
 			$this->type = read_string($h, 1, $my);
 		}
 		else if ($v >= 110 && $v < 120){			
-			$this->num_events = array_shift(unpack('L1', fread($h, 4)));
+			$this->num_events = array_shift(unpack('l', fread($h, 4)));
 			my_assert($this->num_events < 20, $my);
 			for ($i = 0; $i < $this->num_events; ++$i){
 				$this->events[] = read_string($h, 3, $my);
@@ -2468,10 +2468,10 @@ class UI_Template_Child {
 		// offset.left?, offset.top?
 		// width, height
 		$this->b_floats = array_values(unpack('f4', fread($h, 4 * 4)));
-		$this->b_ints = array_values(unpack('L2', fread($h, 4 * 2)));
+		$this->b_ints = array_values(unpack('l2', fread($h, 4 * 2)));
 		$this->b1 = tohex(fread($h, 1)); // unknown
 		// not sure if my guess is even remotely correct
-		$this->docking = array_shift(unpack('L1', fread($h, 4)));
+		$this->docking = array_shift(unpack('l', fread($h, 4)));
 		$this->b2 = tohex(fread($h, 6)); // unknown
 		
 		$this->tooltip_id = read_utf8_string($h, 1, $my); // tooltip uid?
@@ -2515,14 +2515,14 @@ class UI_Template_Child {
 			$this->states[] = $a;
 		}
 		
-		$this->num_dynamic = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_dynamic = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_dynamic < 20, $my);
 		for ($i = 0; $i < $this->num_dynamic; ++$i){
 			$this->dynamic[] = read_string($h, 2, $my);
 		}
 		
 		
-		$this->num_images = array_shift(unpack('L1', fread($h, 4)));
+		$this->num_images = array_shift(unpack('l', fread($h, 4)));
 		my_assert($this->num_images < 20, $my);
 		for ($i = 0; $i < $this->num_images; ++$i){
 			$this->images[] = read_string($h, 1, $my);
@@ -2577,7 +2577,7 @@ class UI_Template_Child {
 			$res .= write_string($this->type);
 		}
 		else if ($v >= 110 && $v < 120){
-			$res .= pack('L', sizeof($this->events));
+			$res .= pack('l', sizeof($this->events));
 			foreach ($this->events as $event){
 				$res .= write_string($event);
 			}
@@ -2590,11 +2590,11 @@ class UI_Template_Child {
 							$this->b_floats[2],
 							$this->b_floats[3]);
 		
-		$res .= pack('L2',	$this->b_ints[0],
+		$res .= pack('l2',	$this->b_ints[0],
 							$this->b_ints[1]);
 		
 		$res .= fromhex($this->b1);
-		$res .= pack('L1',	$this->docking);
+		$res .= pack('l',	$this->docking);
 		$res .= fromhex($this->b2);
 		
 		$res .= write_utf8_string($this->tooltip_id);
@@ -2608,12 +2608,12 @@ class UI_Template_Child {
 			$res .= write_utf8_string($state[4]);
 		}
 		
-		$res .= pack('L', sizeof($this->dynamic));
+		$res .= pack('l', sizeof($this->dynamic));
 		foreach ($this->dynamic as $dynamic){
 			$res .= write_string($dynamic);
 		}
 		
-		$res .= pack('L', sizeof($this->images));
+		$res .= pack('l', sizeof($this->images));
 		foreach ($this->images as $image){
 			$res .= write_string($image);
 		}
