@@ -19,16 +19,17 @@ $gr_t = array();
 $processed = 0;
 
 $extract = array();
-function extractData($uic){
-	if ($uic instanceof UIC){
-		// if (!empty($uic->tooltip_text) || !empty($uic->tooltip_id)){
-			// $GLOBALS['extract'][] = array($uic->tooltip_text, $uic->tooltip_id);
+function extractData($uic, $level = 0){
+	// if ($uic instanceof UIC){
+		$GLOBALS['extract'][] = str_repeat("•\t", $level) . $uic->name;
+	// }
+	// if ($uic instanceof UIC_Template){
+		// foreach ($uic->template as $child){
+			// $GLOBALS['extract'][] = str_repeat("•\t", $level + 1) . $child->name;
 		// }
-		$GLOBALS['extract'][ $GLOBALS['path'] ] = $uic->uid;
-		return;
-	}
+	// }
 	foreach ($uic->child as $child){
-		extractData($child);
+		extractData($child, $level + 1);
 	}
 }
 
@@ -37,7 +38,7 @@ function extractData($uic){
 	// list($path, $_, $v) = $file_info;
 	// $file = mb_substr($path, strrpos($path, '/') + 1);
 foreach ($DIR_DATA as $dir_key => $arr){
-	if (!in_array($dir_key, array('export'))){ continue; }
+	if (in_array($dir_key, array('export'))){ continue; }
 	
 	$dir = $arr['DIR'];
 	
@@ -45,7 +46,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		$path = $dir . $file;
 		
 		// if ($file !== 'CTM_lord_btn'){ continue; }
-		if ($file !== 'CTM_traits_button'){ continue; }
+		if ($file !== 'units_dropdown'){ continue; }
 		
 		// var_dump($path);
 		$h = fopen($path, 'r');
@@ -82,10 +83,12 @@ foreach ($DIR_DATA as $dir_key => $arr){
 			$type = 'error';
 			// continue;
 		}
-		// if ($type === 'error'){ continue; }
-		if ($type === 'ok'){ continue; }
 		
-		// extractData($uic);continue;
+		
+		// if ($type === 'error'){ continue; }
+		// if ($type === 'ok'){ continue; }
+		
+		extractData($uic);continue;
 		
 		// if ($has['bgs'] && !$has['funcs']){
 		if (1 || $has['table']){
@@ -96,7 +99,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 }
 
 // $extract = array_unique($extract);
-// var_dump($extract);return;
+var_dump($extract);return;
 
 // var_dump(array_keys($grouped['ok']));
 var_dump($grouped);

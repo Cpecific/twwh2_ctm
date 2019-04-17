@@ -198,7 +198,8 @@ $tables_info = array(
 			array( 'NAME' => 'override_force_location_y',	'TYPE' => 'float',			'EXCLUDE' => true ),
 			array( 'NAME' => 'voiceover',					'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
 			array( 'NAME' => 'show_full_intro_option',		'TYPE' => 'bool',			'EXCLUDE' => true ),
-			array( 'NAME' => 'difficulty',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+			array( 'NAME' => 'difficulty',					'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'political_party',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	),
 	// тут нам нужен sort_order для faction
@@ -310,7 +311,7 @@ foreach ($tables_info as $tbl_name => $tbl_data){
 					$length = unpack('v', fread($h, 2));
 					$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
 				} else if ($sch_column['TYPE'] === 'int'){
-					$value = unpack('V', fread($h, 4));
+					$value = unpack('l', fread($h, 4));
 					$value = $value[1];
 				} else if ($sch_column['TYPE'] === 'bool'){
 					$value = unpack('C', fread($h, 1));
@@ -576,6 +577,30 @@ $tables['_political_parties_lords_defeated']['data__'] = array(
 			'wh2_main_political_party_vor_lzd_kroq_gar' => 'wh2_main_trait_defeated_kroq_gar'
 		)
 	),
+	array(
+		'wh2_dlc12_political_party_lzd_tehenhauin',
+		array(
+			'wh2_dlc12_political_party_lzd_tehenhauin' => 'wh2_dlc12_trait_defeated_tehenhauin'
+		)
+	),
+	array(
+		'wh2_dlc12_political_party_vor_lzd_tehenhauin',
+		array(
+			'wh2_dlc12_political_party_vor_lzd_tehenhauin' => 'wh2_dlc12_trait_defeated_tehenhauin'
+		)
+	),
+	array(
+		'wh2_dlc12_political_party_lzd_tiktaqto',
+		array(
+			'wh2_dlc12_political_party_lzd_tiktaqto' => 'wh2_dlc12_trait_defeated_tiktaqto'
+		)
+	),
+	array(
+		'wh2_dlc12_political_party_vor_lzd_tiktaqto',
+		array(
+			'wh2_dlc12_political_party_vor_lzd_tiktaqto' => 'wh2_dlc12_trait_defeated_tiktaqto'
+		)
+	),
 #endregion
 #region _skv_
 	array(
@@ -612,6 +637,18 @@ $tables['_political_parties_lords_defeated']['data__'] = array(
 		'wh2_dlc09_political_party_vor_skv_tretch_craventail',
 		array(
 			'wh2_dlc09_political_party_vor_skv_tretch_craventail' => 'wh2_dlc09_trait_defeated_tretch'
+		)
+	),
+	array(
+		'wh2_dlc12_political_party_skv_ikit_claw',
+		array(
+			'wh2_dlc12_political_party_skv_ikit_claw' => 'wh2_dlc12_trait_defeated_ikit_claw'
+		)
+	),
+	array(
+		'wh2_dlc12_political_party_vor_skv_ikit_claw',
+		array(
+			'wh2_dlc12_political_party_vor_skv_ikit_claw' => 'wh2_dlc12_trait_defeated_ikit_claw'
 		)
 	),
 #endregion
@@ -865,9 +902,9 @@ if (1){
 			if ($ref !== null){ return $ref; }
 			
 			// a whole reason for this is to have as less bytes as possible.
-			// you can determine this value by expirement.
+			// you can determine this value by experiment.
 			// for different datasets you will need different value
-			if ($this->cur === null || sizeof($this->cur->arr) === 30){
+			if ($this->cur === null || sizeof($this->cur->arr) === 34){
 				do {
 					// i wanted to do this whole thing in math, but very lazy to waste time thinking.
 					if (empty($this->name)){

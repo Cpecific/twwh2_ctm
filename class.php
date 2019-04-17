@@ -218,6 +218,8 @@ class UIC {
 		$this->name = read_string($h, 1, $this);
 		$this->b0 = read_string($h, 1, $this);
 		
+		// вообще может быть ExitFunc + у меня крашилось, когда я удалял
+		// элемент, и в нём были events
 		if ($v >= 100 && $v < 110){
 			// название event? может быть core listener?
 			// this bitch is definetly context object, but how to use it?
