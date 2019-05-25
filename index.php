@@ -1040,15 +1040,18 @@ foreach ($tables as $key => &$data){
 		}
 	}
 }
+unset($data);
 
 
 // Подготовка данных для вывода
 if (1){
 foreach ($tables['agent_subtypes'] as $file => &$file_table){
 	foreach ($file_table as &$entry){
+		$entry = array_values($entry);
 		// key
 		$entry[0] = $StringHolder->Add($entry[0]);
-		$entry = array_values($entry);
+		// can_gain_xp
+		$entry[1] = new Ref($entry[1] ? 'T' : 'F');
 	}
 	unset($entry, $file_table);
 }
@@ -1253,7 +1256,6 @@ if ($do_experimental){
 	}
 }
 }
-
 
 
 
