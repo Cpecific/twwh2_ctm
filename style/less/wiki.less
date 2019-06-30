@@ -1,0 +1,64 @@
+@import "misc/all.less";
+
+#wiki_content { width: 100%; }
+#wiki_left { padding: 20px 20px 500px; }
+#wiki_right { width: 253px; }
+
+.trait {
+	width: 300px; box-sizing: border-box; padding: 4px 1px 4px 10px;
+	background: #eee; margin: 0 2px 2px 0;
+	&-dy {
+		margin: 2px 0 0;
+		font-size: 14px; line-height: 24px;
+		img { margin-right: 4px; }
+	}
+	&-level {
+		&-bar {
+			.pr(); padding: 2px 22px 2px 23px; margin: 2px 0 4px;
+			// background: url('../game/ui/skins/default/trait_frame.png');
+			border-image-source: url('../game/ui/skins/default/trait_frame.png');
+			border-image-slice: 0 30 0 30 fill;
+			border-image-width: 0 30px 0 30px;
+			// border-image-outset: 0 30px 0 30px;
+			border-image-repeat: stretch;
+		}
+		
+		.pr(); width: 22px; height: 16px; background-size: 22px 16px;
+		&-m3 { background-image: url('../game/ui/skins/default/trait_fill_m3.png'); }
+		&-m2 { background-image: url('../game/ui/skins/default/trait_fill_m2.png'); }
+		&-m1 { background-image: url('../game/ui/skins/default/trait_fill_m1.png'); }
+		&-0 { background-image: url('../game/ui/skins/default/trait_fill_0.png'); }
+		&-p1 { background-image: url('../game/ui/skins/default/trait_fill_p1.png'); }
+		&-p2 { background-image: url('../game/ui/skins/default/trait_fill_p2.png'); }
+		&-p3 { background-image: url('../game/ui/skins/default/trait_fill_p3.png'); }
+		&-cur:after {
+			display: block; content: ''; font-size: 0;
+			.pa(); left: -2px; top: -4px; width: 26px; height: 24px;
+			background: url('../game/ui/skins/default/trait_frame_current.png');
+			background-size: 40px 24px;
+			background-position: -7px 0;
+		}
+	}
+}
+
+.filter {
+	padding: 6px 10px;
+	img { width: 18px; height: 18px; margin-right: 8px; }
+	&:hover { background: #eee; }
+	&.active {
+		background: #cdd2f4;
+		&:hover { background: #e3e6fa; }
+	}
+}
+
+.effects-tooltip {
+	font-size: 14px; background: #111; color: #fff;
+	img { width: 18px; height: 18px; }
+	&-colour-text { padding: 5px 8px 5px 4px; font-style: italic; color: #aaa; }
+	&-explanation-text { padding: 0 8px 5px 4px; }
+	.effect-cont {
+		line-height: 20px; margin: 2px 0;
+		img { margin: 1px 4px 0 0; }
+	}
+}
+

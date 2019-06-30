@@ -4,6 +4,7 @@ include 'class.php';
 <html>
 <head>
 	<link rel="stylesheet" href="style/common.css" />
+	<link rel="stylesheet" href="style/tooltip.css" />
 	<link rel="stylesheet" href="style/ui.css" />
 	
 	<script src="js/jquery-3.1.1.min.js"></script>

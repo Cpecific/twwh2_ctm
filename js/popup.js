@@ -209,4 +209,55 @@ extProt(
 		return this
 	}*/
 )
+
+
+Tooltip = function(el, content){
+	// console.log('Tooltip', arguments)
+	var cont
+	function create(){
+		var offset = $(el).offset(),
+			width = $(el).width(),
+			height = $(el).height()
+		el.B(cont = E('span', { class: 'pr' })
+		.A(
+			E('div', {
+				class: 'pa bra tooltip-cont',
+				style: 'top: '+ (height) +'px; left: 0; min-width: 400px;'
+				// style: 'top: '+ (offset.top - 12) +'px; left: '+ (offset.left + width) +'px;'
+			})
+			.A(
+				E('div', { class: 'tooltip-body' })
+				.AA(content)
+			)
+		))
+		// cont.firstChild.h('').AA(content)
+		return cont
+	}
+	function remove(){
+		el.CR('tooltip-active')
+		el.__tooltip.popup.Delete(true)
+		el.__tooltip = null
+		cont.R()
+	}
+	el.CA('tooltip-active')
+	
+	var tdata = el.__tooltip
+	if (!tdata){
+		el.__tooltip = tdata = {
+			popup: new Popup({
+				event: 'click',
+				allowed: [],
+				create: create,
+				remove: remove
+			})
+		}
+		tdata.popup.Push()
+	}
+	else{
+		// return;
+		// tdata.popup.Remove()
+	}
+	return tdata
+}
+
 })()

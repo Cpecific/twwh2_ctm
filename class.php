@@ -2373,11 +2373,11 @@ class UIC_Template {
 			$res .= fromhex($this->uid);
 		}
 		
-		$h_t = fopen($DIR_DATA['templates']['DIR'] . $this->name, 'r');
-		my_assert($h_t, $this);
-		$uic_t = new UIC();
-		$uic_t->read($h_t);
-		$uic_t = $uic_t->child[0];
+		// $h_t = fopen($DIR_DATA['templates']['DIR'] . $this->name, 'r');
+		// my_assert($h_t, $this);
+		// $uic_t = new UIC();
+		// $uic_t->read($h_t);
+		// $uic_t = $uic_t->child[0];
 		
 		$res .= pack('l', sizeof($this->template));
 		foreach ($this->template as $template){

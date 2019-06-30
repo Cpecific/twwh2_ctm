@@ -16,7 +16,6 @@ function for_all($uic, $func){
 	}
 }
 
-// CTM_traits_list
 // CTM_trait_template
 // CTM_trait_dy_trait
 // CTM_trait_bar_holder
@@ -37,13 +36,6 @@ if (0){
 	$ch = $uic->child[0]->child[9]->child[1]->child[0]->child[1]->child[1]->child[0]->child[0]->child[1];
 	// template_entry
 	$ch_tpl = $ch->child[0];
-	
-// CTM_traits_list
-	$uic->child = array($ch);
-	$ch->parent = $uic;
-	$ch->child = array();
-	
-	file_put_contents('export/CTM_traits_list', $uic->dumpFile());
 	
 // CTM_trait_template
 	$ch = $ch_tpl;
@@ -67,6 +59,7 @@ if (0){
 	
 	if (true){
 		$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+		$ch->images[0]->path = 'ui\\skins\\default\\CTM_parchment_button_square_hover.png';
 		
 		$margin = array('top' => 3 + 4, 'left' => 10);
 		$img_size = 24;
@@ -161,17 +154,6 @@ if (0){
 		$state->mouse = array();
 		
 		$ch->default_state = $ch->states[0]->uid;
-		
-		if (false){
-			// работаем с trait_bar
-			$ch = $ch_bar;
-			$ch->parent = $ch_tpl;
-			$ch_tpl->child = array($ch);
-			
-			$ch->offset = array('top' => 32 + 4, 'left' => 10);
-			$ch->docking = 0;
-			$ch->dynamic = array();
-		}
 	}
 	
 	$ch->after = array('00', '', '', '00', '00', '00 00 00', '00 00 80 3F', '00 00 00 00', '00 00 00 00');
@@ -199,7 +181,6 @@ if (true){
 	$ch->states[] = $state = new UIC__State($ch->states[0]);
 	$state->uid = '00 1E 5B D2';
 	$state->name = 'inactive';
-	// $state->text_shader_name = 
 	// $state->font_m_colour = '00 00 00 64';
 	$state->shader_name = 'set_greyscale_t0';
 	$state->shadervars = array(1, 0.6, 0, 0);
@@ -216,6 +197,7 @@ if (true){
 	
 	$ch->offset = array('top' => 32 + 4, 'left' => 10);
 	$ch->docking = 0;
+	$ch->images[0]->path = 'ui\\skins\\default\\CTM_trait_frame.png';
 	$state = $ch->states[0];
 	$state->bounds = array(67, 16 + 4);
 	$state->b7 = '00 00 00 00';
@@ -248,13 +230,15 @@ if (true){
 	$uic->child = array($ch);
 	$ch->parent = $uic;
 	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
-	// $ch->tooltip_text = '{{tt:ui/campaign ui/character_trait_tooltip}}';
 	$ch->tooltip_text = '';
 	$ch->tooltip_id = '';
 	// frame_current
 	$ch->child[1]->b_01 = '00 00 00 00 00 00 00 00 00 00 00 00';
 	
 	$ch = $ch->child[0];
+	foreach ($ch->images as $im){
+		$im->path = str_replace('\\default\\', '\\default\\CTM_', $im->path);
+	}
 	for ($i = 0, $to = sizeof($ch->states); $i < $to; ++$i){
 		$ch->states[] = $state = new UIC__State($ch->states[ $i ]);
 		$uid = -array_shift(unpack('L1', fromhex($state->uid)));
@@ -265,6 +249,7 @@ if (true){
 	}
 	
 	$ch = $ch->parent->child[1];
+	$ch->images[0]->path = str_replace('\\default\\', '\\default\\CTM_', $ch->images[0]->path);
 	$ch->states[0]->name = 'active';
 	$ch->states[] = $state = new UIC__State($ch->states[0]);
 	$uid = -array_shift(unpack('L1', fromhex($state->uid)));
@@ -274,6 +259,15 @@ if (true){
 	$state->shadervars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_level_template', $uic->dumpFile());
+	
+	// warhammer2
+	$ch->images[0]->path = str_replace('.png', '_wh2.png', $ch->images[0]->path);
+	$ch = $ch->parent->child[0];
+	foreach ($ch->images as $im){
+		$im->path = str_replace('.png', '_wh2.png', $im->path);
+	}
+	
+	file_put_contents('export/CTM_trait_level_template_wh2', $uic->dumpFile());
 }
 
 // CTM_character_trait_tooltip
@@ -327,9 +321,8 @@ if (0){
 	file_put_contents('export/CTM_slider_list', $uic->dumpFile());
 }*/
 
-// CTM_scroll_list
 // CTM_panel
-if (1){
+if (0){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
@@ -561,7 +554,7 @@ if (true){
 	$ch->offset = array('left' => 0, 'top' => 0);
 	$ch->dock_offset = $offset = array('left' => 0, 'top' => -231);
 	// $offset_hide = array('left' => $offset['left'], 'top' => $offset['top'] + 258 * 2);
-	$offset_hide = array('left' => $offset['left'], 'top' => $offset['top'] + 250);
+	$offset_hide = array('left' => $offset['left'], 'top' => $offset['top'] + 258);
 	
 	$ch->funcs = array(
 		new UIC__Func($ch_a->funcs[0], $ch)
@@ -572,18 +565,39 @@ if (true){
 		$ch->funcs[0]->anim[0]->b3 = '00 00';
 	}
 	
+	// show
 	$func = $ch->funcs[0];
 	$anim = $func->anim[0];
 	$anim->offset = $offset_hide;
 	$anim->bounds = array($total_width, $total_height);
 	$anim->b2 = '01 00';
-	// $anim->colour = 'FF FF FF 00';
 	$anim->interpolationtime = 0;
 	
 	$func->anim[] = $anim = new UIC__Func_Anim($anim);
 	$anim->offset = $offset;
-	// $anim->colour = 'FF FF FF FF';
 	$anim->interpolationtime = 500;
+	
+	// showlong
+	$ch->funcs[] = $func = new UIC__Func($ch->funcs[0], $ch);
+	$func->name = 'showlong';
+	$anim = $func->anim[0];
+	$anim->offset['top'] += 258;
+	
+	$anim = $func->anim[1];
+	$anim->interpolationtime = 600;
+	
+	// showleft
+	$ch->funcs[] = $func = new UIC__Func($ch->funcs[0], $ch);
+	$func->name = 'showleft';
+	$anim = $func->anim[0];
+	$anim->offset['left'] = -$total_width + 1;
+	
+	array_splice($func->anim, 1, 0, array($anim = new UIC__Func_Anim($anim)));
+	$anim->interpolationtime = round(700 * 20 / 32);
+	
+	$anim = $func->anim[2];
+	$anim->interpolationtime = round(700 * 20 / 32);
+	// 23 / 32 * 700
 	
 	if (0){
 		$ch->funcs[] = $func = new UIC__Func($func);
@@ -792,8 +806,7 @@ if (0){
 	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
 	$ch->docking = 1;
 	$ch->dock_offset = array('left' => 52, 'top' => 150);
-	$state = $ch->states[0];
-	// $state->bounds = array(59, 59);
+	$ch->images[0]->path = 'ui\\skins\\default\\CTM_rank_dspl_back.png';
 	$ch->dynamic = array();
 	$ch->funcs = array();
 	
@@ -807,6 +820,7 @@ if (0){
 	$ch->child[0]->b_01 = '00 00 00 00 00 00 01 01 00 00 00 01';
 	
 	$ch->child[1]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	$ch->child[1]->images[0]->path = 'ui\\skins\\default\\CTM_rank_dspl_zero.png';
 	
 	$ch->child[2]->events = array();
 	$ch->child[2]->b_01 = '00 00 00 00 00 00 01 01 00 00 00 01';
@@ -814,6 +828,7 @@ if (0){
 	
 	$ch->child[3]->events = array();
 	$ch->child[3]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	$ch->child[3]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_frame.png';
 	$ch->child[3]->dynamic = array();
 	$ch->child[3]->after[1] = '';
 	
@@ -946,19 +961,38 @@ if (true){
 		$uic->setVersion(106);
 	}
 	
+	// show
 	$func = $ch->funcs[0];
 	$anim = $func->anim[0];
 	$anim->offset = $offset_hide;
 	$anim->bounds = $ch->states[0]->bounds;
 	$anim->b2 = '01 00';
-	// $anim->colour = 'FF FF FF 00';
 	$anim->interpolationtime = 0;
-	// $anim->interpolationpropertymask = 2;
 	
 	$func->anim[] = $anim = new UIC__Func_Anim($anim);
 	$anim->offset = $offset;
-	// $anim->colour = 'FF FF FF FF';
 	$anim->interpolationtime = 500;
+	
+	// showlong
+	$ch->funcs[] = $func = new UIC__Func($ch->funcs[0], $ch);
+	$func->name = 'showlong';
+	$anim = $func->anim[0];
+	$anim->offset['top'] += 20;
+	
+	$anim = $func->anim[1];
+	$anim->interpolationtime = 600;
+	
+	// showleft
+	$ch->funcs[] = $func = new UIC__Func($ch->funcs[0], $ch);
+	$func->name = 'showleft';
+	$anim = $func->anim[0];
+	$anim->offset['left'] -= 20;
+	
+	// array_splice($func->anim, 1, 0, array($anim = new UIC__Func_Anim($anim)));
+	// $anim->interpolationtime = round(700 * 20 / 32);
+	
+	$anim = $func->anim[1];
+	$anim->interpolationtime = round(700 * 20 / 32);
 	
 	if (0){
 		$ch->funcs[] = $func = new UIC__Func($func);
@@ -973,4 +1007,276 @@ if (true){
 	// var_dump($uic->debug());exit;
 	
 	file_put_contents('export/CTM_traits_button', $uic->dumpFile());
+}
+
+// CTM_mortuary_cult
+if (1){
+	$h = fopen($DIR_DATA['campaign']['DIR'] . 'mortuary_cult', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic = new UIC();
+	$uic->read($h);
+	fclose($h);
+	
+	// mortuary_cult
+	$ch = $uic->child[0];
+	
+	if (1){
+		$ov = new UIC($ch);
+		$uic->child[0] = $ov;
+		$ov->child = array($ch);
+		$ch->my = $ov;
+		
+		$ov->name = 'overlay';
+		$ov->events = array();
+		$ov->offset = array('left' => 0, 'top' => 0);
+		array_splice($ov->images, 1);
+		$ov->images[0]->path = '';
+		$ov->images[0]->width = 1;
+		$ov->images[0]->height = 1;
+		$ov->states[0]->bounds = array(1920 * 4, 1080 * 4); // 50% in 4K
+		array_splice($ov->states[0]->bgs, 0, 1);
+		array_splice($ov->states[0]->bgs, 1);
+		$ov->states[0]->bgs[0]->bounds = $ov->states[0]->bounds;
+		$ov->states[0]->bgs[0]->colour = 'FF FF FF 00';
+		$ov->states[0]->bgs[0]->tile = 0;
+		$ov->states[0]->bgs[0]->margin = array(0, 0, 0, 0);
+	}
+	
+	// help pages button
+	array_splice($ch->child, 1, 1);
+	
+	// panel_title
+	$state = $ch->child[0]->child[0]->states[0];
+	$state->text = '';//'{{tr:traits}}';
+	$state->textlabel = 'tx_traits_NewState_Text_680041';
+	
+	// panel_heading_NewState_Text_350043
+	// tx_subtitle_NewState_Text_680041
+	// heading_traits_NewState_Text_680041
+	// tx_header_NewState_Text_680041
+	// tx_subtitle_NewState_Text_680041
+	
+	// listview
+	$list = $ch->child[1];
+	// list_clip ->list_box
+	$box = $list->child[0]->child[0];
+	$box->child = array();
+	$box->after[2][1] = array();
+	// headers
+	array_splice($list->child, 2, 1);
+	
+	// resources_holder
+	array_splice($ch->child, 3, 2);
+	// header_list
+	$head = $ch->child[3];
+	// button_recycle_holder
+	array_splice($head->child, 3, 1);
+	
+	// no_items_panel
+	array_splice($ch->child, 4, 1);
+	// header_list
+	array_splice($ch->child, 3, 1);
+	
+	$ch->events = array();
+	$list->dynamic = array();
+	
+	$list->child[1]->template[1]->dynamic = array(
+		array('stepSize', '10')
+	);
+	$list->child[1]->template[3]->dynamic = array(
+		array('min_size', '39')
+	);
+	$list->child[1]->template[4]->dynamic = array(
+		array('stepSize', '10')
+	);
+	$list->child[1]->template[5]->b_floats[3] += 23;
+	$list->child[1]->template[5]->dynamic = array(
+		array('Value', '0'),
+		array('minValue', '0'),
+		array('maxValue', '100'),
+		array('Notify', '')
+	);
+	array_splice($ch->child, 2, 0, array($list = new UIC($list)));
+	
+	$right_width = 253;
+	$list->states[0]->bounds[0] = $right_width;
+	$clip = $list->child[0];
+	$clip->dock_offset = array('left' => 8, 'top' => 8);
+	$clip->states[0]->bounds = array($right_width - 8 - 12, 640 - 8 * 2);
+	$clip->child[0]->states[0]->bounds = $clip->states[0]->bounds;
+	
+	$list->uid = '80 67 EC 1B';
+	$list->child[0]->uid = '80 BE F8 24';
+	$list->child[0]->child[0]->uid = '00 9F C3 25';
+	$list->docking = 3;
+	$list->dock_offset['left'] = -16;
+	$list->images[] = $im = new UIC__Image(array(
+		'uid' => '11 BA 52 02',
+		'path' => 'ui\\skins\\default\\parchment_texture.png',
+		'width' => 256,
+		'height' => 256,
+		'extra' => '00'
+	), $list);
+	$state = $list->states[0];
+	$state->bgs[] = $bg = new UIC__State_Background($uic->states[0]->bgs[0], $state);
+	$bg->uid = $im->uid;
+	$bg->bounds = $state->bounds;
+	$bg->colour = 'FF FF FF FF';
+	$bg->tile = 1;
+	$bg->margin = array(50, 50, 50, 50);
+	$list->child[1]->template[5]->b_floats[1] += 14;
+	$list->child[1]->template[5]->b_floats[3] -= 28;
+	
+	$list = $ch->child[1];
+	$list->docking = 1;
+	$list->dock_offset['left'] = 16;
+	for_all($list, function($uic){
+		global $right_width;
+		$uic->states[0]->bounds[0] -= $right_width + 8;
+	});
+	
+	// CTM
+	$uic->eachChild(function($uic){
+		if ($uic instanceof UIC){
+			foreach ($uic->images as $im){
+				$pos = strpos($im->path, 'ui\\skins\\default\\');
+				if ($pos !== false){
+					$im->path = str_replace('ui\\skins\\default\\', 'ui\\skins\\default\\CTM_', $im->path);
+				}
+			}
+		}
+	});
+	
+	file_put_contents('export/CTM_mortuary_cult', $uic->dumpFile());
+	
+	// warhammer2
+	$uic->eachChild(function($uic){
+		if ($uic instanceof UIC){
+			foreach ($uic->images as $im){
+				$pos = strpos($im->path, 'ui\\skins\\default\\');
+				if ($pos !== false){
+					$im->path = mb_substr($im->path, 0, mb_strlen($im->path) - 4) .'_wh2.png';
+				}
+			}
+		}
+	});
+	
+	file_put_contents('export/CTM_mortuary_cult_wh2', $uic->dumpFile());
+	
+	
+	
+	
+	$h = fopen($DIR_DATA['templates']['DIR'] . 'parchment_row', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic_g = $uic;
+	
+	$uic = new UIC();
+	$uic->read($h);
+	$ch = $uic->child[0];
+	fclose($h);
+	
+	array_splice($ch->images, 0, 0, array($im = new UIC__Image(array(
+		'uid' => '70 0B 01 0F',
+		'path' => 'ui\\skins\\default\\construction_positive.png',
+		'width' => 1,
+		'height' => 0,
+		'extra' => '00'
+	), $ch)));
+	
+	$bounds = array(253 - 8 - 12, 32 + 3 * 2);
+	function TF_SetBg($state){
+		global $bounds, $im;
+		$state->bounds = $bounds;
+		$state->textbounds = array('width' => 2, 'height' => 4);
+		$state->font_m_font_name = 'la_gioconda';
+		$state->font_m_size = 12;
+		$state->font_m_colour = '00 00 00 FF';
+		$state->fontcat_name = 'ingame_text';
+		$state->textoffset = array(38, 2, 7, 0);
+		foreach ($state->bgs as $bg){
+			// $bg->bounds = array($bounds[0], $bounds[1] + 3);
+			// if ($bg->offset['top'] < 0){ $bg->offset['top'] = 0; }
+			$bg->bounds = array($bounds[0], 38); // 31
+			$bg->dockpoint = 5;
+			// $bg->dockpoint = 8;
+		}
+		$state->bgs[] = $bg = new UIC__State_Background($state->bgs[0]);
+		$bg->uid = $im->uid;
+		$bg->bounds = array(24, 24);
+		$bg->colour = 'FF FF FF FF';
+		$bg->tile = 0;
+		$bg->offset = array('left' => 10, 'top' => 3 + 4);
+		$bg->dockpoint = 4;
+		$bg->dock = array('right' => 0, 'bottom' => 0);
+		$bg->margin = array(0, 0, 0, 0);
+	}
+	
+	// invalid
+	array_splice($ch->states, 6, 1);
+	
+	foreach ($ch->states as $state){
+		TF_SetBg($state);
+	}
+	
+	
+	$ch->states[] = $state = new UIC__State($ch->states[5]); // down
+	$state->uid = '40 21 53 21';
+	$state->name = 'selected_down';
+	
+	$ch->states[] = $state = new UIC__State($ch->states[3]); // down_off
+	$state->uid = 'A0 FD B0 1F';
+	$state->name = 'selected_down_off';
+	
+	$states = array(
+		'hover' => $ch->states[0],
+		'selected_hover' => $ch->states[1],
+		'unselected' => $ch->states[2],
+		'down_off' => $ch->states[3],
+		'selected' => $ch->states[4],
+		'down' => $ch->states[5],
+		'selected_down' => $ch->states[6],
+		'selected_down_off' => $ch->states[7]
+	);
+	
+	// hover
+	// selected_hover
+	$states['selected_hover']->mouse[] = new UIC__State_Mouse(array(
+		'mouse_state' => 2,
+		'state_uid' => $states['selected_down']->uid,
+		'b0' => '00 00 00 00 00 00 00 00',
+		'sth' => array()
+	), $states['selected_hover']);
+	// unselected
+	// down_off
+	// selected
+	// down
+	$m = $states['down']->mouse;
+	$m[0]->state_uid = $states['selected_hover']->uid;
+	// selected_down
+	$m = $states['selected_down']->mouse;
+	$m[0]->state_uid = $states['hover']->uid;
+	$m[1]->state_uid = $states['selected_down_off']->uid;
+	// selected_down_off
+	$m = $states['selected_down_off']->mouse;
+	$m[0]->state_uid = $states['selected_down']->uid;
+	$m[1]->state_uid = $states['selected']->uid;
+	
+	foreach ($ch->images as $i => $im){
+		if ($i > 0){
+			$im->path = str_replace('\\default\\', '\\default\\CTM_', $im->path);
+		}
+	}
+	
+	file_put_contents('export/CTM_trait_filter', $uic->dumpFile());
+	
+	// warhammer2
+	foreach ($ch->images as $i => $im){
+		if ($i > 0){
+			$im->path = str_replace('.png', '_wh2.png', $im->path);
+		}
+	}
+	
+	file_put_contents('export/CTM_trait_filter_wh2', $uic->dumpFile());
 }

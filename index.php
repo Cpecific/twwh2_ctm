@@ -3,22 +3,45 @@
 header('');
 
 $mini = 2;
+define('JAVASCRIPT', false);
+define('IS_MODDED', true);
 
-$exclude = array();
-$exclude = array(
-	'agent_subtypes' => array('data__'),
-	'character_trait_levels' => array('data__'),
-	'character_traits' => array('data__'),
-	'effects' => array('data__'),
-	'faction_political_parties_junctions' => array('data__'),
-	'frontend_faction_leaders' => array('data__'),
-	'frontend_factions' => array('data__'),
-	'_political_parties_lords_defeated' => array('data__'),
-	'political_parties' => array('data__'),
-	'trait_categories' => array('data__'),
-	'trait_level_effects' => array('data__'),
-	'trait_to_antitraits' => array('data__'),
+// FILL THIS ARRAY IF YOU HAVE REPLACED data__ IN SOME TABLES
+$modded_data__ = array(
+	// Ex.:    'some_table' => true,
 );
+
+// DB_TEXT
+if (JAVASCRIPT){
+	$dir = __DIR__ .'/game/text/db/';
+	$text_info = array(
+		'effects' => array(
+			'FILE' => $dir .'effects__.loc'
+		),
+		'campaign_effect_scopes' => array(
+			'FILE' => $dir .'campaign_effect_scopes__.loc'
+		),
+		'character_trait_levels' => array(
+			'FILE' => $dir .'character_trait_levels__.loc'
+		),
+		'Isenharttraits' => array(
+			'FILE' => $dir .'Isenharttraits.loc'
+		)
+	);
+	// all localisation files
+	if (0){
+		$text_info = array();
+		foreach (scandir($dir, 1) as $file){
+			if ($file === '.' || $file === '..' || is_dir($dir . $file)){ continue; }
+			
+			$path = realpath($dir . $file);
+			
+			$text_info[ rtrim(mb_substr($file, 0, mb_strlen($file) - 4), '__') ] = array(
+				'FILE' => $dir . $file
+			);
+		}
+	}
+}
 
 function has_object($a){
 	if (is_array($a)){
@@ -35,7 +58,7 @@ function isAssoc(array $arr){
     return (array_keys($arr) !== range(0, sizeof($arr) - 1));
 }
 function my_print($a, $level, $mini){
-	if ($a instanceof Ref){
+	if ($a instanceof Ref || $a instanceof StringCnt){
 		return $a;
 	}
 	if (is_string($a)){
@@ -51,9 +74,17 @@ function my_print($a, $level, $mini){
 	$has_obj = has_object($a);
 	
 	if (isAssoc($a)){
+		$brackets = array('{', '}');
 		foreach ($a as $k => $v){
-			if (!preg_match('#^[\w\d\_]+$#', $k)){ $k = '["'. addslashes($k) .'"]'; }
-			$d = $k . ($mini ? '=' : ' = ') . my_print($v, $new_level, $mini);
+			if (JAVASCRIPT){
+				$k = '"'. addslashes($k) .'"';
+			}
+			else{
+				if (!preg_match('#^[\w\d\_]+$#', $k)){
+					$k = '["'. addslashes($k) .'"]';
+				}
+			}
+			$d = $k . ($mini ? '' : ' ') . (JAVASCRIPT ? ':' : '=') . ($mini ? '' : ' ') . my_print($v, $new_level, $mini);
 			if ($mini === 2){
 				$str .= ','. $d;
 			}
@@ -68,6 +99,7 @@ function my_print($a, $level, $mini){
 		}
 	}
 	else{
+		$brackets = (JAVASCRIPT ? array('[', ']') : array('{', '}'));
 		foreach ($a as $v){
 			$d = my_print($v, $new_level, $mini);
 			if ($mini === 2){
@@ -84,24 +116,22 @@ function my_print($a, $level, $mini){
 		}
 	}
 	if ($mini === 2){
-		return '{'. mb_substr($str, 1) .'}';
+		return $brackets[0]. mb_substr($str, 1) .$brackets[1];
 	}
 	else if ($mini === 1){
-		if ($has_obj){ return '{'. mb_substr($str, 1) ."\r\n}"; }
-		return '{'. mb_substr($str, 1) .'}';
+		if ($has_obj){ return $brackets[0] . mb_substr($str, 1) ."\r\n". $brackets[1]; }
+		return $brackets[0] . mb_substr($str, 1) . $brackets[1];
 	}
-	if ($has_obj){ return '{'. mb_substr($str, 1) ."\r\n". mb_substr($level, 1) .'}'; }
-	return '{'. mb_substr($str, 2) .'}';
+	if ($has_obj){ return $brackets[0] . mb_substr($str, 1) ."\r\n". mb_substr($level, 1) . $brackets[1]; }
+	return $brackets[0] . mb_substr($str, 2) . $brackets[1];
 }
 
 
 echo '<pre style="word-break: break-all; white-space: pre-wrap;">';
 
-$do_experimental = false;
-
 // SCHEMA
-if (1){
 $tables_info = array(
+#region HIDE
 	'agent_subtypes' => array(
 		'DIR' => 'agent_subtypes_tables',
 		'HEADER_SIZE' => 91,
@@ -125,10 +155,10 @@ $tables_info = array(
 		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'key',					'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'level',				'TYPE' => 'int' ),
-			array( 'NAME' => 'trait',				'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'threshold_points',	'TYPE' => 'int' )
+			array( 'NAME' => 'key',								'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'level',							'TYPE' => 'int' ),
+			array( 'NAME' => 'trait',							'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'threshold_points',				'TYPE' => 'int' )
 		)
 	),
 	'character_traits' => array(
@@ -136,24 +166,330 @@ $tables_info = array(
 		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'key',							'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'no_going_back_level',			'TYPE' => 'int' ),
-			array( 'NAME' => 'hidden',						'TYPE' => 'bool' ),
-			array( 'NAME' => 'precedence',					'TYPE' => 'int' ),
-			array( 'NAME' => 'icon',						'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'ui',							'TYPE' => 'int' ),
-			array( 'NAME' => 'pre_battle_speech_parameter',	'TYPE' => 'optstring',		'EXCLUDE' => true )
+			array( 'NAME' => 'key',								'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'no_going_back_level',				'TYPE' => 'int' ),
+			array( 'NAME' => 'hidden',							'TYPE' => 'bool' ),
+			array( 'NAME' => 'precedence',						'TYPE' => 'int' ),
+			array( 'NAME' => 'icon',							'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'ui',								'TYPE' => 'int' ),
+			array( 'NAME' => 'pre_battle_speech_parameter',		'TYPE' => 'optstring',		'EXCLUDE' => true )
+		)
+	),
+#endregion
+#region effect_bonus_value
+	'effect_bonus_value_id_action_results_additional_outcomes_junctions' => array(
+		'DIR' => 'effect_bonus_value_id_action_results_additional_outcomes_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			// action_results_additional_outcome_record
+			array( 'NAME' => 'araor',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_agent_junction' => array(
+		'DIR' => 'effect_bonus_value_agent_junction_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
+		'ENTRY' => array(1, 0),
+		'SCHEMA' => array(
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'agent',						'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_agent_action_record_junctions' => array(
+		'DIR' => 'effect_bonus_value_agent_action_record_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'agent_action_record',			'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_agent_subtype_junctions' => array(
+		'DIR' => 'effect_bonus_value_agent_subtype_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'subtype',						'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_attrition_record_junctions' => array(
+		'DIR' => 'effect_bonus_value_attrition_record_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			array( 'NAME' => 'attrition_record',			'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_basic_junction' => array(
+		'DIR' => 'effect_bonus_value_basic_junction_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
+		'ENTRY' => array(1, 0),
+		'SCHEMA' => array(
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_battle_context_army_special_ability_junctions' => array(
+		'DIR' => 'effect_bonus_value_battle_context_army_special_ability_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			// battle_context_army_special_ability
+			array( 'NAME' => 'bcasa',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_battle_context_unit_ability_junctions' => array(
+		'DIR' => 'effect_bonus_value_battle_context_unit_ability_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			// battle_context_unit_ability
+			array( 'NAME' => 'bcua',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_battle_context_unit_attribute_junctions' => array(
+		'DIR' => 'effect_bonus_value_battle_context_unit_attribute_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			// battle_context_unit_atribute
+			array( 'NAME' => 'bcua',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_battle_context_junctions' => array(
+		'DIR' => 'effect_bonus_value_battle_context_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(1, 2),
+		'SCHEMA' => array(
+			array( 'NAME' => 'battle_context_key',			'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_building_set_junctions' => array(
+		'DIR' => 'effect_bonus_value_building_set_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 2 => 'unique' ),
+		'ENTRY' => array(0, 2),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'building_set',				'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_faction_junctions' => array(
+		'DIR' => 'effect_bonus_value_faction_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'faction',						'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_loyalty_event_junctions' => array(
+		'DIR' => 'effect_bonus_value_loyalty_event_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'loyalty_event',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_military_force_ability_junctions' => array(
+		'DIR' => 'effect_bonus_value_military_force_ability_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'force_ability',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_missile_weapon_junctions' => array(
+		'DIR' => 'effect_bonus_value_missile_weapon_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			// missile_weapon_junction
+			array( 'NAME' => 'mwj',							'TYPE' => 'int',			'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_pooled_resource_factor_junctions' => array(
+		'DIR' => 'effect_bonus_value_pooled_resource_factor_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'resource_factor',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_pooled_resource_junctions' => array(
+		'DIR' => 'effect_bonus_value_pooled_resource_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'pooled_resource',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_religion_junction' => array(
+		'DIR' => 'effect_bonus_value_religion_junction_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
+		'ENTRY' => array(1, 0),
+		'SCHEMA' => array(
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'religion',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_resource_junction' => array(
+		'DIR' => 'effect_bonus_value_resource_junction_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
+		'ENTRY' => array(1, 0),
+		'SCHEMA' => array(
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'resource',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_ritual_junctions' => array(
+		'DIR' => 'effect_bonus_value_ritual_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'ritual',						'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_siege_item_junctions' => array(
+		'DIR' => 'effect_bonus_value_siege_item_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'siege_item',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_special_ability_phase_record_junctions' => array(
+		'DIR' => 'effect_bonus_value_special_ability_phase_record_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			// special_ability_phase
+			array( 'NAME' => 'sap',							'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_subculture_junctions' => array(
+		'DIR' => 'effect_bonus_value_subculture_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'subculture',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	),
 	// когда эффект ссылается на абилку, и мы ставим иконку картинки (unit_abilities)
 	'effect_bonus_value_unit_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_unit_ability_junctions_tables',
 		'HEADER_SIZE' => 83,
-		'KEY' => array( 0 => 'unique' ),
+		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
+		'ENTRY' => array(1, 0, 2),
 		'SCHEMA' => array(
 			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'unit_ability',				'TYPE' => 'string_ascii' )
+		)
+	),
+	'effect_bonus_value_unit_attribute_junctions' => array(
+		'DIR' => 'effect_bonus_value_unit_attribute_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'unit_attribute',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_unit_set_unit_ability_junctions' => array(
+		'DIR' => 'effect_bonus_value_unit_set_unit_ability_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'unit_set_ability',			'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_unit_set_unit_attribute_junctions' => array(
+		'DIR' => 'effect_bonus_value_unit_set_unit_attribute_junctions_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'unit_set_attribute',			'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_ids_unit_sets' => array(
+		'DIR' => 'effect_bonus_value_ids_unit_sets_tables',
+		'HEADER_SIZE' => 83,
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			// к каким юнитам/типам юнитов применяется
+			array( 'NAME' => 'unit_set',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	),
 	'effects' => array(
@@ -161,22 +497,24 @@ $tables_info = array(
 		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'effect',					'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'icon',					'TYPE' => 'optstring' ),
-			array( 'NAME' => 'priority',				'TYPE' => 'int' ),
-			array( 'NAME' => 'icon_negative',			'TYPE' => 'optstring' ),
-			array( 'NAME' => 'category',				'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'is_positive_value_good',	'TYPE' => 'bool' )
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'icon',						'TYPE' => 'optstring' ),
+			array( 'NAME' => 'priority',					'TYPE' => 'int' ),
+			array( 'NAME' => 'icon_negative',				'TYPE' => 'optstring' ),
+			array( 'NAME' => 'category',					'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'is_positive_value_good',		'TYPE' => 'bool' )
 		)
 	),
+#endregion
+#region HIDE
 	// тут мы получим faction для political_party
 	'faction_political_parties_junctions' => array(
 		'DIR' => 'faction_political_parties_junctions_tables',
 		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'faction_key',						'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'political_party_key',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'faction_key',					'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'political_party_key',			'TYPE' => 'string_ascii' ),
 		)
 	),
 	// здесь key = political_party_key
@@ -208,9 +546,9 @@ $tables_info = array(
 		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'faction',						'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'video',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
-			array( 'NAME' => 'sort_order',					'TYPE' => 'int' ),
+			array( 'NAME' => 'faction',			'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'video',			'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'sort_order',		'TYPE' => 'int' ),
 		)
 	),
 	'_political_parties_lords_defeated' => array(
@@ -221,11 +559,11 @@ $tables_info = array(
 		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'key',							'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'playable',					'TYPE' => 'bool',			'EXCLUDE' => true ),
-			array( 'NAME' => 'effect_bundle',				'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
-			array( 'NAME' => 'initial_power',				'TYPE' => 'int',			'EXCLUDE' => true ),
-			array( 'NAME' => 'campaign_key',				'TYPE' => 'string_ascii' )
+			array( 'NAME' => 'key',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'playable',		'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'effect_bundle',	'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'initial_power',	'TYPE' => 'int',			'EXCLUDE' => true ),
+			array( 'NAME' => 'campaign_key',	'TYPE' => 'string_ascii' )
 		)
 	),
 	'trait_categories' => array(
@@ -233,8 +571,8 @@ $tables_info = array(
 		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'category',	'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'icon_path',	'TYPE' => 'optstring' )
+			array( 'NAME' => 'category',		'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'icon_path',		'TYPE' => 'optstring' )
 		)
 	),
 	'trait_level_effects' => array(
@@ -253,8 +591,8 @@ $tables_info = array(
 		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
-			array( 'NAME' => 'trait',		'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'antitrait',	'TYPE' => 'string_ascii' )
+			array( 'NAME' => 'trait',			'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'antitrait',		'TYPE' => 'string_ascii' )
 		)
 	),
 	'unit_abilities' => array(
@@ -275,77 +613,12 @@ $tables_info = array(
 			array( 'NAME' => 'source_type',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	)
+#endregion
 );
-}
 
 if (!isset($tables)){
 	$tables = array();
 }
-
-foreach ($tables_info as $tbl_name => $tbl_data){
-	$tbl_key = $tbl_data['KEY'];
-	$tables[ $tbl_name ] = $_tbl_data = array();
-	
-	if (!isset($tbl_data['DIR'])){ continue; }
-	
-	$dir = __DIR__ .'/game/db/'. $tbl_data['DIR'] .'/';
-	if (!is_dir($dir)){ continue; }
-	
-	foreach (scandir($dir, 1) as $file){
-		if ($file === '.' || $file === '..' || is_dir($dir . $file)){ continue; }
-		
-		$_data = array();
-		$path = realpath($dir . $file);
-		// var_dump($tbl_name .' = '. $dir, $file);
-		$h = fopen($dir . $file, 'r');
-		if (!$h){ continue; }
-		fread($h, $tbl_data['HEADER_SIZE'] - 4);
-		$entries = unpack('V', fread($h, 4));
-		$entries = $entries[1];
-		
-		for ($i = 0; $i < $entries; ++$i){
-			$entry = array();
-			
-			foreach ($tbl_data['SCHEMA'] as $sch_idx => $sch_column){
-				if ($sch_column['TYPE'] === 'string_ascii'){
-					$length = unpack('v', fread($h, 2));
-					$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
-				} else if ($sch_column['TYPE'] === 'int'){
-					$value = unpack('l', fread($h, 4));
-					$value = $value[1];
-				} else if ($sch_column['TYPE'] === 'bool'){
-					$value = unpack('C', fread($h, 1));
-					$value = ($value[1] != 0);
-				} else if ($sch_column['TYPE'] === 'float'){
-					$value = unpack('f', fread($h, 4));
-					$value = $value[1];
-				} else if ($sch_column['TYPE'] === 'optstring'){
-					$value = unpack('C', fread($h, 1));
-					if ($value[1] == 0){
-						$value = null;
-					}
-					else{
-						$length = unpack('v', fread($h, 2));
-						$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
-					}
-				} else if ($sch_column['TYPE'] === 'byte'){
-					$value = unpack('C', fread($h, 1));
-					$value = $value[1];
-				}
-				if (isset($sch_column['EXCLUDE']) && $sch_column['EXCLUDE']){ continue; }
-				
-				// $entry[ $sch_column['NAME'] ] = $value;
-				$entry[ $sch_idx ] = $value;
-			}
-			$_data[] = $entry;
-		}
-		
-		fclose($h);
-		$_tbl_data[ $file ] = $_data;
-	}
-	$tables[ $tbl_name ] = $_tbl_data;
-}
-
 if (!isset($tables['_political_parties_lords_defeated'])){
 	$tables['_political_parties_lords_defeated'] = array();
 }
@@ -796,6 +1069,105 @@ $tables['_political_parties_lords_defeated']['data__'] = array(
 #endregion
 );
 }
+// YOU CAN SET YOUR LEGENDARY LORDS RIGHT ABOUT HERE
+// $tables['_political_parties_lords_defeated'][ YOURMOD ] = ...
+
+
+foreach ($tables_info as $tbl_name => $tbl_info){
+	$tbl_key = $tbl_info['KEY'];
+	if (!isset($tables[ $tbl_name ])){ $tables[ $tbl_name ] = array(); }
+	$_tbl_data = $tables[ $tbl_name ];
+	
+	if (!isset($tbl_info['DIR'])){ continue; }
+	
+	$dir = __DIR__ .'/game/db/'. $tbl_info['DIR'] .'/';
+	if (!is_dir($dir)){ continue; }
+	
+	if (isset($tbl_info['ENTRY'])){
+		$key = array();
+		foreach ($tbl_info['KEY'] as $idx => $_type){
+			$i = array_search($idx, $tbl_info['ENTRY']);
+			$key[ $i ] = $_type;
+		}
+		// var_dump($tbl_name, $tbl_info['KEY'], $key);exit;
+		$tables_info[ $tbl_name ]['KEY'] = $key;
+	}
+	
+	foreach (scandir($dir, 1) as $file){
+		if ($file === '.' || $file === '..' || is_dir($dir . $file)){ continue; }
+		
+		$_data = array();
+		$path = realpath($dir . $file);
+		// var_dump($tbl_name .' = '. $dir, $file);
+		$h = fopen($dir . $file, 'r');
+		if (!$h){ continue; }
+		fread($h, $tbl_info['HEADER_SIZE'] - 4);
+		$entries = unpack('V', fread($h, 4));
+		$entries = $entries[1];
+		
+		for ($i = 0; $i < $entries; ++$i){
+			$entry = array();
+			
+			foreach ($tbl_info['SCHEMA'] as $sch_idx => $sch_column){
+				if ($sch_column['TYPE'] === 'string_ascii'){
+					$length = unpack('v', fread($h, 2));
+					$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
+				} else if ($sch_column['TYPE'] === 'int'){
+					$value = unpack('l', fread($h, 4));
+					$value = $value[1];
+				} else if ($sch_column['TYPE'] === 'bool'){
+					$value = unpack('C', fread($h, 1));
+					$value = ($value[1] != 0);
+				} else if ($sch_column['TYPE'] === 'float'){
+					$value = unpack('f', fread($h, 4));
+					$value = $value[1];
+				} else if ($sch_column['TYPE'] === 'optstring'){
+					$value = unpack('C', fread($h, 1));
+					if ($value[1] == 0){
+						$value = null;
+					}
+					else{
+						$length = unpack('v', fread($h, 2));
+						$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
+					}
+				} else if ($sch_column['TYPE'] === 'byte'){
+					$value = unpack('C', fread($h, 1));
+					$value = $value[1];
+				}
+				if (isset($sch_column['EXCLUDE']) && $sch_column['EXCLUDE']){ continue; }
+				
+				// $entry[ $sch_column['NAME'] ] = $value;
+				$entry[ $sch_idx ] = $value;
+			}
+			if (isset($tbl_info['ENTRY'])){
+				$tmp = array();
+				foreach ($tbl_info['ENTRY'] as $idx){
+					$tmp[] = $entry[ $idx ];
+				}
+				$_data[] = $tmp;
+			}
+			else{
+				$_data[] = $entry;
+			}
+		}
+		
+		fclose($h);
+		$_tbl_data[ $file ] = $_data;
+	}
+	$tables[ $tbl_name ] = $_tbl_data;
+}
+
+// FAST WAY TO REMOVE YOUR MOD (WITHOUT REMOVING FILES)
+if (0){
+	foreach (array(
+		'trait_level_effects' => array('Isenhart_traits_data__', 'Isenhart_traitsBRT_data__'),
+		'character_trait_levels' => array('Isenhart_traits_data__', 'Isenhart_traitsBRT_data__')
+	) as $tbl_name => $files){
+		foreach ($files as $file){
+			unset($tables[ $tbl_name ][ $file ]);
+		}
+	}
+}
 
 foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
 	$new_table = array();
@@ -807,8 +1179,6 @@ foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
 	$file_table = $new_table;
 	unset($file_table);
 }
-
-
 
 function transform($tables){
 	global $tables_info;
@@ -869,182 +1239,251 @@ function transform($tables){
 	// return array($keyed);
 }
 
+#region Ref
 class Ref {
+	public $str;
 	public function __construct($a, $b = null){
 		if ($b !== null){
 			$a = $a .'['. $b .']';
 		}
-		$this->a = $a;
+		$this->str = $a;
 	}
-	public function __toString(){ return $this->a; }
+	public function __toString(){ return $this->str; }
 }
-
-// StringRef
-if (1){
-	class StringRef {
-		public $name;
-		public $arr = array();
-		public function __construct($name){
-			$this->name = $name;
-		}
+class StringRef {
+	public $name;
+	public $arr = array();
+	public function __construct($name){
+		$this->name = $name;
 	}
-	class StringRefHolder {
-		public static $names0 = array();
-		public static $names = array();
-		private $name = array();
-		public $ref = array();
-		private $cur = null;
-		public $all = array();
-		
-		public function Add($string){
-			if ($string === null){ return new Ref('N'); }
-			$ref = self::Find($string);
-			if ($ref !== null){ return $ref; }
-			
-			// a whole reason for this is to have as less bytes as possible.
-			// you can determine this value by experiment.
-			// for different datasets you will need different value
-			if ($this->cur === null || sizeof($this->cur->arr) === 34){
-				do {
-					// i wanted to do this whole thing in math, but very lazy to waste time thinking.
-					if (empty($this->name)){
-						$this->name[] = self::$names0[0];
-					}
-					else{
-						$idx = $len = sizeof($this->name) - 1;
-						while (true){
-							if ($idx === 0){
-								$pos = array_search($this->name[ 0 ], self::$names0);
-								if ($pos < sizeof(self::$names0) - 1){
-									$this->name[ 0 ] = self::$names0[ $pos + 1 ];
-								} else{
-									$this->name[ 0 ] = self::$names0[0];
-									$this->name[] = self::$names[0];
-								}
+}
+class StringCnt {
+	public $string;
+	public $cnt;
+	public $ref;
+	public function __construct($string){
+		$this->string = $string;
+		$this->cnt = 0;
+	}
+	public function __toString(){ return $this->ref->str; }
+}
+class StringRefHolder {
+	public static $names0 = array();
+	public static $names = array();
+	private $name = array();
+	public $ref = array();
+	private $cur = null;
+	public $pool = array();
+	
+	public function Add($string){
+		if ($string === null){ return new Ref('N'); }
+		if (!isset($this->pool[ $string ])){
+			$this->pool[ $string ] = $ref = new StringCnt($string);
+		}
+		else{
+			$ref = $this->pool[ $string ];
+		}
+		++$ref->cnt;
+		return $ref;
+	}
+	public function AddOpt($string){
+		if ($this->cur === null || sizeof($this->cur->arr) === 99){
+			do {
+				// i wanted to do this whole thing in math, but very lazy to waste time thinking.
+				if (empty($this->name)){
+					$this->name[] = self::$names0[0];
+				}
+				else{
+					$idx = $len = sizeof($this->name) - 1;
+					while (true){
+						if ($idx === 0){
+							$pos = array_search($this->name[ 0 ], self::$names0);
+							if ($pos < sizeof(self::$names0) - 1){
+								$this->name[ 0 ] = self::$names0[ $pos + 1 ];
+							} else{
+								$this->name[ 0 ] = self::$names0[0];
+								$this->name[] = self::$names[0];
+							}
+							break;
+						}
+						else{
+							$pos = array_search($this->name[ $idx ], self::$names);
+							if ($pos < sizeof(self::$names) - 1){
+								$this->name[ $idx ] = self::$names[ $pos + 1 ];
 								break;
 							}
-							else{
-								$pos = array_search($this->name[ $idx ], self::$names);
-								if ($pos < sizeof(self::$names) - 1){
-									$this->name[ $idx ] = self::$names[ $pos + 1 ];
-									break;
-								}
-								--$idx;
-							}
-						}
-						for (++$idx; $idx <= $len; ++$idx){
-							$this->name[ $idx ] = self::$names[0];
+							--$idx;
 						}
 					}
-				} while (in_array(implode('', $this->name), array('T', 'F', 'N')));
-				
-				$this->ref[] = $this->cur = new StringRef(implode('', $this->name));
-			}
-			$this->cur->arr[] = $string;
-			$this->all[ $string ] = $this->cur;
-			return new Ref($this->cur->name, sizeof($this->cur->arr));
+					for (++$idx; $idx <= $len; ++$idx){
+						$this->name[ $idx ] = self::$names[0];
+					}
+				}
+			} while (in_array(implode('', $this->name), array('T', 'F', 'N')));
+			
+			$this->ref[] = $this->cur = new StringRef(implode('', $this->name));
 		}
-		public function Find($string){
-			if (!isset($this->all[ $string ])){ return null; }
-			$cur = $this->all[ $string ];
-			return new Ref($cur->name, array_search($string, $cur->arr) + 1);
+		$this->cur->arr[] = $string;
+		if (JAVASCRIPT){ return new Ref($this->cur->name, sizeof($this->cur->arr) - 1); }
+		else{ return new Ref($this->cur->name, sizeof($this->cur->arr)); }
+	}
+	public function Optimize(){
+		// reversed
+		uasort($this->pool, function($a, $b){
+			return $b->cnt - $a->cnt;
+		});
+		foreach ($this->pool as $sc){
+			$sc->ref = $this->AddOpt($sc->string);
 		}
 	}
-
-	StringRefHolder::$names0[] = '_';
-	// lowercase
-	for ($i = 97; $i <= 122; ++$i){
-		StringRefHolder::$names0[] = chr($i);
-	}
-	// uppercase
-	for ($i = 65; $i <= 90; ++$i){
-		StringRefHolder::$names0[] = chr($i);
-	}
-	StringRefHolder::$names = StringRefHolder::$names0;
-	// numbers
-	for ($i = 48; $i <= 57; ++$i){
-		StringRefHolder::$names[] = chr($i);
-	}
-	$StringHolder = new StringRefHolder();
 }
 
-// $keyed = array();
-// $used = array();
+StringRefHolder::$names0[] = '_';
+// lowercase
+for ($i = 97; $i <= 122; ++$i){
+	StringRefHolder::$names0[] = chr($i);
+}
+// uppercase
+for ($i = 65; $i <= 90; ++$i){
+	StringRefHolder::$names0[] = chr($i);
+}
+StringRefHolder::$names = StringRefHolder::$names0;
+// numbers
+for ($i = 48; $i <= 57; ++$i){
+	StringRefHolder::$names[] = chr($i);
+}
+$StringHolder = new StringRefHolder();
+#endregion
+
 list($keyed, $used) = transform($tables);
 
-// упорядочивание таблиц
-if (1){
-// tables are sorted, by how much of the same values are duplicated and the size of dataset in DESC
-// (in consideration to space saving)
-$tables = array(
-	// effect, icon, icon_negative, category
-	'effects' => $tables['effects'],
-	// trait_level, trait
-	'character_trait_levels' => $tables['character_trait_levels'],
-	// trait_level, effect, effect_scope
-	'trait_level_effects' => $tables['trait_level_effects'],
-	// trait_category, icon_path
-	'trait_categories' => $tables['trait_categories'],
-	// trait
-	'character_traits' => $tables['character_traits'],
-	// trait, antitrait
-	'trait_to_antitraits' => $tables['trait_to_antitraits'],
-	// party, faction
-	'faction_political_parties_junctions' => $tables['faction_political_parties_junctions'],
-	// leader
-	'frontend_faction_leaders' => $tables['frontend_faction_leaders'],
-	// faction
-	'frontend_factions' => $tables['frontend_factions'],
-	// party, leader, trait
-	'_political_parties_lords_defeated' => $tables['_political_parties_lords_defeated'],
-	// party, campaign
-	'political_parties' => $tables['political_parties'],
-	// subtype_key
-	'agent_subtypes' => $tables['agent_subtypes']
-);
-}
-
-
-foreach ($tables['character_trait_levels'] as $file_1 => $file_table_1){
-	foreach ($file_table_1 as $trait){
-		// (trait) character_trait_levels.trait
-		$used['character_traits'][ $trait[2] ] = true;
+// DB_TEXT loading
+if (JAVASCRIPT){
+	$text_data = array();
+	foreach ($text_info as $tbl_name => $tbl_data){
+		$data = array();
 		
-		// (trait_level) character_trait_levels.key
-		$key = $trait[0];
-		if (!isset($used['trait_level_effects'][ $key ])){
-			continue;
+		$file = realpath($tbl_data['FILE']);
+		
+		$h = fopen($file, 'r');
+		if (!$h){ continue; }
+		fread($h, 14 - 4);
+		$entries = unpack('V', fread($h, 4));
+		$entries = $entries[1];
+		//var_dump($entries);exit;
+		
+		for ($i = 0; $i < $entries; ++$i){
+			//$entry = array();
+			
+			for ($j = 0; $j < 2; ++$j){
+				$length = unpack('v', fread($h, 2));
+				$value = '';
+				for ($length = $length[1]; $length > 0;){
+					$a = fread($h, 1); $b = fread($h, 1);
+					if ($b == 0x0A){
+						fread($h, 2);
+					}
+					else if ($a == 0x0A && $b == 0){
+						continue;
+					}
+					$value .= $a;
+					--$length;
+				}
+				if ($j === 0){ $tag = $value; }
+				else{ $data[ $tag ] = $value; }
+			}
+			fread($h, 1);
 		}
 		
-		// $used['trait_level_effects'][ $key ] = true;
-		// if (!in_array($key, $used['trait_level_effects'])){
-			// $used['trait_level_effects'][] = $key;
-		// }
-		
-		foreach ($keyed['trait_level_effects'] as $file_2 => $data_2){
-			if (!isset($data_2[ $key ])){ continue; }
-			foreach ($data_2[ $key ] as $eff){
-				// (effect) trait_level_effects.effect
-				$used['effects'][ $eff[1] ] = true;
-				$used['trait_level_effects'][ $key ][ $eff[1] ] = true;
+		$text_data[ $tbl_name ] = $data;
+	}
+	
+	// global search in localisations
+	if (0){
+	foreach ($text_data as $tbl_name => $data){
+		foreach ($data as $tag => $val){
+			$has = false;
+			$lower = strtolower($val);
+			// $lower = $val;
+			foreach (array(
+				// 'armour',
+				// 'melee attack'
+				'traits'
+			) as $find){
+				if (
+				strpos($lower, $find) !== false
+				&& mb_strlen($val) < 100
+				// && mb_strlen($val) < mb_strlen($find) + 5
+				){
+					$has = true;
+					break;
+				}
+			}
+			if ($has){
+				var_dump('['. $tbl_name .'] '. $tag .': '. $val);
 			}
 		}
 	}
+	}
 }
 
-// excluding data
-foreach ($tables as $key => &$data){
-	if (isset($exclude[ $key ])){
-		foreach ($exclude[ $key ] as $file){
-			unset($data[ $file ]);
+#region USED
+if (IS_MODDED){
+	foreach ($tables['character_trait_levels'] as $file_1 => $file_table_1){
+		foreach ($file_table_1 as $trait){
+			$used['character_trait_levels'][ $trait[0] ] = true;
+			// (trait) character_trait_levels.trait
+			$used['character_traits'][ $trait[2] ] = true;
+			
+			// (trait_level) character_trait_levels.key
+			$key = $trait[0];
+			
+			foreach ($keyed['trait_level_effects'] as $file_2 => $file_keyed_2){
+				if (!isset($file_keyed_2[ $key ])){ continue; }
+				foreach ($file_keyed_2[ $key ] as $effect => $_){
+					// (effect) trait_level_effects.effect
+					$used['effects'][ $effect ] = true;
+					$used['trait_level_effects'][ $key ][ $effect ] = true;
+				}
+			}
+		}
+	}
+	foreach ($tables['_political_parties_lords_defeated'] as $file => $file_table){
+		foreach ($file_table as $entry){
+			$used['political_parties'][ $entry[0] ] = true;
+			$used['frontend_faction_leaders'][ $entry[1] ] = true;
+			$used['character_traits'][ $entry[2] ] = true;
+		}
+	}
+	foreach ($tables['character_traits'] as $file => $file_table){
+		foreach ($file_table as $entry){
+			if (!$used['character_traits'][ $entry[0] ]){
+				continue;
+			}
+			$used['trait_categories'][ $entry[4] ] = true;
+		}
+	}
+	foreach ($tables['faction_political_parties_junctions'] as $file => $file_table){
+		foreach ($file_table as $entry){
+			if (!$used['political_parties'][ $entry[1] ]){
+				continue;
+			}
+			$used['frontend_factions'][ $entry[0] ] = true;
+		}
+	}
+	foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => $file_table){
+		foreach ($file_table as $entry){
+			if (!$used['effects'][ $entry[1] ]){
+				continue;
+			}
+			$used['unit_abilities'][ $entry[2] ] = true;
 		}
 	}
 }
-unset($data);
+#endregion
 
 
-// Подготовка данных для вывода
-if (1){
+#region Подготовка данных для вывода
 foreach ($tables['agent_subtypes'] as $file => &$file_table){
 	foreach ($file_table as &$entry){
 		$entry = array_values($entry);
@@ -1057,22 +1496,31 @@ foreach ($tables['agent_subtypes'] as $file => &$file_table){
 }
 
 foreach ($tables['character_trait_levels'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['character_trait_levels'][ $entry[0] ] &&
+		!$used['character_traits'][ $entry[2] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// key
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// trait
 		$entry[2] = $StringHolder->Add($entry[2]);
-		// $table[] = $entry;
 	}
-	// $keyed['character_trait_levels'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['character_traits'] as $file => &$file_table){
-	// $table = array();
 	foreach ($file_table as $i => &$entry){
-		if (!$used['character_traits'][ $entry[0] ]){
+		if (
+		IS_MODDED &&
+		!$used['character_traits'][ $entry[0] ] &&
+		!$used['trait_categories'][ $entry[4] ]
+		){
 			unset($file_table[ $i ]);
 			continue;
 		}
@@ -1082,34 +1530,36 @@ foreach ($tables['character_traits'] as $file => &$file_table){
 		$entry[2] = new Ref($entry[2] ? 'T' : 'F');
 		// icon
 		$entry[4] = $StringHolder->Add($entry[4]);
-		// $table[] = $entry;
 	}
 	$file_table = array_values($file_table);
-	// $keyed['character_traits'][ $file ] = $table;
 	unset($entry, $file_table);
 }
 
-if ($do_experimental){
-	foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => &$file_table){
-		foreach ($file_table as $i => &$entry){
-			if (!$used['effects'][ $entry[0] ]){
-				unset($file_table[ $i ]);
-				continue;
-			}
-			// effect
-			$entry[0] = $StringHolder->Add($entry[0]);
-			// unit_ability
-			$entry[1] = $StringHolder->Add($entry[1]);
+foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => &$file_table){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['effects'][ $entry[1] ] &&
+		!$used['unit_abilities'][ $entry[2] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
 		}
-		$file_table = array_values($file_table);
-		unset($entry, $file_table);
+		$used['unit_abilities'][ $entry[2] ] = true;
+		// unit_ability
+		$entry[2] = $StringHolder->Add($entry[2]);
 	}
+	$file_table = array_values($file_table);
+	unset($entry, $file_table);
 }
 
 foreach ($tables['effects'] as $file => &$file_table){
-	// $table = array();
 	foreach ($file_table as $i => &$entry){
-		if (!$used['effects'][ $entry[0] ]){
+		// да, icon, icon_negative и category здесь не нужно проверять
+		if (
+		IS_MODDED &&
+		!$used['effects'][ $entry[0] ]
+		){
 			unset($file_table[ $i ]);
 			continue;
 		}
@@ -1123,54 +1573,77 @@ foreach ($tables['effects'] as $file => &$file_table){
 		$entry[4] = $StringHolder->Add($entry[4]);
 		// is_positive_value_good
 		$entry[5] = new Ref($entry[5] ? 'T' : 'F');
-		// $table[] = $entry;
 	}
 	$file_table = array_values($file_table);
-	// $keyed['effects'][ $file ] = $table;
 	unset($entry, $file_table);
 }
 
 foreach ($tables['faction_political_parties_junctions'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		(isset($used['frontend_factions'][ $entry[0] ]) && !$used['frontend_factions'][ $entry[0] ]) &&
+		!$used['political_parties'][ $entry[1] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// faction_key
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// political_party_key
 		$entry[1] = $StringHolder->Add($entry[1]);
-		// $table[] = $entry;
 	}
-	// $keyed['faction_political_parties_junctions'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['frontend_faction_leaders'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['frontend_faction_leaders'][ $entry[3] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// key
 		$entry[3] = $StringHolder->Add($entry[3]);
 		// character_image
 		$entry[4] = $StringHolder->Add($entry[4]);
-		// $table[] = array_values($entry);
 		$entry = array_values($entry);
 	}
-	// $keyed['frontend_faction_leaders'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
-
+// нужна для сортировки лордов
 foreach ($tables['frontend_factions'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['frontend_factions'][ $entry[0] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// faction
 		$entry[0] = $StringHolder->Add($entry[0]);
-		// $table[] = array_values($entry);
 		$entry = array_values($entry);
 	}
-	// $keyed['frontend_factions'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['political_parties'][ $entry[0] ] &&
+		!$used['frontend_faction_leaders'][ $entry[1] ] &&
+		!$used['character_traits'][ $entry[2] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// political_party
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// lord
@@ -1178,40 +1651,55 @@ foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
 		// trait
 		$entry[2] = $StringHolder->Add($entry[2]);
 	}
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['political_parties'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['political_parties'][ $entry[0] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// key (political_party)
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// campaign_key
 		$entry[4] = $StringHolder->Add($entry[4]);
-		// $table[] = array_values($entry);
-		$entry = array_values($entry);
+		$entry = array_values($entry); // 2 values
 	}
-	// $keyed['political_parties'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['trait_categories'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['trait_categories'][ $entry[0] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// category
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// icon_path
 		$entry[1] = $StringHolder->Add($entry[1]);
-		// $table[] = $entry;
 	}
-	// $keyed['trait_categories'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
 foreach ($tables['trait_level_effects'] as $file => &$file_table){
-	// $table = array();
 	foreach ($file_table as $i => &$entry){
-		if (!$used['trait_level_effects'][ $entry[0] ][ $entry[1] ]){
+		// !$used['trait_level_effects'][ $entry[0] ][ $entry[1] ]
+		if (
+		IS_MODDED &&
+		!$used['character_trait_levels'][ $entry[0] ] &&
+		!$used['effects'][ $entry[1] ]
+		){
 			unset($file_table[ $i ]);
 			continue;
 		}
@@ -1222,64 +1710,157 @@ foreach ($tables['trait_level_effects'] as $file => &$file_table){
 			$entry[1] = $StringHolder->Add($entry[1]);
 			// effect_scope
 			$entry[2] = $StringHolder->Add($entry[2]);
-			// $table[] = $entry;
 		// }
 	}
 	$file_table = array_values($file_table);
-	// $keyed['trait_level_effects'][ $file ] = $table;
 	unset($entry, $file_table);
 }
 
 foreach ($tables['trait_to_antitraits'] as $file => &$file_table){
-	// $table = array();
-	foreach ($file_table as &$entry){
+	foreach ($file_table as $i => &$entry){
+		if (
+		IS_MODDED &&
+		!$used['character_traits'][ $entry[0] ] &&
+		!$used['character_traits'][ $entry[1] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
 		// trait
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// antitrait
 		$entry[1] = $StringHolder->Add($entry[1]);
-		// $table[] = $entry;
 	}
-	// $keyed['trait_to_antitraits'][ $file ] = $table;
+	$file_table = array_values($file_table);
 	unset($entry, $file_table);
 }
 
-if ($do_experimental){
-	foreach ($tables['unit_abilities'] as $file => &$file_table){
+foreach ($tables['unit_abilities'] as $file => &$file_table){
+	foreach ($file_table as $i => &$entry){
+		$entry = array_values($entry);
+		if (
+		IS_MODDED &&
+		!$used['unit_abilities'][ $entry[0] ]
+		){
+			unset($file_table[ $i ]);
+			continue;
+		}
+		// key
+		$entry[0] = $StringHolder->Add($entry[0]);
+		// icon_name
+		$entry[1] = $StringHolder->Add($entry[1]);
+	}
+	$file_table = array_values($file_table);
+	unset($entry, $file_table);
+}
+
+foreach (array(
+	'effect_bonus_value_id_action_results_additional_outcomes_junctions',
+	'effect_bonus_value_agent_junction',
+	'effect_bonus_value_agent_action_record_junctions',
+	'effect_bonus_value_agent_subtype_junctions',
+	'effect_bonus_value_attrition_record_junctions',
+	'effect_bonus_value_basic_junction',
+	'effect_bonus_value_battle_context_army_special_ability_junctions',
+	'effect_bonus_value_battle_context_unit_ability_junctions',
+	'effect_bonus_value_battle_context_unit_attribute_junctions',
+	'effect_bonus_value_battle_context_junctions',
+	'effect_bonus_value_building_set_junctions',
+	'effect_bonus_value_faction_junctions',
+	'effect_bonus_value_loyalty_event_junctions',
+	'effect_bonus_value_military_force_ability_junctions',
+	'effect_bonus_value_missile_weapon_junctions',
+	'effect_bonus_value_pooled_resource_factor_junctions',
+	'effect_bonus_value_pooled_resource_junctions',
+	'effect_bonus_value_religion_junction',
+	'effect_bonus_value_resource_junction',
+	'effect_bonus_value_ritual_junctions',
+	'effect_bonus_value_siege_item_junctions',
+	'effect_bonus_value_special_ability_phase_record_junctions',
+	'effect_bonus_value_subculture_junctions',
+	'effect_bonus_value_unit_ability_junctions',
+	'effect_bonus_value_unit_attribute_junctions',
+	'effect_bonus_value_unit_set_unit_ability_junctions',
+	'effect_bonus_value_unit_set_unit_attribute_junctions',
+	'effect_bonus_value_ids_unit_sets'
+) as $tbl_name){
+	foreach ($tables[ $tbl_name ] as $file => &$file_table){
 		foreach ($file_table as $i => &$entry){
-			// effect
+			if (
+			IS_MODDED &&
+			!$used['effects'][ $entry[1] ]
+			){
+				unset($file_table[ $i ]);
+				continue;
+			}
+			// bonus_value_id
 			$entry[0] = $StringHolder->Add($entry[0]);
-			// unit_ability
+			// effect
 			$entry[1] = $StringHolder->Add($entry[1]);
 		}
 		$file_table = array_values($file_table);
 		unset($entry, $file_table);
 	}
 }
+#endregion
+
+
+
+foreach ($tables as $tbl_name => $data){
+	$is_modded = (isset($modded_data__[ $tbl_name ]) && $modded_data__[ $tbl_name ]);
+	if ($is_modded){ continue; }
+	
+	if (IS_MODDED){
+		unset($tables[ $tbl_name ]['data__']);
+	}
+	// echo '<b>Fatal Warning:</b>    Not';
+	
+	if (empty($tables[ $tbl_name ])){
+		unset($tables[ $tbl_name ]);
+	}
 }
 
-
-
-
-
-
-
-
+$StringHolder->Optimize();
 $left = array('T', 'F', 'N');
-$right = array('true', 'false', 'nil');
+$right = array('true', 'false', JAVASCRIPT ? 'null' : 'nil');
 foreach ($StringHolder->ref as $cur){
 	$left[] = $cur->name;
 	$right[] = my_print($cur->arr, "\t", $mini);
 }
-echo '
-local ', implode(',', $left), ' = ', implode(',', $right);
-foreach ($tables as $key => $data){
-	if (empty($data)){
-		unset($tables[ $key ]);
-		continue;
+
+// js
+if (JAVASCRIPT){
+	echo '(function(){
+var ';
+	foreach ($left as $i => $var){
+		echo ($i > 0 ? ",\r\n    " : ''), $var,' = ', $right[ $i ];
 	}
+	// $tables = array( 'effects' => $tables['effects'] );
+	echo '
+DB_DATA = extend(typeof DB_DATA === "undefined" ? {} : DB_DATA, ', my_print($tables, "\t", $mini), ')';
+	if (IS_MODDED){
+		unset($text_data['effects']);
+		unset($text_data['campaign_effect_scopes']);
+		unset($text_data['character_trait_levels']);
+	}
+	if (!empty($text_data)){
+		$tmp = array();
+		foreach ($text_data as $ar){
+			$tmp = array_replace($tmp, $ar);
+		}
+		$text_data = $tmp;
+		echo '
+DB_TEXT = $.extend(typeof DB_TEXT === "undefined" ? {} : DB_TEXT, ', json_encode($text_data), ')';
+	}
+	echo '
+})()';
 }
-echo '
+// lua
+else{
+	echo '
+local ', implode(',', $left), ' = ', implode(',', $right),'
 return ', my_print($tables, "\t", $mini);
+}
 
 
 

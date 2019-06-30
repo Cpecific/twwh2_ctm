@@ -1,5 +1,21 @@
 
 function emptyFunc(){}
+function extend(a, b){
+	// console.log('extend', b)
+	for (var tbl_name in b){
+		if (typeof a[ tbl_name ] === 'undefined'){
+			a[ tbl_name ] = {}
+		}
+		var bb = b[ tbl_name ]
+		for (var file in bb){
+			if (typeof a[ tbl_name ][ file ] === 'undefined'){
+				a[ tbl_name ][ file ] = []
+			}
+			a[ tbl_name ][ file ] = a[ tbl_name ][ file ].concat(bb[ file ])
+		}
+	}
+	return a
+}
 
 /*
 {
