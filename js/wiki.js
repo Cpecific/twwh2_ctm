@@ -31,9 +31,10 @@ var Trait = function(q, container){
 	var data = q.data.slice().toKeys(
 		'no_going_back_level', 'hidden',
 		'precedence', 'icon', 'ui', 'levels',
-		'anti_trait'
+		'anti_trait', 'trait_key_idx'
 	)
-	data.trait_key = tbl_trait_keys[ q.trait_key_idx ]
+	// data.trait_key = tbl_trait_keys[ q.trait_key_idx ]
+	data.trait_key = tbl_trait_keys[ data.trait_key_idx ]
 	data.levels = data.levels.slice()
 	// console.log(data, q.data)
 	data.levels.each(function(level, idx){
@@ -276,16 +277,6 @@ if (1){
 table = {
 	insert: function(a, b){
 		a.push(b)
-		// if (a instanceof Array){
-			// a.push(b)
-		// }
-		// else{
-			// var max = 0
-			// for (var i in a){
-				// max = Math.max(max, parseInt(i))
-			// }
-			
-		// }
 	}
 }
 function in_array(a, b){ return b.has(a) }
@@ -317,7 +308,6 @@ tbl_effects = []
 tbl_effects_idx = {}
 var tbl_ebv_unit_abilities = {}
 var tbl_unit_abilities = {}
-var tbl_antitraits = {}
 var frontend_factions
 var TRAITS_DATA = []
 var lords_arr = {},
@@ -476,9 +466,10 @@ if (0){
 function GetTraitDataIdx(t_idx){
 	var t_data = TRAITS_DATA[ t_idx ]
 	if (t_data[6]){
-		return [tbl_trait_keys[ t_idx ], t_data, tbl_trait_keys[ t_data[6] ], TRAITS_DATA[ t_data[6] ]]
+		var at_data = TRAITS_DATA[ t_data[6] ]
+		return [tbl_trait_keys[ t_data[7] ], t_data, tbl_trait_keys[ at_data[7] ], at_data]
 	}
-	return [tbl_trait_keys[ t_idx ], t_data]
+	return [tbl_trait_keys[ t_data[7] ], t_data]
 }
 }
 
@@ -494,8 +485,6 @@ WIKI = function(q){
 	this.ProcessDb()
 	
 	TRAITS_IT.each(function(idx, i){
-		// if (i > 10){ return }
-		var trait_key = tbl_trait_keys[ idx ]
 		var obj = new TraitContainer({
 			trait_key_idx: idx
 		})
@@ -535,12 +524,15 @@ keyed['trait_level_effects'].each(function(effects){
 	})
 })
 
-keyed['character_trait_levels'].each(function(trait){
+var character_trait_levels = {}
+keyed['character_trait_levels'].each(function(trait, i){
 	// (trait) character_trait_levels.trait
 	if (!in_array(trait[2], tbl_trait_keys)){
 		table.insert(tbl_trait_keys, trait[2])
 		used['character_traits'][ trait[2] ] = true
+		character_trait_levels[ trait[2] ] = []
 	}
+	character_trait_levels[ trait[2] ].push(i)
 	
 	// (trait_level) character_trait_levels.key
 	var key = trait[0]
@@ -552,8 +544,6 @@ keyed['character_trait_levels'].each(function(trait){
 		})
 	}
 })
-
-// console.log(res +'used["effects"] ='+ JSON.stringify(used['effects'], null, 2))
 
 keyed['character_traits'].each(function(entry){
 	// character_traits.icon
@@ -599,74 +589,83 @@ keyed['effects'].each(function(a){
 	}
 })
 
-keyed['trait_to_antitraits'].each(function(entry){
-	if (
-	used['character_traits'][ entry[0] ] &&
-	used['character_traits'][ entry[1] ]
-	){
-		tbl_antitraits[ entry[0] ] = entry[1]
-		tbl_antitraits[ entry[1] ] = entry[0]
-	}
-})
-
-// trait: { key, level, trait, threshold_points }
-keyed['character_trait_levels'].each(function(trait){
-	// (trait) character_trait_levels.trait
-	var trait_key_idx = array_search(trait[2], tbl_trait_keys)
-	if (!TRAITS_DATA[ trait_key_idx ]){
-		// char_trait: { key, no_going_back_level, hidden, precedence, icon, ui }
-		var char_trait = keyed['character_traits'][ trait[2] ]
-		var a = [
-			char_trait[1], // no_going_back_level
-			char_trait[2], // hidden
-			char_trait[3], // precedence
-			tbl_icons_idx[ char_trait[4] ], // icon: char_trait[3],
-			char_trait[5], // ui
-			[] // levels
-		]
-		var anti_trait = tbl_antitraits[ trait[2] ]
-		if (anti_trait){
-			table.insert(a, array_search(anti_trait, tbl_trait_keys))
-		}
-		// записи в tbl_trait_keys появляются по мере прохода по character_trait_levels
-		// так что, здесь можно и table.insert использовать, результат будет тот же
-		// table.insert(TRAITS_DATA, a)
-		TRAITS_DATA[ trait_key_idx ] = a
-	}
-	
-	var effects = []
-	// no effects for dummies
-	if (keyed['trait_level_effects'][ trait[0] ]){
-		// eff: { trait_level, effect, effect_scope, value }
-		keyed['trait_level_effects'][ trait[0] ].each(function(eff){
-			var a = [
-				tbl_effects_idx[ eff[1] ], // effect
-				array_search(eff[2], tbl_scopes), // scope
-				eff[3] // value
-			]
-			// $a[] = $text_data['character_trait_levels']['character_trait_levels_onscreen_name_'. $a[1]]
-			table.insert(effects, a)
-		})
-	}
-	var a = [
-		trait[1], // level
-		trait[0], // level_key (not idx)
-		trait[3], // threshold_points
-		effects
+function BuildTrait(levels_arr, t_key){
+	// char_trait: { key, no_going_back_level, hidden, precedence, icon, ui }
+	var char_trait = keyed['character_traits'][ t_key ]
+	var trait_key_idx = array_search(t_key, tbl_trait_keys)
+	var T_DATA = [
+		char_trait[1], // no_going_back_level
+		char_trait[2], // hidden
+		char_trait[3], // precedence
+		tbl_icons_idx[ char_trait[4] ], // icon: char_trait[3],
+		char_trait[5], // ui
+		[], // levels
+		null,
+		trait_key_idx
 	]
 	
-	table.insert(TRAITS_DATA[ trait_key_idx ][5], a)
+	// trait: { key, level, trait, threshold_points }
+	levels_arr.each(function(level_i){
+		var trait = keyed['character_trait_levels'][ level_i ]
+		var effects = []
+		// no effects for dummies
+		if (keyed['trait_level_effects'][ trait[0] ]){
+			// eff: { trait_level, effect, effect_scope, value }
+			keyed['trait_level_effects'][ trait[0] ].each(function(eff){
+				table.insert(effects, [
+					tbl_effects_idx[ eff[1] ], // effect
+					array_search(eff[2], tbl_scopes), // scope
+					eff[3] // value
+				])
+			})
+		}
+		table.insert(T_DATA[5], [
+			trait[1], // level
+			trait[0], // level_key (not idx)
+			trait[3], // threshold_points
+			effects
+		])
+	})
+	if (T_DATA[4] < 0){
+		T_DATA[5].sort(function(a, b){
+			return b[0] - a[0]
+		})
+	} else{
+		T_DATA[5].sort(function(a, b){
+			return a[0] - b[0]
+		})
+	}
+	return T_DATA
+}
+
+var tta = keyed['trait_to_antitraits']
+var tta_used = {}
+character_trait_levels.each(function(levels_arr, t_key){
+	for (var k in tta){
+		var entry = tta[ k ]
+		if (entry[0] === t_key || entry[1] === t_key){
+			var at_key = entry[ entry[0] === t_key ? 1 : 0 ]
+			if (tta_used[ at_key ]){ return }
+			
+			tta_used[ t_key ] = true
+			var t_data = BuildTrait(levels_arr, t_key)
+			var at_data = BuildTrait(character_trait_levels[ at_key ], at_key)
+			t_data[6] = TRAITS_DATA.length + 1
+			at_data[6] = TRAITS_DATA.length
+			table.insert(TRAITS_DATA, t_data)
+			table.insert(TRAITS_DATA, at_data)
+			return
+		}
+	}
+	var t_data = BuildTrait(levels_arr, t_key)
+	table.insert(TRAITS_DATA, t_data)
 })
-		
+
 TRAITS_DATA.each(function(_, idx){
 	var a = TRAITS_DATA[ idx ]
 	// Сортируем по уровням
 	// character_traits.ui
-	if (a[4] < 0){
-		a[5].sort(function(a, b){
-			return b[0] - a[0]
-		})
-	} else{
+	if (a[4] >= 0){
 		// var hasEffects = false
 		// for (var i = 0; i < a[5].length; ++i){
 			// if (a[5][ i ][3].length){
@@ -685,29 +684,20 @@ TRAITS_DATA.each(function(_, idx){
 		// }
 		var level_key = a[5][ 0 ][1]
 		var onscreen_name = DB_TEXT['character_trait_levels_onscreen_name_'+ level_key]
-		onscreen_name = onscreen_name.replace(/[^\w\d]/ig, '')
-		
+		onscreen_name = onscreen_name.replace(/[.,\\\|\/#!$%\^&\*;:{}=\-_`~()\s]/, '')
 		var add = (onscreen_name.length > 0)
 		if (add){
 			if (a[4] > 0 || !a[6] || TRAITS_DATA[ a[6] ][4] < 0){
 				table.insert(TRAITS_IT, idx)
 			}
 		}
-		a[5].sort(function(a, b){
-			return a[0] - b[0]
-		})
+		console.log(level_key)
 	}
 })
 
 TRAITS_IT.sort(function(a, b){
 	return TRAITS_DATA[ a ][3] - TRAITS_DATA[ b ][3]
 })
-
-// TRAITS_DATA.each(function(a, idx){
-	// TRAITS_DATA[ idx ][3] = tbl_icons_idx[ a[3] ]
-// })
-		
-		// console.log(TRAITS_DATA)
 		
 		keyed['effect_bonus_value_unit_ability_junctions'].each(function(bvi){
 			bvi.each(function(entry){
