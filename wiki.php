@@ -514,7 +514,7 @@ var filters = []
 		'Attributes',
 		'attribute_fatigue_immune',
 		tbl,
-		'uied_component_texts_localised_string_tx_attributes_NewState_Text_480072'
+		'encyclopedia_template_strings_text_attributes'
 	])
 })()
 // Post battle
@@ -1057,7 +1057,7 @@ var filters = []
 		'Capacity',
 		'unit_capacity',
 		tbl,
-		'uied_component_texts_localised_string_tx_label_NewState_Text_100024'
+		'uied_component_texts_localised_string_unit_cap_Tooltip_200035'
 	])
 })()
 // Pooled resources
