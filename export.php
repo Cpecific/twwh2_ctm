@@ -710,11 +710,12 @@ if (0){
 	$a->shadervars = array(0.5, 0, 0, 0);
 	$a->b_mouse = '0C 01 00 00 78 00 00 00';
 	$a->mouse = array(
-		new UIC__State_Mouse(array(
-			'mouse_state' => 3,
-			'state_uid' => $s_hover->uid,
-			'b0' => '00 00 00 00 | 00 00 00 00'
-		), $a),
+		// #removed in agents update
+		// new UIC__State_Mouse(array(
+			// 'mouse_state' => 3,
+			// 'state_uid' => $s_hover->uid,
+			// 'b0' => '00 00 00 00 | 00 00 00 00'
+		// ), $a),
 		new UIC__State_Mouse(array(
 			'mouse_state' => 1,
 			'state_uid' => $s_selected_down_off->uid,
@@ -1010,7 +1011,7 @@ if (true){
 }
 
 // CTM_mortuary_cult
-if (1){
+if (0){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'mortuary_cult', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	

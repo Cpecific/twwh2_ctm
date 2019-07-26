@@ -191,7 +191,12 @@ extProt(
 		// console.log('BuildLevels', this === obj, obj)
 		var self = this
 		var data = this.data
-		data.levels.each(function(level, idx){
+		var ui = data.ui
+		var from = (ui < 0 ? data.levels.length - 1 : 0),
+			to = (ui < 0 ? -1 : data.levels.length),
+			di = (ui < 0 ? -1 : 1)
+		for (var idx = from; idx != to; idx += di){
+		;(function(level, idx){
 			var cl = (data.ui === 0 ? '0' : (data.ui < 0 ? 'm' : 'p') + Math.min(3, level.level))
 			var el = E('div', { class: 'fl trait-level trait-level-'+ cl })
 			.on('click', function(){
@@ -253,7 +258,8 @@ extProt(
 			})
 			self.levels.push(el)
 			obj.bar.A(el)
-		})
+		})(data.levels[ idx ], idx);
+		}
 		if (obj !== this){
 			obj.bar.A(E('div', { class: 'fl', style: 'width: 8px; height: 20px;'}))
 		}
@@ -593,6 +599,9 @@ function BuildTrait(levels_arr, t_key){
 	// char_trait: { key, no_going_back_level, hidden, precedence, icon, ui }
 	var char_trait = keyed['character_traits'][ t_key ]
 	var trait_key_idx = array_search(t_key, tbl_trait_keys)
+	if (t_key.indexOf('wh2_main_trait_agent_target_') !== -1){
+		console.log(char_trait)
+	}
 	var T_DATA = [
 		char_trait[1], // no_going_back_level
 		char_trait[2], // hidden
@@ -626,15 +635,9 @@ function BuildTrait(levels_arr, t_key){
 			effects
 		])
 	})
-	if (T_DATA[4] < 0){
-		T_DATA[5].sort(function(a, b){
-			return b[0] - a[0]
-		})
-	} else{
-		T_DATA[5].sort(function(a, b){
-			return a[0] - b[0]
-		})
-	}
+	T_DATA[5].sort(function(a, b){
+		return a[0] - b[0]
+	})
 	return T_DATA
 }
 
@@ -691,7 +694,7 @@ TRAITS_DATA.each(function(_, idx){
 				table.insert(TRAITS_IT, idx)
 			}
 		}
-		console.log(level_key)
+		// console.log(level_key)
 	}
 })
 
