@@ -1247,8 +1247,11 @@ class UIC__State {
 		// float - opacity [0; 1]
 		// ?, ?
 		
-		// glow_pulse_t0, red_pulse_t0:
+		// glow_pulse_t0:
 		// float, float, float, ? - some sin arguments?
+		
+		// red_pulse_t0:
+		// float, float, float, ? - (A + B) * sin(w * t); A, B, w
 		
 		// text_outline_t0:
 		// ?, ?, ?, float - line_width?

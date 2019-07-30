@@ -38,14 +38,14 @@ function extractData($uic, $level = 0){
 	// list($path, $_, $v) = $file_info;
 	// $file = mb_substr($path, strrpos($path, '/') + 1);
 foreach ($DIR_DATA as $dir_key => $arr){
-	if (!in_array($dir_key, array('export'))){ continue; }
+	if (in_array($dir_key, array('export'))){ continue; }
 	
 	$dir = $arr['DIR'];
 	
 	foreach ($arr['FILES'] as $file => $v){
 		$path = $dir . $file;
 		
-		if ($file !== 'CTM_mortuary_cult'){ continue; }
+		// if ($file !== 'CTM_mortuary_cult'){ continue; }
 		// if ($file !== 'units_dropdown'){ continue; }
 		
 		// var_dump($path);
@@ -89,7 +89,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		// if ($type === 'ok'){ continue; }
 		
 		// extractData($uic);
-		// continue;
+		continue;
 		
 		// if ($has['bgs'] && !$has['funcs']){
 		if (1 || $has['table']){

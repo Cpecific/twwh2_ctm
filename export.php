@@ -94,7 +94,7 @@ if (0){
 		
 		// down_off
 		$ch->states[] = $state = new UIC__State($state);
-		$state->uid = 'C6 3E 32 7F';
+		$state->uid = 'C0 3E 32 7F';
 		$state->name = 'down_off';
 		$state->shadervars = array(-0.25, 0, 0, 0);
 		
@@ -145,8 +145,9 @@ if (0){
 			'b0' => '00 00 00 00 00 00 00 00'
 		));
 		
+		// inactive
 		$ch->states[] = $state = new UIC__State($ch->states[0]);
-		$state->uid = 'D9 8B FE 0E';
+		$state->uid = 'D0 01 23 0A';
 		$state->name = 'inactive';
 		$state->colour = 'FF FF FF 32';
 		// $state->b7 = '00 00 00 00';
@@ -156,12 +157,69 @@ if (0){
 		$ch->default_state = $ch->states[0]->uid;
 	}
 	
+	// conflict update
+	if (true){
+		$ch->images[] = $image = new UIC__Image(array(
+			'uid' => '40 13 AA 0F',
+			'path' => 'ui\\skins\\default\\CTM_alert_dot.png',
+			'width' => 18,
+			'height' => 18,
+			'extra' => '00'
+		), $ch);
+		
+		// active_conflict
+		$ch->states[] = $state = new UIC__State($ch->states[0]);
+		$state->uid = 'D1 8B FE 0E';
+		$state->name = 'active_conflict';
+		// hover_conflict
+		$ch->states[] = $state = new UIC__State($ch->states[1]);
+		$state->uid = '41 E0 D8 54';
+		$state->name = 'hover_conflict';
+		// down_conflict
+		$ch->states[] = $state = new UIC__State($ch->states[2]);
+		$state->uid = 'A1 8B 53 0E';
+		$state->name = 'down_conflict';
+		// down_off_conflict
+		$ch->states[] = $state = new UIC__State($ch->states[3]);
+		$state->uid = 'C1 3E 32 7F';
+		$state->name = 'down_off_conflict';
+		// inactive_conflict
+		$ch->states[] = $state = new UIC__State($ch->states[4]);
+		$state->uid = 'D1 01 23 0A';
+		$state->name = 'inactive_conflict';
+		
+		// active_conflict
+		$state = $ch->states[5];
+		$state->mouse[0]->state_uid = $ch->states[6]->uid; // hover_conflict
+		// hover_conflict
+		$state = $ch->states[6];
+		$state->mouse[0]->state_uid = $ch->states[5]->uid; // active_conflict
+		$state->mouse[1]->state_uid = $ch->states[7]->uid; // down_conflict
+		// down_conflict
+		$state = $ch->states[7];
+		$state->mouse[0]->state_uid = $ch->states[6]->uid; // hover_conflict
+		$state->mouse[1]->state_uid = $ch->states[8]->uid; // down_off_conflict
+		// down_conflict
+		$state = $ch->states[8];
+		$state->mouse[0]->state_uid = $ch->states[7]->uid; // down_conflict
+		$state->mouse[1]->state_uid = $ch->states[5]->uid; // active_conflict
+		
+		for ($i = 5; $i <= 9; ++$i){
+			$state = $ch->states[ $i ];
+			$state->bgs[] = $bg = new UIC__State_Background($state->bgs[0]);
+			$bg->uid = $image->uid;
+			$bg->offset = array('left' => 4, 'top' => 4);
+			$bg->bounds[0] -= 8; $bg->bounds[1] -= 8;
+			$bg->colour = '00 00 FF FF';
+			$bg->margin = array(6, 6, 6, 6);
+		}
+	}
+	
 	$ch->after = array('00', '', '', '00', '00', '00 00 00', '00 00 80 3F', '00 00 00 00', '00 00 00 00');
 	// var_dump($uic->debug());
 	
 	file_put_contents('export/CTM_trait_template', $uic->dumpFile());
 	
-if (true){
 // CTM_trait_dy_trait
 	$ch = $ch_dy;
 	$uic->child = array($ch);
@@ -182,33 +240,42 @@ if (true){
 	$state->uid = '00 1E 5B D2';
 	$state->name = 'inactive';
 	// $state->font_m_colour = '00 00 00 64';
-	$state->shader_name = 'set_greyscale_t0';
-	$state->shadervars = array(1, 0.6, 0, 0);
+	// $state->shader_name = 'set_greyscale_t0';
+	// $state->shadervars = array(1, 0.6, 0, 0);
 	// $state->text_shader_name = 'set_greyscale_t0';
 	// $state->textshadervars = array(0, 0.6, 0, 0);
+	$bg = $state->bgs[0];
+	$bg->shader_name = 'set_greyscale_t0';
+	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_dy_trait', $uic->dumpFile());
 	
 // CTM_trait_bar_holder
-	// $ch = $ch_holder;
-	$ch = $ch_bar;
+	$ch = new UIC($ch_bar, $uic);
 	$uic->child = array($ch);
-	$ch->parent = $uic;
 	
 	$ch->offset = array('top' => 32 + 4, 'left' => 10);
 	$ch->docking = 0;
 	$ch->images[0]->path = 'ui\\skins\\default\\CTM_trait_frame.png';
 	$state = $ch->states[0];
+	$state->name = 'active';
 	$state->bounds = array(67, 16 + 4);
 	$state->b7 = '00 00 00 00';
 	$state->bgs[0]->dock = array('right' => 1, 'bottom' => 0);
 	
+	$ch->states[] = $state = new UIC__State($state);
+	$state->uid = 'A0 CC FE 0F';
+	$state->name = 'inactive';
+	// $state->shader_name = 'set_greyscale_t0';
+	// $state->shadervars = array(1, 0.6, 0, 0);
+	$bg = $state->bgs[0];
+	$bg->shader_name = 'set_greyscale_t0';
+	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
+	
 	file_put_contents('export/CTM_trait_bar_holder', $uic->dumpFile());
-}
 	
 // CTM_horizontal_bar
-	$ch = $ch_bar;
-	$ch->parent = $uic;
+	$ch = new UIC($ch_bar, $uic);
 	$uic->child = array($ch);
 	
 	$ch->name = 'horizontal_bar';
@@ -830,6 +897,7 @@ if (0){
 	$ch->child[3]->events = array();
 	$ch->child[3]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
 	$ch->child[3]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_frame.png';
+	array_splice($ch->child[3]->states, 4, 1); // inactive
 	$ch->child[3]->dynamic = array();
 	$ch->child[3]->after[1] = '';
 	
