@@ -514,7 +514,9 @@ var filters = []
 		'Attributes',
 		'attribute_fatigue_immune',
 		tbl,
-		'encyclopedia_template_strings_text_attributes'
+		['encyclopedia_template_strings_text_attributes', // was working at some point in vortex
+		// 'encyclopedia_pages_title_6004c_tw_game_guide_wh_battle_gameplay_attributes',
+		'uied_component_texts_localised_string_tx_attributes_NewState_Text_480072']
 	])
 })()
 // Post battle
@@ -1132,7 +1134,7 @@ var filters = []
 
 
 // lua export
-if (0){
+if (1){
 var res = ''
 filters.each(function(filter){
 	res += '-- '+ filter[0] +'\n\
@@ -1154,8 +1156,9 @@ do\n\
 	})
 	res += '})\n\
 	table.insert(filters, {\n\
-		'+ JSON.stringify(filter[3]) +',\n\
-		'+ JSON.stringify(filter[1]) +',\n\
+		'+ (typeof filter[3] === 'string' ? '{\''+ filter[3] +'\'}' : '{\''+ filter[3].join('\',\n\
+		\'') +'\'}') +',\n\
+		\''+ filter[1] +'\',\n\
 		function(t_key, t_data, at_key, at_data)\n\
 			return Check(t_data, at_data, tbl)\n\
 		end\n\

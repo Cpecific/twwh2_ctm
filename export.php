@@ -1349,3 +1349,45 @@ if (0){
 	
 	file_put_contents('export/CTM_trait_filter_wh2', $uic->dumpFile());
 }
+
+// CTM_trait_template
+if (1){
+	$h = fopen($DIR_DATA['export']['DIR'] . 'CTM_trait_template', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic = new UIC();
+	$uic->read($h);
+	fclose($h);
+	
+	$ch = $uic->child[0];
+	
+	array_splice($ch->states, 0, 5);
+	array_splice($ch->states, 4, 1); // inactive
+	$ch->default_state = $ch->states[0]->uid;
+	foreach ($ch->states as $state){
+		$state->name = mb_substr($state->name, 0, mb_strlen($state->name) - 9);
+		$state->bgs[1]->colour = '5F 98 AF FF';
+	}
+	
+	
+	$h = fopen($DIR_DATA['export']['DIR'] . 'CTM_trait_dy_trait', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic_dy = new UIC();
+	$uic_dy->read($h);
+	fclose($h);
+	
+	$ch->child[] = $uic_dy->child[0];
+	$ch->child[0]->parent = $ch;
+	$ch = $ch->child[0];
+	array_splice($ch->states, 1); // inactive
+	foreach ($ch->states as $state){
+		$state->bounds = array(253 - 10 - 2, 62 - 5);
+		$state->bgs[0]->offset['top'] = 14;
+	}
+	
+	file_put_contents('export/CTM_add_trait_template', $uic->dumpFile());
+	
+}
+
+
