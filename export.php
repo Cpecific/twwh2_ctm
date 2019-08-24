@@ -1,5 +1,10 @@
 <?php
 
+// #ATTENTION!!!
+// This is old code. Some fields (especially field "after")
+// have been added or changed, and I am too lazy to rewrite this shit.
+// I will update this file, when wh3 will be coming out
+
 include 'get_dir_data.php';
 include 'class.php';
 

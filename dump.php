@@ -1,8 +1,9 @@
 <?php
+echo '<pre style="word-break: break-all; white-space: pre-wrap;">';
+
 $all = include('get_dir_data.php');
 include 'class.php';
 
-echo '<pre style="word-break: break-all; white-space: pre-wrap;">';
 
 $stime = microtime(true);
 
@@ -39,6 +40,7 @@ function extractData($uic, $level = 0){
 	// $file = mb_substr($path, strrpos($path, '/') + 1);
 foreach ($DIR_DATA as $dir_key => $arr){
 	if (in_array($dir_key, array('export'))){ continue; }
+	// if (!in_array($dir_key, array('tech_trees'))){ continue; }
 	
 	$dir = $arr['DIR'];
 	
@@ -46,9 +48,10 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		$path = $dir . $file;
 		
 		// if ($file !== 'CTM_mortuary_cult'){ continue; }
-		// if ($file !== 'units_dropdown'){ continue; }
+		// if ($file !== 'effect_bar'){ continue; }
 		
-		// var_dump($path);
+		var_dump($path);
+		if ($h){ fclose($h); }
 		$h = fopen($path, 'r');
 		if (!$h){ continue; }
 		
@@ -63,9 +66,9 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		// if ($v !== 119){ continue; }
 		// if ($v < 70 || $v >= 100){ continue; }
 		
-		// ++$processed;
+		++$processed;
 		// if ($processed < 100){ continue; }
-		// if ($processed > 200){ break; }
+		// if ($processed > 100){ break; }
 		
 		$has = array(
 			'bgs' => false,
@@ -82,19 +85,22 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		} catch (Exception $e){
 			$type = 'error';
 			// continue;
+			$grouped[ $type ][ $path ] = $uic->debug();
+			foreach ($e->getTrace() as $trace){
+				echo '<b>', $trace['file'], '</b> on line <b>', $trace['line'], "</b>\r\n";
+			}
+			break 2;
 		}
-		
 		
 		// if ($type === 'error'){ continue; }
 		// if ($type === 'ok'){ continue; }
 		
 		// extractData($uic);
-		continue;
 		
 		// if ($has['bgs'] && !$has['funcs']){
 		if (1 || $has['table']){
 			// $grouped[ $type ][ $path ] = null;
-			$grouped[ $type ][ $path ] = $uic->debug();
+			// $grouped[ $type ][ $path ] = $uic->debug();
 		}
 	}
 }

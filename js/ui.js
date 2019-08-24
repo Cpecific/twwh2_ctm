@@ -548,20 +548,20 @@ extProt(
 		function convert(r){
 			var uic = new UIC()
 			r = r.toKeys(
-				'uid', 'name', 'b0', 'events',
+				'uid', 'b_sth', 'name', 'b0', 'events',
 				'offset', 'b1', 'b_01', 'tooltip_text', 'tooltip_id',
 				'docking', 'dock_offset',
 				'b3', 'default_state', 'images',
-				'maskimage', 'b5',
-				'states', 'dynamic', 'b6',
+				'maskimage', 'b5', 'b_sth2',
+				'states', 'b_sth3', 'dynamic', 'b6',
 				'funcs', 'child', 'after'
 			)
 			r.images.each(function(a, i){
-				r.images[i] = a.toKeys('uid', 'path', 'width', 'height', 'extra')
+				r.images[i] = a.toKeys('uid', 'b_sth', 'path', 'width', 'height', 'extra')
 			})
 			r.states.each(function(state, i){
 				var state = state.toKeys(
-					'uid', 'name', 'bounds', 'text',
+					'uid', 'b_sth', 'name', 'bounds', 'text',
 					'tooltip',
 					'textbounds', 'textalign',
 					'b1',
@@ -572,7 +572,8 @@ extProt(
 					'textoffset', 'b7',
 					'shader_name', 'shadervars',
 					'text_shader_name', 'textshadervars',
-					'bgs', 'b_mouse', 'mouse'
+					'bgs', 'b_mouse', 'mouse',
+					'b8'
 				)
 				state.bounds = state.bounds.toKeys(
 					'width', 'height'
@@ -580,7 +581,7 @@ extProt(
 				state.bgs.each(function(bg, j){
 					// порядок картинок снизу вверх (сначала нижние слои)
 					state.bgs[j] = bg.toKeys(
-						'uid',
+						'uid', 'b_sth',
 						'offset', 'bounds',
 						'colour',
 						'str_sth',
@@ -592,18 +593,14 @@ extProt(
 						'shader_name', 'rotation_axis',
 						'b4',
 						'shadertechnique_vars',
-						'margin'
-						// 'b1',
-						// 'effect_1', 'b2', 'bits_80_3F',
-						// 'b3', 'effect_2', 'b4', 'b5'
+						'margin', 'b5'
 					)
 				})
 				state.mouse.each(function(mouse, j){
 					state.mouse[j] = mouse.toKeys(
 						'mouse_state',
-						'state_uid',
-						'b0',
-						'num_sth', 'sth'
+						'state_uid', 'b_sth',
+						'b0', 'num_sth', 'sth', 'b1'
 					)
 				})
 				r.states[i] = state
@@ -621,8 +618,7 @@ extProt(
 				)
 				func.anim.each(function(anim, j){
 					anim = anim.toKeys(
-						'b_sth',
-						'b_str1', 'b_str2',
+						'b_hex', 'b_str',
 						'offset', 'bounds',
 						'colour',
 						
@@ -640,7 +636,7 @@ extProt(
 					)
 					anim.attr.each(function(attr, k){
 						anim.attr[k] = attr.toKeys(
-							'uid',
+							'uid', 'b_sth',
 							'animation',
 							'state',
 							// ((Visibility true, destroy, hide))
@@ -665,29 +661,21 @@ extProt(
 		function convertTemplate(r){
 			var uic = new UIC_Template()
 			r = r.toKeys(
-				'uid',
+				'uid', 'b_sth',
 				'name', 'uid',
 				'template',
 				'child'
 			)
 			r.template.each(function(temp, i){
 				r.template[i] = temp.toKeys(
-					'name_src',
-					'name_dst',
-					'b0',
-					'type',
-					'events',
-					'func_name',
-					'b_floats',
-					'b_ints',
-					'b1',
-					'docking',
-					'b2',
-					'tooltip_id',
-					'tooltip_text',
-					'states',
-					'dynamic',
-					'images'
+					'name_src', 'name_dst',
+					'b_sth', 'states_sth',
+					'b0', 'type', 'events', 'func_name',
+					'b_floats', 'b_ints',
+					'b1', 'docking', 'b2',
+					'tooltip_id', 'tooltip_text',
+					'b3', 'states', 'dynamic', 'images',
+					'b4', 'arr_sth', 'images_sth'
 				)
 			})
 			r.child.each(function(child, i){
