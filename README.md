@@ -74,7 +74,9 @@ So, i fucked up a lot with wasting time. It's another example in recent years th
 There is parser by __Alpaca__ and his inheritor __taw__, which I found, when already completed my parser (not like i wouldn't need to spend weeks of hard work on this project, but it could save me a couple of weeks).
 
 Anyway, my parser "supports" version from 70 to 129, has a lot of deciphered fields, examples of use in `export.php` and easier web representation (rather than xml). `export.php` is outdate as a reference, but still can be used.
+
 Supported games: Warhammer, Warhammer II, Thrones of Britannia, Three Kingdoms
+
 You need to export (preferably the whole) `/ui` folder with Pack Manager into `/game`.
 For viewing files run `/ui.php`, for debugging run `/dump.php`.
 
