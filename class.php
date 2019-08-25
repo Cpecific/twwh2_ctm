@@ -1005,7 +1005,7 @@ class UIC {
 			
 			$res .= pack('l', sizeof($a[1]));
 			foreach ($a[1] as $b){
-				$res .= pack('f1', $b);
+				$res .= pack('f', $b);
 			}
 			
 			$j = 2;
@@ -1035,7 +1035,7 @@ class UIC {
 									$a[ $j++ ]);
 				$res .= fromhex($a[ $j++ ]);
 				
-				if ($v === 106 || $v >= 110 && $v < 120){
+				if ($v === 106 || $v >= 110 && $v < 130){
 					$res .= write_string($a[ $j++ ]);
 				}
 				if ($v === 106){
@@ -1098,17 +1098,33 @@ class UIC {
 			}
 		}
 		else if ($type === 'RadialList'){
-			// #todo
+			$a = $this->after[ $i++ ];
+			$j = 0;
+			$res .= pack('f4',	$a[ $j++ ],
+								$a[ $j++ ],
+								$a[ $j++ ],
+								$a[ $j++ ]);
+			$res .= fromhex($a[ $j++ ]);
 		}
 		else if ($type === 'Table'){
 			// #todo
+			$a = $this->after[ $i++ ];
+			$res .= pack('l', sizeof($a[1]));
+			foreach ($a[1] as $b){
+				$res .= pack('l', sizeof($b[1]));
+				foreach ($b[1] as $c){
+					$res .= pack('f2', $c[0], $c[1]);
+					$res .= fromhex($c[2]);
+				}
+			}
+			$res .= fromhex($a[2]);
 		}
 		else{
 			$has_type = false;
 		}
 		
 		if ($has_type && $v >= 100 && $v < 110){
-			return;
+			return $res;
 		}
 		
 		$res .= write_string($this->after[ $i++ ]);
@@ -1361,9 +1377,6 @@ class UIC__State {
 		$this->bounds = my_unpack_array($my, 'l2', fread($h, 8));
 		
 		$this->text = read_utf8_string($h, 1, $my);
-		// if (strpos($this->text, '[[') !== false){
-			// var_dump($this->text);
-		// }
 		$this->tooltip = read_utf8_string($h, 1, $my);
 		
 		list($this->textbounds['width'],
@@ -1638,12 +1651,13 @@ class UIC__State {
 		}
 		
 		
-		if ($v >= 80 && $v < 90){
-			$res .= fromhex($this->b5);
+		if ($v >= 70 && $v < 90){
+			$res .= write_utf8_string($this->tooltip_id);
 		}
 		else if ($v >= 90 && $v < 110){
 			$res .= write_utf8_string($this->tooltip_id);
-			$res .= fromhex($this->b5);
+			// $res .= fromhex($this->b5);
+			$res .= write_string($this->b5);
 		}
 		else if ($v >= 110 && $v < 120){
 			if ($v >= 110 && $v <= 115){
@@ -1663,7 +1677,7 @@ class UIC__State {
 		$res .= write_string($this->fontcat_name);
 		
 		if ($v >= 70 && $v < 80){
-			$res .= pack('l4',	$this->textoffset[0],
+			$res .= pack('l2',	$this->textoffset[0],
 								$this->textoffset[1]);
 		}
 		else if ($v >= 80 && $v < 130){
@@ -1825,9 +1839,9 @@ class UIC__State_Background {
 		}
 		
 		if ($v === 79){
-			$this->b4 = tohex(fread($h, 8));
+			$this->b5 = tohex(fread($h, 8));
 		} else if ($v >= 70 && $v < 80){
-			$this->b4 = tohex(fread($h, 9));
+			$this->b5 = tohex(fread($h, 9));
 		} else if ($v >= 80 && $v < 95){
 			// top-bottom, left-right?
 			if ($v === 92 || $v === 93){
@@ -1843,10 +1857,9 @@ class UIC__State_Background {
 			}
 			// top, right, bottom, left
 			$this->margin = my_unpack_array($my, 'f4', fread($h, 4 * 4));
-		}
-		
-		if ($v >= 125 && $v < 130){
-			$this->b5 = tohex(fread($h, 1));
+			if ($v >= 125 && $v < 130){
+				$this->b5 = tohex(fread($h, 1));
+			}
 		}
 	}
 	public function debug(){
@@ -1936,8 +1949,15 @@ class UIC__State_Background {
 		if ($v >= 70 && $v < 80){
 			$res .= fromhex($this->b5);
 		} else if ($v >= 80 && $v < 95){
-			$res .= pack('f2',	$this->margin[0],
-								$this->margin[1]);
+			if ($v === 92 || $v === 93){
+				$res .= pack('f4',	$this->margin[0],
+									$this->margin[1],
+									$this->margin[2],
+									$this->margin[3]);
+			} else{
+				$res .= pack('f2',	$this->margin[0],
+									$this->margin[1]);
+			}
 		} else{
 			if ($v >= 103){
 				$res .= pack('f4',	$this->shadertechnique_vars[0],
@@ -1949,10 +1969,9 @@ class UIC__State_Background {
 								$this->margin[1],
 								$this->margin[2],
 								$this->margin[3]);
-		}
-		
-		if ($v >= 125 && $v < 130){
-			$res .= fromhex($this->b5);
+			if ($v >= 125 && $v < 130){
+				$res .= fromhex($this->b5);
+			}
 		}
 		
 		return $res;
@@ -2424,12 +2443,12 @@ class UIC__Func_Anim {
 			if (isset($this->b_str[0])){
 				$res .= write_string($this->b_str[0]);
 			} else{
-				$res .= fromhex($this->b_sth[0]);
+				$res .= fromhex($this->b_hex[0]);
 			}
 			if (isset($this->b_str[1])){
 				$res .= write_string($this->b_str[1]);
 			} else{
-				$res .= fromhex($this->b_sth[1]);
+				$res .= fromhex($this->b_hex[1]);
 			}
 		}
 		
@@ -2437,20 +2456,20 @@ class UIC__Func_Anim {
 		$res .= pack('l2', $this->bounds[0], $this->bounds[1]);
 		$res .= fromhex($this->colour);
 		
-		$res .= pack('l4',	$this->m_shadervars[0],
+		$res .= pack('f4',	$this->m_shadervars[0],
 							$this->m_shadervars[1],
 							$this->m_shadervars[2],
 							$this->m_shadervars[3]);
 		
-		$res .= pack('f1', $this->m_rotation_angle);
+		$res .= pack('f', $this->m_rotation_angle);
 		$res .= pack('l2', $this->m_imageindex1, $this->m_imageindex2);
 		if ($v >= 110 && $v < 130){
-			$res .= pack('f1', $this->m_font_scale);
+			$res .= pack('f', $this->m_font_scale);
 		}
 		
 		$res .= pack('l', $this->interpolationtime);
 		$res .= pack('l', $this->interpolationpropertymask);
-		$res .= pack('f1', $this->easing_weight);
+		$res .= pack('f', $this->easing_weight);
 		
 		$res .= write_string($this->linear);
 		
@@ -2466,7 +2485,7 @@ class UIC__Func_Anim {
 			$res .= fromhex($this->b2);
 			
 			if ($v >= 106){ $res .= write_string($this->str_sth); }
-			if ($v >= 104){ $res .= fromhex($this->b3); }
+			if ($v >= 104){ $res .= write_string($this->b3); }
 			else{ $res .= fromhex($this->b3); }
 		}
 		else if ($v >= 110 && $v < 120){
@@ -2532,7 +2551,7 @@ class UIC__Func_Anim_Attr {
 		);
 	}
 	public function dumpFile(){
-		// $v = $this->anim->func->my->version;
+		$v = $this->anim->func->my->version;
 		$res = '';
 		
 		$res .= fromhex($this->uid);
@@ -2967,7 +2986,7 @@ class UI_Template_Child {
 		if ($v >= 100 && $v < 110){
 			$res .= write_string($this->type);
 		}
-		else if ($v >= 110 && $v < 120){
+		else if ($v >= 110 && $v < 130){
 			$res .= pack('l', sizeof($this->events));
 			foreach ($this->events as $a){
 				$res .= write_string(array_slice($a, 0, 3));
@@ -3035,7 +3054,7 @@ class UI_Template_Child {
 			$res .= pack('l', sizeof($this->images_sth));
 			foreach ($this->images_sth as $a){
 				$res .= write_string($a[0]);
-				$res .= fromhex($a[2]);
+				$res .= fromhex($a[1]);
 			}
 		}
 		
