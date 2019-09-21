@@ -599,9 +599,6 @@ function BuildTrait(levels_arr, t_key){
 	// char_trait: { key, no_going_back_level, hidden, precedence, icon, ui }
 	var char_trait = keyed['character_traits'][ t_key ]
 	var trait_key_idx = array_search(t_key, tbl_trait_keys)
-	if (t_key.indexOf('wh2_main_trait_agent_target_') !== -1){
-		console.log(char_trait)
-	}
 	var T_DATA = [
 		char_trait[1], // no_going_back_level
 		char_trait[2], // hidden

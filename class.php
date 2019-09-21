@@ -249,7 +249,8 @@ class UIC {
 			// and of course it's not events key, but it's still too early to name it context data,
 			// since we have no idea how to use it.
 			$this->events = read_string($h, 1, $this); // CustomTooltip (tooltip_effect_bundle)
-		} else if ($v >= 110 && $v < 130){
+		}
+		else if ($v >= 110 && $v < 130){
 			if ($v === 113){
 				$this->num_events = 1;
 			} else{
@@ -1276,6 +1277,7 @@ class UIC__Image {
 	public function dumpJS(){
 		return array(
 			$this->uid,
+			$this->b_sth,
 			$this->path,
 			$this->width,
 			$this->height,
@@ -1499,7 +1501,7 @@ class UIC__State {
 		
 		// imagemetrics
 		$this->num_bgs = my_unpack_one($my, 'l', fread($h, 4));
-		my_assert($this->num_bgs < 20, $my);
+		my_assert($this->num_bgs < 40, $my);
 		global $has;
 		if ($this->num_bgs > 0){ $has['bgs'] = true; }
 		for ($i = 0; $i < $this->num_bgs; ++$i){
@@ -1987,7 +1989,6 @@ class UIC__State_Mouse {
 	public $b0;
 	public $num_sth;
 	public $sth = array();
-	public $b1 = null;
 	
 	public function __construct($a = null, $parent = null){
 		if ($a === null){ return; }
@@ -2028,7 +2029,7 @@ class UIC__State_Mouse {
 			}
 			$a[] = read_string($h, 1, $my);
 			$a[] = read_string($h, 1, $my);
-			$a[] = tohex(fread($h, 2));
+			$a[] = read_string($h, 1, $my);
 			$this->sth[] = $a;
 		}
 	}
@@ -2049,8 +2050,7 @@ class UIC__State_Mouse {
 			$this->b_sth,
 			$this->b0,
 			$this->num_sth,
-			$this->sth,
-			$this->b1
+			$this->sth
 		);
 	}
 	public function dumpFile(){
@@ -2073,7 +2073,7 @@ class UIC__State_Mouse {
 			}
 			$res .= write_string($a[ $i++ ]);
 			$res .= write_string($a[ $i++ ]);
-			$res .= fromhex($a[ $i++ ]);
+			$res .= write_string($a[ $i++ ]);
 		}
 		
 		return $res;

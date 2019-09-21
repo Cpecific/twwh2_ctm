@@ -1,7 +1,5 @@
 <?php
 
-header('');
-
 $mini = 2;
 define('JAVASCRIPT', false);
 define('IS_MODDED', true);
@@ -147,7 +145,8 @@ $tables_info = array(
 			array( 'NAME' => 'cap',								'TYPE' => 'int',			'EXCLUDE' => true ),
 			array( 'NAME' => 'has_female_name',					'TYPE' => 'bool',			'EXCLUDE' => true ),
 			array( 'NAME' => 'can_gain_xp',						'TYPE' => 'bool' ),
-			array( 'NAME' => 'loyalty_is_applicable',			'TYPE' => 'bool',			'EXCLUDE' => true )
+			array( 'NAME' => 'loyalty_is_applicable',			'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'contributes_to_agent_cap',		'TYPE' => 'bool',			'EXCLUDE' => true )
 		)
 	),
 	'character_trait_levels' => array(
@@ -874,6 +873,30 @@ $tables['_political_parties_lords_defeated']['data__'] = array(
 			'wh2_dlc12_political_party_vor_lzd_tiktaqto' => 'wh2_dlc12_trait_defeated_tiktaqto'
 		)
 	),
+	array(
+		'wh2_dlc13_political_party_lzd_gorrok',
+		array(
+			'wh2_dlc13_political_party_lzd_gorrok' => 'wh2_dlc13_trait_defeated_gorrok'
+		)
+	),
+	array(
+		'wh2_dlc13_political_party_vor_lzd_gorrok',
+		array(
+			'wh2_dlc13_political_party_vor_lzd_gorrok' => 'wh2_dlc13_trait_defeated_gorrok'
+		)
+	),
+	array(
+		'wh2_dlc13_political_party_lzd_nakai',
+		array(
+			'wh2_dlc13_political_party_lzd_nakai' => 'wh2_dlc13_trait_defeated_nakai'
+		)
+	),
+	array(
+		'wh2_dlc13_political_party_vor_lzd_nakai',
+		array(
+			'wh2_dlc13_political_party_vor_lzd_nakai' => 'wh2_dlc13_trait_defeated_nakai'
+		)
+	),
 #endregion
 #region _skv_
 	array(
@@ -1019,8 +1042,26 @@ $tables['_political_parties_lords_defeated']['data__'] = array(
 		'wh_main_political_party_empire_ruler',
 		array(
 			'wh_main_political_party_empire_ruler' => 'wh2_main_trait_defeated_karl_franz',
-			'wh_main_political_party_empire_balthasar' => 'wh2_main_trait_defeated_balthasar_gelt',
+			// 'wh_main_political_party_empire_balthasar' => 'wh2_main_trait_defeated_balthasar_gelt',
 			'wh_dlc04_political_party_empire_volkmar' => 'wh2_main_trait_defeated_volkmar_the_grim'
+		)
+	),
+	array(
+		'wh_main_political_party_empire_balthasar',
+		array(
+			'wh_main_political_party_empire_balthasar' => 'wh2_main_trait_defeated_balthasar_gelt'
+		)
+	),
+	array(
+		'wh2_dlc13_political_party_wulfhart_ruler',
+		array(
+			'wh2_dlc13_political_party_wulfhart_ruler' => 'wh2_dlc13_trait_defeated_wulfhart'
+		)
+	),
+	array(
+		'wh2_dlc13_political_party_vor_wulfhart_ruler',
+		array(
+			'wh2_dlc13_political_party_vor_wulfhart_ruler' => 'wh2_dlc13_trait_defeated_wulfhart'
 		)
 	),
 #endregion

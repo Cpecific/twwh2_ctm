@@ -34,10 +34,6 @@ function extractData($uic, $level = 0){
 	}
 }
 
-// var_dump($all);exit;
-// foreach ($all as $file_info){
-	// list($path, $_, $v) = $file_info;
-	// $file = mb_substr($path, strrpos($path, '/') + 1);
 foreach ($DIR_DATA as $dir_key => $arr){
 	if (in_array($dir_key, array('export'))){ continue; }
 	// if (!in_array($dir_key, array('tech_trees'))){ continue; }
@@ -50,7 +46,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		// if ($file !== 'CTM_mortuary_cult'){ continue; }
 		// if ($file !== 'effect_bar'){ continue; }
 		
-		var_dump($path);
+		// var_dump($path);
 		if ($h){ fclose($h); }
 		$h = fopen($path, 'r');
 		if (!$h){ continue; }
@@ -58,6 +54,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		$version = fread($h, 10);
 		$v = (int)substr($version, 7);
 		fseek($h, -10, SEEK_CUR);
+		
 		// if ($v < 70 || $v >= 80){ continue; }
 		// if ($v < 80 || $v >= 90){ continue; }
 		// if ($v < 90 || $v >= 100){ continue; }

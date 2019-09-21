@@ -557,7 +557,12 @@ extProt(
 				'funcs', 'child', 'after'
 			)
 			r.images.each(function(a, i){
-				r.images[i] = a.toKeys('uid', 'b_sth', 'path', 'width', 'height', 'extra')
+				r.images[i] = a.toKeys(
+					'uid',
+					'b_sth', 'path',
+					'width', 'height',
+					'extra'
+				)
 			})
 			r.states.each(function(state, i){
 				var state = state.toKeys(

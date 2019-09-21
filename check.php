@@ -60,12 +60,12 @@ foreach ($DIR_DATA as $dir_key => $arr){
 			fseek($h, 0, SEEK_SET);
 			$content = fread($h, $len);
 			
-			file_put_contents('check.tmp', $uic->dumpFile());
+			file_put_contents('_check.tmp', $uic->dumpFile());
 			
 			$type = 'error_reconstruct';
 			
 			fclose($h);
-			$h = fopen('check.tmp', 'r');
+			$h = fopen('_check.tmp', 'r');
 			fseek($h, 0, SEEK_END);
 			$len = ftell($h);
 			fseek($h, 0, SEEK_SET);
@@ -100,6 +100,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 }
 
 
+@unlink('_check.tmp');
 var_dump($grouped);
 
 

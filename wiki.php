@@ -1134,7 +1134,7 @@ var filters = []
 
 
 // lua export
-if (1){
+if (0){
 var res = ''
 filters.each(function(filter){
 	res += '-- '+ filter[0] +'\n\
