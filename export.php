@@ -1,10 +1,5 @@
 <?php
 
-// #ATTENTION!!!
-// This is old code. Some fields (especially field "after")
-// have been added or changed, and I am too lazy to rewrite this shit.
-// I will update this file, when wh3 will be coming out
-
 include 'get_dir_data.php';
 include 'class.php';
 
@@ -225,6 +220,10 @@ if (0){
 	
 	file_put_contents('export/CTM_trait_template', $uic->dumpFile());
 	
+	// wh2
+	$ch->images[0]->path = 'ui/skins/default/CTM_parchment_button_square_hover_wh2.png';
+	file_put_contents('export/CTM_trait_template_wh2', $uic->dumpFile());
+	
 // CTM_trait_dy_trait
 	$ch = $ch_dy;
 	$uic->child = array($ch);
@@ -233,6 +232,7 @@ if (0){
 	// $ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
 	$ch->tooltip_text = '';
 	$ch->tooltip_id = '';
+	$ch->images[0]->path = '';
 	
 	$state = $ch->states[0];
 	$state->name = 'active';
@@ -261,7 +261,7 @@ if (0){
 	
 	$ch->offset = array('top' => 32 + 4, 'left' => 10);
 	$ch->docking = 0;
-	$ch->images[0]->path = 'ui\\skins\\default\\CTM_trait_frame.png';
+	$ch->images[0]->path = 'ui/skins/default/CTM_trait_frame.png';
 	$state = $ch->states[0];
 	$state->name = 'active';
 	$state->bounds = array(67, 16 + 4);
@@ -278,6 +278,10 @@ if (0){
 	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_bar_holder', $uic->dumpFile());
+	
+	// wh2
+	$ch->images[0]->path = 'ui/skins/default/CTM_trait_frame_wh2.png';
+	file_put_contents('export/CTM_trait_bar_holder_wh2', $uic->dumpFile());
 	
 // CTM_horizontal_bar
 	$ch = new UIC($ch_bar, $uic);
@@ -354,6 +358,7 @@ if (0){
 	
 	// root > character_trait_tooltip
 	$ch = $uic->child[0];
+	$ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame.png';
 	// traits_list > template_entry
 	$ch_template = $ch->child[3]->child[0];
 	
@@ -364,6 +369,10 @@ if (0){
 	}
 	
 	file_put_contents('export/CTM_character_trait_tooltip', $uic->dumpFile());
+	
+	// wh2
+	$ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame_wh2.png';
+	file_put_contents('export/CTM_character_trait_tooltip_wh2', $uic->dumpFile());
 	
 	$ch = $ch_template;
 	$uic->child = array($ch);
@@ -426,12 +435,13 @@ if (0){
 		$ch->b5 = '00 00 00 00';
 		$ch->states[0]->tooltip_id = '';
 		$ch->states[0]->b5 = '00 00';
-		$ch->after = array('00', '', '00 00 00 00 00 00 00');
+		$ch->states[0]->bgs[0]->margin = array(50, 50, 50, 50);
+		$ch->after = array('00', '', '', '00', '00', '00 00 00');
 		$uic->events = '';
 		$uic->b5 = '00 00 00 00';
 		$uic->states[0]->tooltip_id = '';
 		$uic->states[0]->b5 = '00 00';
-		$uic->after = array('00', '', '00 00 00 00 00 00 00');
+		$uic->after = array('00', '', '', '00', '00', '00 00 00');
 		
 		$ch->child = array(
 			$ch_lroot = new UIC($ch, $ch),
@@ -502,17 +512,14 @@ if (true){
 	$ch_lroot->images = array(
 		$image = new UIC__Image(array(
 			'uid' => 'C0 BC 57 36',
-			'path' => 'ui\\skins\\default\\CTM_leather.png',
+			'path' => 'ui/skins/default/CTM_leather.png',
 			'width' => 212,
 			'height' => 213,
 			'extra' => '00'
-			
 		), $ch_lroot)
 	);
 	$ch_l->images = array();
 	$ch_l->states[0]->bgs = array();
-	
-	$image->path = 'ui\\skins\\default\\CTM_leather.png';
 	
 	$ch_lroot->offset = array('left' => 0, 'top' => $left_margin);
 	$state = $ch_lroot->states[0];
@@ -561,14 +568,12 @@ if (true){
 	$ch_rroot->images = array(
 		$image = new UIC__Image(array(
 			'uid' => '11 BA 52 02',
-			'path' => 'ui\\skins\\default\\CTM_parchment_texture.png',
+			'path' => 'ui/skins/default/CTM_parchment_texture.png',
 			'width' => 256,
 			'height' => 256,
 			'extra' => '00'
-		), $ch_lroot)
+		), $ch_rroot)
 	);
-	$image->uid = '11 BA 52 02';
-	$image->path = 'ui\\skins\\default\\CTM_parchment_texture.png';
 	$ch_r->images = array();
 	$ch_r->states[0]->bgs = array();
 	$ch_rroot->offset = array('left' => $left_width - $intersection, 'top' => 0);
@@ -684,6 +689,10 @@ if (true){
 	$uic->setVersion(106);
 	
 	file_put_contents('export/CTM_panel', $uic->dumpFile());
+	
+	$ch_lroot->images[0]->path = 'ui/skins/default/CTM_leather_wh2.png';
+	$ch_rroot->images[0]->path = 'ui/skins/default/CTM_parchment_texture_wh2.png';
+	file_put_contents('export/CTM_panel_wh2', $uic->dumpFile());
 }
 
 // CTM_lord_btn
@@ -1026,7 +1035,7 @@ if (true){
 				$state->tooltip_id = '';
 				$state->b5 = '00 00';
 			}
-			$ch->after = array('00', '', '00 00 00 00 00 00 00');
+			$ch->after = array('00', '', '', '00', '00', '00 00 00');
 		});
 		
 		$ch->funcs[0]->anim[0]->str_sth = '';
@@ -1133,7 +1142,7 @@ if (0){
 	
 	// listview
 	$list = $ch->child[1];
-	// list_clip ->list_box
+	// list_clip -> list_box
 	$box = $list->child[0]->child[0];
 	$box->child = array();
 	$box->after[2][1] = array();
@@ -1355,8 +1364,8 @@ if (0){
 	file_put_contents('export/CTM_trait_filter_wh2', $uic->dumpFile());
 }
 
-// CTM_trait_template
-if (1){
+// CTM_add_trait_template
+if (0){
 	$h = fopen($DIR_DATA['export']['DIR'] . 'CTM_trait_template', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
@@ -1385,6 +1394,7 @@ if (1){
 	$ch->child[] = $uic_dy->child[0];
 	$ch->child[0]->parent = $ch;
 	$ch = $ch->child[0];
+	$ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small.png';
 	array_splice($ch->states, 1); // inactive
 	foreach ($ch->states as $state){
 		$state->bounds = array(253 - 10 - 2, 62 - 5);
@@ -1393,6 +1403,16 @@ if (1){
 	
 	file_put_contents('export/CTM_add_trait_template', $uic->dumpFile());
 	
+	// wh2
+	$ch = $ch->parent;
+	$ch->images[0]->path = 'ui\skins\default\CTM_parchment_button_square_hover_wh2.png';
+	foreach ($ch->states as $state){
+		$state->bgs[1]->colour = '91 99 9B FF';
+	}
+	$ch = $ch->child[0];
+	$ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small_wh2.png';
+	
+	file_put_contents('export/CTM_add_trait_template_wh2', $uic->dumpFile());
 }
 
 
