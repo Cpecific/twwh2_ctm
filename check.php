@@ -40,18 +40,10 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		// if ($v !== 119){ continue; }
 		// if ($v < 70 || $v >= 100){ continue; }
 		
-		++$processed;
+		// ++$processed;
 		// if ($processed < 100){ continue; }
-		if ($processed > 100){ break 2; }
+		// if ($processed > 100){ break 2; }
 		
-		$has = array(
-			'bgs' => false,
-			'funcs' => false,
-			'list' => false,
-			'hlist' => false,
-			'rlist' => false,
-			'table' => false
-		);
 		try{
 			$type = 'error';
 			$uic = new UIC();

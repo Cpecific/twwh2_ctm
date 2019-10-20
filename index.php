@@ -1441,30 +1441,31 @@ if (JAVASCRIPT){
 	
 	// global search in localisations
 	if (0){
-	foreach ($text_data as $tbl_name => $data){
-		foreach ($data as $tag => $val){
-			$has = false;
-			$lower = strtolower($val);
-			// $lower = $val;
-			foreach (array(
-				// 'armour',
-				// 'melee attack'
-				'traits'
-			) as $find){
-				if (
-				strpos($lower, $find) !== false
-				&& mb_strlen($val) < 100
-				// && mb_strlen($val) < mb_strlen($find) + 5
-				){
-					$has = true;
-					break;
+		foreach ($text_data as $tbl_name => $data){
+			foreach ($data as $tag => $val){
+				$has = false;
+				$lower = strtolower($val);
+				// $lower = $val;
+				foreach (array(
+					// 'armour',
+					// 'melee attack'
+					'traits'
+				) as $find){
+					if (
+					strpos($lower, $find) !== false
+					&& mb_strlen($val) < 100
+					// && mb_strlen($val) < mb_strlen($find) + 5
+					){
+						$has = true;
+						break;
+					}
+				}
+				if ($has){
+					var_dump('['. $tbl_name .'] '. $tag .': '. $val);
 				}
 			}
-			if ($has){
-				var_dump('['. $tbl_name .'] '. $tag .': '. $val);
-			}
 		}
-	}
+		exit;
 	}
 }
 
@@ -1890,8 +1891,17 @@ DB_DATA = extend(typeof DB_DATA === "undefined" ? {} : DB_DATA, ', my_print($tab
 			$tmp = array_replace($tmp, $ar);
 		}
 		$text_data = $tmp;
+		$keys = array_keys($text_data);
 		echo '
-DB_TEXT = $.extend(typeof DB_TEXT === "undefined" ? {} : DB_TEXT, ', json_encode($text_data), ')';
+DB_TEXT = $.extend(typeof DB_TEXT === "undefined" ? {} : DB_TEXT, {';
+		$i = 0;
+		foreach ($text_data as $key => $val){
+			if ($i){ echo ','; }
+			else{ $i = 1; }
+			echo '
+	', json_encode($key), ':', json_encode($val);
+		}
+		echo '})';
 	}
 	echo '
 })()';
