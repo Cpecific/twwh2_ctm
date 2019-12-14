@@ -403,7 +403,7 @@ if (0){
 }*/
 
 // CTM_panel
-if (1){
+if (0){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	

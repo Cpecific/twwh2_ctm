@@ -1060,6 +1060,7 @@ var filters = []
 		'unit_capacity',
 		tbl,
 		'uied_component_texts_localised_string_tx_label_NewState_Text_100024'
+		// 'uied_component_texts_localised_string_unit_cap_Tooltip_200035'
 	])
 })()
 // Pooled resources
