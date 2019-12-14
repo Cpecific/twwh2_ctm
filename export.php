@@ -403,7 +403,7 @@ if (0){
 }*/
 
 // CTM_panel
-if (0){
+if (1){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'pre_battle_post_battle', 'r');
 	if (!$h){ throw new Exception('FILE'); }
 	
@@ -493,21 +493,28 @@ if (true){
 	// $ch_l->child[1]->uid = '00 80 7A 10';
 	// $ch_r->child[1]->uid = '0D 11 2F 90';
 	
-	$total_width = 0;
-	
-#region left
-	$left_width = 51 * 8 + 20 * 2 + 27;
-	$left_margin = 12;
-	$intersection = 40;
-	
+	$lord = array('width' => 51, 'height' => 69, 'cols' => 8, 'rows' => 8);
 	$padding = 20;
 	$scroll_width = 20 + 7;
+	$left_margin = 12;
+	$intersection = 40;
 	$scroll_btns = 34;
-	$width = $left_width - $padding * 2 - $scroll_width;
-	$height = 510 - $left_margin * 2;
-	$scroll_height = $height - $scroll_btns * 2;
+	
+	$total_width = 0;
+	// 510 + 20 * 2 = 550
+	// $total_height = $height + $padding * 2;
+	$line_height = $lord['height'] * $lord['rows'] + 3 + $left_margin * 2;
+	
+#region left
+	$width = ($lord['width'] * $lord['cols']);
+	$left_width = $width + $padding * 2 + $scroll_width;
+	
+	// 510 - 24 = 486
+	$height = $line_height - $left_margin * 2;
+	$scrollbar_height = $height - $scroll_btns * 2;
 	
 	$total_width += $left_width - $intersection;
+	$total_height = $height + 24 + $padding * 2;
 	
 	$ch_lroot->images = array(
 		$image = new UIC__Image(array(
@@ -555,15 +562,14 @@ if (true){
 	
 	// vslider
 	$ch = $ch_l->child[1]->template[5];
-	$ch->b_floats[3] = $scroll_height;
+	$ch->b_floats[3] = $scrollbar_height;
 #endregion
 	
 #region right
-	$width = 253 + 7 * 0; $height = 510;
-	$scroll_height = $height - $scroll_btns * 2;
+	$width = 253 + 7 * 0; $height = $line_height;
+	$scrollbar_height = $height - $scroll_btns * 2;
 	
 	$total_width += $width + $padding * 2 + $scroll_width;
-	$total_height = $height + $padding * 2;
 	
 	$ch_rroot->images = array(
 		$image = new UIC__Image(array(
@@ -607,7 +613,7 @@ if (true){
 	
 	// vslider
 	$ch = $ch_r->child[1]->template[5];
-	$ch->b_floats[3] = $scroll_height;
+	$ch->b_floats[3] = $scrollbar_height;
 #endregion
 	
 	$ch = $ch_preview;
@@ -626,8 +632,9 @@ if (true){
 	$uic_a->read($h);
 	fclose($h);
 	
-	$ch_a = $uic_a->child[0]->child[5]->child[0];
-	$ch = $uic->child[0];
+	// layout > info_panel_holder > primary_info_panel_holder
+	$ch_a = $uic_a->child[0]->child[6]->child[0];
+	$ch = $ch_preview;
 	$ch->offset = array('left' => 0, 'top' => 0);
 	$ch->dock_offset = $offset = array('left' => 0, 'top' => -231);
 	// $offset_hide = array('left' => $offset['left'], 'top' => $offset['top'] + 258 * 2);
@@ -637,7 +644,7 @@ if (true){
 		new UIC__Func($ch_a->funcs[0], $ch)
 	);
 	// перевод в 106
-	if (true){
+	if (!true){
 		$ch->funcs[0]->anim[0]->str_sth = '';
 		$ch->funcs[0]->anim[0]->b3 = '00 00';
 	}
@@ -674,16 +681,6 @@ if (true){
 	
 	$anim = $func->anim[2];
 	$anim->interpolationtime = round(700 * 20 / 32);
-	// 23 / 32 * 700
-	
-	if (0){
-		$ch->funcs[] = $func = new UIC__Func($func);
-		$func->name = 'immediate';
-		array_splice($func->anim, 1);
-		$anim = $func->anim[0];
-		// $anim->colour = 'FF FF FF FF';
-		$anim->offset = $offset;
-	}
 }
 	
 	$uic->setVersion(106);

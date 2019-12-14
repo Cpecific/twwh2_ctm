@@ -11,7 +11,7 @@
 	<script src="js/common.js"></script>
 	<script src="js/popup.js"></script>
 	<script src="js/__tables.js"></script>
-	<script src2="js/__isenhart.js"></script>
+	<script src="js/__isenhart.js"></script>
 	<script src="js/wiki.js"></script>
 </head>
 <body>
@@ -1059,7 +1059,7 @@ var filters = []
 		'Capacity',
 		'unit_capacity',
 		tbl,
-		'uied_component_texts_localised_string_unit_cap_Tooltip_200035'
+		'uied_component_texts_localised_string_tx_label_NewState_Text_100024'
 	])
 })()
 // Pooled resources

@@ -12,9 +12,20 @@ $grouped['ok'] = array();
 $grouped['error'] = array();
 $grouped['error_reconstruct'] = array();
 
+if (isset($DIR_DATA['templates'])){
+	$rest_keys = array_combine(array_keys($DIR_DATA), array_fill(0, sizeof($DIR_DATA), null));
+	unset($rest_keys['templates']);
+	$DIR_DATA = array_merge(
+		array(
+			'templates' => $DIR_DATA['templates']
+		),
+		array_intersect_key($DIR_DATA, $rest_keys)
+	);
+}
+
 foreach ($DIR_DATA as $dir_key => $arr){
 	if (in_array($dir_key, array('export'))){ continue; }
-	// if (!in_array($dir_key, array('tech_trees'))){ continue; }
+	// if (!in_array($dir_key, array('templates'))){ continue; }
 	
 	$dir = $arr['DIR'];
 	
@@ -31,6 +42,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 		
 		$version = fread($h, 10);
 		$v = (int)substr($version, 7);
+		// if ($v === 121){var_dump($v);}
 		fseek($h, -10, SEEK_CUR);
 		// if ($v < 70 || $v >= 80){ continue; }
 		// if ($v < 80 || $v >= 90){ continue; }

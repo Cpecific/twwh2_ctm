@@ -1,7 +1,7 @@
 <?php
 
 $mini = 2;
-define('JAVASCRIPT', false);
+define('JAVASCRIPT', !false);
 define('IS_MODDED', true);
 
 // FILL THIS ARRAY IF YOU HAVE REPLACED data__ IN SOME TABLES
@@ -122,6 +122,12 @@ function my_print($a, $level, $mini){
 	}
 	if ($has_obj){ return $brackets[0] . mb_substr($str, 1) ."\r\n". mb_substr($level, 1) . $brackets[1]; }
 	return $brackets[0] . mb_substr($str, 2) . $brackets[1];
+}
+function is_modded_data__($tbl_name){
+	return (
+		isset($GLOBALS['modded_data__'][ $tbl_name ])
+		&& $GLOBALS['modded_data__'][ $tbl_name ]
+	);
 }
 
 
@@ -623,492 +629,9 @@ if (!isset($tables['_political_parties_lords_defeated'])){
 }
 // start_pos data
 if (!isset($tables['_political_parties_lords_defeated']['data__'])){
-$tables['_political_parties_lords_defeated']['data__'] = array(
-#region _tmb_
-	array(
-		'wh2_dlc09_political_party_tmb_settra',
-		array(
-			'wh2_dlc09_political_party_tmb_settra' => 'wh2_dlc09_trait_defeated_settra'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_vor_tmb_settra',
-		array(
-			'wh2_dlc09_political_party_vor_tmb_settra' => 'wh2_dlc09_trait_defeated_settra'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_tmb_arkhan',
-		array(
-			'wh2_dlc09_political_party_tmb_arkhan' => 'wh2_dlc09_trait_defeated_arkhan'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_vor_tmb_arkhan',
-		array(
-			'wh2_dlc09_political_party_vor_tmb_arkhan' => 'wh2_dlc09_trait_defeated_arkhan'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_tmb_khalida',
-		array(
-			'wh2_dlc09_political_party_tmb_khalida' => 'wh2_dlc09_trait_defeated_khalida'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_vor_tmb_khalida',
-		array(
-			'wh2_dlc09_political_party_vor_tmb_khalida' => 'wh2_dlc09_trait_defeated_khalida'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_tmb_khatep',
-		array(
-			'wh2_dlc09_political_party_tmb_khatep' => 'wh2_dlc09_trait_defeated_khatep'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_vor_tmb_khatep',
-		array(
-			'wh2_dlc09_political_party_vor_tmb_khatep' => 'wh2_dlc09_trait_defeated_khatep'
-		)
-	),
-#endregion
-#region _def_
-	array(
-		'wh2_main_political_party_def_malekith',
-		array(
-			'wh2_main_political_party_def_malekith' => 'wh2_main_trait_defeated_malekith'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_def_malekith',
-		array(
-			'wh2_main_political_party_vor_def_malekith' => 'wh2_main_trait_defeated_malekith'
-		)
-	),
-	array(
-		'wh2_main_political_party_def_morathi',
-		array(
-			'wh2_main_political_party_def_morathi' => 'wh2_main_trait_defeated_morathi'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_def_morathi',
-		array(
-			'wh2_main_political_party_vor_def_morathi' => 'wh2_main_trait_defeated_morathi'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_def_hellebron',
-		array(
-			'wh2_dlc10_political_party_def_hellebron' => 'wh2_dlc10_trait_defeated_hellebron'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_vor_def_hellebron',
-		array(
-			'wh2_dlc10_political_party_vor_def_hellebron' => 'wh2_dlc10_trait_defeated_hellebron'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_def_lokhir_fellheart_ruler',
-		array(
-			'wh2_dlc11_political_party_def_lokhir_fellheart_ruler' => 'wh2_dlc11_trait_defeated_lokhir_fellheart'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_vor_def_lokhir_fellheart_ruler',
-		array(
-			'wh2_dlc11_political_party_vor_def_lokhir_fellheart_ruler' => 'wh2_dlc11_trait_defeated_lokhir_fellheart'
-		)
-	),
-#endregion
-#region _hef_
-	array(
-		'wh2_main_political_party_hef_tyrion',
-		array(
-			'wh2_main_political_party_hef_tyrion' => 'wh2_main_trait_defeated_tyrion'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_hef_tyrion',
-		array(
-			'wh2_main_political_party_vor_hef_tyrion' => 'wh2_main_trait_defeated_tyrion'
-		)
-	),
-	array(
-		'wh2_main_political_party_hef_teclis',
-		array(
-			'wh2_main_political_party_hef_teclis' => 'wh2_main_trait_defeated_teclis'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_hef_teclis',
-		array(
-			'wh2_main_political_party_vor_hef_teclis' => 'wh2_main_trait_defeated_teclis'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_hef_alarielle',
-		array(
-			'wh2_dlc10_political_party_hef_alarielle' => 'wh2_dlc10_trait_defeated_alarielle'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_vor_hef_alarielle',
-		array(
-			'wh2_dlc10_political_party_vor_hef_alarielle' => 'wh2_dlc10_trait_defeated_alarielle'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_hef_alith_anar',
-		array(
-			'wh2_dlc10_political_party_hef_alith_anar' => 'wh2_dlc10_trait_defeated_alith_anar'
-		)
-	),
-	array(
-		'wh2_dlc10_political_party_vor_hef_alith_anar',
-		array(
-			'wh2_dlc10_political_party_vor_hef_alith_anar' => 'wh2_dlc10_trait_defeated_alith_anar'
-		)
-	),
-#endregion
-#region _cst_
-	array(
-		'wh2_dlc11_political_party_vampire_coast_ruler',
-		array(
-			'wh2_dlc11_political_party_vampire_coast_ruler' => 'wh2_dlc11_trait_defeated_luthor_harkon'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_vor_vampire_coast_ruler',
-		array(
-			'wh2_dlc11_political_party_vor_vampire_coast_ruler' => 'wh2_dlc11_trait_defeated_luthor_harkon'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_cst_noctilus_ruler',
-		array(
-			'wh2_dlc11_political_party_cst_noctilus_ruler' => 'wh2_dlc11_trait_defeated_count_noctilus'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_vor_cst_noctilus_ruler',
-		array(
-			'wh2_dlc11_political_party_vor_cst_noctilus_ruler' => 'wh2_dlc11_trait_defeated_count_noctilus'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_cst_sartosa_ruler',
-		array(
-			'wh2_dlc11_political_party_cst_sartosa_ruler' => 'wh2_dlc11_trait_defeated_aranessa_saltspite'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_vor_cst_sartosa_ruler',
-		array(
-			'wh2_dlc11_political_party_vor_cst_sartosa_ruler' => 'wh2_dlc11_trait_defeated_aranessa_saltspite'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_cst_the_drowned_ruler',
-		array(
-			'wh2_dlc11_political_party_cst_the_drowned_ruler' => 'wh2_dlc11_trait_defeated_cylostra_direfin'
-		)
-	),
-	array(
-		'wh2_dlc11_political_party_vor_cst_the_drowned_ruler',
-		array(
-			'wh2_dlc11_political_party_vor_cst_the_drowned_ruler' => 'wh2_dlc11_trait_defeated_cylostra_direfin'
-		)
-	),
-#endregion
-#region _lzd_
-	array(
-		'wh2_main_political_party_lzd_lord_mazdamundi',
-		array(
-			'wh2_main_political_party_lzd_lord_mazdamundi' => 'wh2_main_trait_defeated_lord_mazdamundi'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_lzd_lord_mazdamundi',
-		array(
-			'wh2_main_political_party_vor_lzd_lord_mazdamundi' => 'wh2_main_trait_defeated_lord_mazdamundi'
-		)
-	),
-	array(
-		'wh2_main_political_party_lzd_kroq_gar',
-		array(
-			'wh2_main_political_party_lzd_kroq_gar' => 'wh2_main_trait_defeated_kroq_gar'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_lzd_kroq_gar',
-		array(
-			'wh2_main_political_party_vor_lzd_kroq_gar' => 'wh2_main_trait_defeated_kroq_gar'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_lzd_tehenhauin',
-		array(
-			'wh2_dlc12_political_party_lzd_tehenhauin' => 'wh2_dlc12_trait_defeated_tehenhauin'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_vor_lzd_tehenhauin',
-		array(
-			'wh2_dlc12_political_party_vor_lzd_tehenhauin' => 'wh2_dlc12_trait_defeated_tehenhauin'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_lzd_tiktaqto',
-		array(
-			'wh2_dlc12_political_party_lzd_tiktaqto' => 'wh2_dlc12_trait_defeated_tiktaqto'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_vor_lzd_tiktaqto',
-		array(
-			'wh2_dlc12_political_party_vor_lzd_tiktaqto' => 'wh2_dlc12_trait_defeated_tiktaqto'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_lzd_gorrok',
-		array(
-			'wh2_dlc13_political_party_lzd_gorrok' => 'wh2_dlc13_trait_defeated_gorrok'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_vor_lzd_gorrok',
-		array(
-			'wh2_dlc13_political_party_vor_lzd_gorrok' => 'wh2_dlc13_trait_defeated_gorrok'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_lzd_nakai',
-		array(
-			'wh2_dlc13_political_party_lzd_nakai' => 'wh2_dlc13_trait_defeated_nakai'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_vor_lzd_nakai',
-		array(
-			'wh2_dlc13_political_party_vor_lzd_nakai' => 'wh2_dlc13_trait_defeated_nakai'
-		)
-	),
-#endregion
-#region _skv_
-	array(
-		'wh2_main_political_party_skv_queek_headtaker',
-		array(
-			'wh2_main_political_party_skv_queek_headtaker' => 'wh2_main_trait_defeated_queen_headtaker'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_skv_queek_headtaker',
-		array(
-			'wh2_main_political_party_vor_skv_queek_headtaker' => 'wh2_main_trait_defeated_queen_headtaker'
-		)
-	),
-	array(
-		'wh2_main_political_party_skv_lord_skrolk',
-		array(
-			'wh2_main_political_party_skv_lord_skrolk' => 'wh2_main_trait_defeated_lord_strolk'
-		)
-	),
-	array(
-		'wh2_main_political_party_vor_skv_lord_skrolk',
-		array(
-			'wh2_main_political_party_vor_skv_lord_skrolk' => 'wh2_main_trait_defeated_lord_strolk'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_skv_tretch_craventail',
-		array(
-			'wh2_dlc09_political_party_skv_tretch_craventail' => 'wh2_dlc09_trait_defeated_tretch'
-		)
-	),
-	array(
-		'wh2_dlc09_political_party_vor_skv_tretch_craventail',
-		array(
-			'wh2_dlc09_political_party_vor_skv_tretch_craventail' => 'wh2_dlc09_trait_defeated_tretch'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_skv_ikit_claw',
-		array(
-			'wh2_dlc12_political_party_skv_ikit_claw' => 'wh2_dlc12_trait_defeated_ikit_claw'
-		)
-	),
-	array(
-		'wh2_dlc12_political_party_vor_skv_ikit_claw',
-		array(
-			'wh2_dlc12_political_party_vor_skv_ikit_claw' => 'wh2_dlc12_trait_defeated_ikit_claw'
-		)
-	),
-#endregion
-#region _beastmen_
-	array(
-		'wh_dlc03_political_party_beastmen_ruler',
-		array(
-			'wh_dlc03_political_party_beastmen_ruler' => 'wh2_main_trait_defeated_khazrak_one_eye',
-			'wh_dlc03_political_party_beastmen_malagor' => 'wh2_main_trait_defeated_malagor_the_dark_omen',
-			'wh_dlc03_political_party_beastmen_morghur' => 'wh2_main_trait_defeated_morghur_the_shadowgave'
-		)
-	),
-#endregion
-#region _wood_elves_
-	array(
-		'wh_dlc05_political_party_wood_elves_ruler',
-		array(
-			'wh_dlc05_political_party_wood_elves_ruler' => 'wh2_main_trait_defeated_orion'
-		)
-	),
-	array(
-		'wh_dlc05_political_party_wood_elves_durthu',
-		array(
-			'wh_dlc05_political_party_wood_elves_durthu' => 'wh2_main_trait_defeated_durthu'
-		)
-	),
-#endregion
-#region _bretonnia_
-	array(
-		'wh_dlc07_political_party_bretonnia_ruler',
-		array(
-			'wh_dlc07_political_party_bretonnia_ruler' => 'wh2_main_trait_defeated_louen_leoncouer'
-		)
-	),
-	array(
-		'wh_dlc07_political_party_bretonnia_fay',
-		array(
-			'wh_dlc07_political_party_bretonnia_fay' => 'wh2_main_trait_defeated_fay_enchantress'
-		)
-	),
-	array(
-		'wh_dlc07_political_party_bretonnia_alberic',
-		array(
-			'wh_dlc07_political_party_bretonnia_alberic' => 'wh2_main_trait_defeated_alberic_de_bordeleaux'
-		)
-	),
-#endregion
-#region _norsca_
-	array(
-		'wh_dlc08_political_party_norsca_ruler',
-		array(
-			'wh_dlc08_political_party_norsca_ruler' => 'wh_dlc08_trait_defeated_wulfrik'
-		)
-	),
-	array(
-		'wh_dlc08_political_party_norsca_throgg',
-		array(
-			'wh_dlc08_political_party_norsca_throgg' => 'wh_dlc08_trait_defeated_throgg'
-		)
-	),
-#endregion
-#region _chaos_
-	array(
-		'wh_main_political_party_chaos_ruler',
-		array(
-			'wh_main_political_party_chaos_ruler' => 'wh2_main_trait_defeated_archaon_the_everchosen',
-			'wh_main_political_party_chaos_kholek' => 'wh2_main_trait_defeated_kholek_suneater',
-			'wh_main_political_party_chaos_sigvald' => 'wh2_main_trait_defeated_prince_sigvald'
-		)
-	),
-#endregion
-#region _dwarf_
-	array(
-		'wh_main_political_party_dwarf_ruler',
-		array(
-			'wh_main_political_party_dwarf_ruler' => 'wh2_main_trait_defeated_thorgrim_grudgebearer',
-			'wh_main_political_party_dwarf_grombrindal' => 'wh2_main_trait_defeated_grombrindal'
-		)
-	),
-	array(
-		'wh_main_political_party_dwarf_ungrim',
-		array(
-			'wh_main_political_party_dwarf_ungrim' => 'wh2_main_trait_defeated_ungrim_ironfist',
-		)
-	),
-	array(
-		'wh_dlc06_political_party_belegar_ruler',
-		array(
-			'wh_dlc06_political_party_belegar_ruler' => 'wh2_main_trait_defeated_belegar_ironhammer'
-		)
-	),
-#endregion
-#region _empire_
-	array(
-		'wh_main_political_party_empire_ruler',
-		array(
-			'wh_main_political_party_empire_ruler' => 'wh2_main_trait_defeated_karl_franz',
-			// 'wh_main_political_party_empire_balthasar' => 'wh2_main_trait_defeated_balthasar_gelt',
-			'wh_dlc04_political_party_empire_volkmar' => 'wh2_main_trait_defeated_volkmar_the_grim'
-		)
-	),
-	array(
-		'wh_main_political_party_empire_balthasar',
-		array(
-			'wh_main_political_party_empire_balthasar' => 'wh2_main_trait_defeated_balthasar_gelt'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_wulfhart_ruler',
-		array(
-			'wh2_dlc13_political_party_wulfhart_ruler' => 'wh2_dlc13_trait_defeated_wulfhart'
-		)
-	),
-	array(
-		'wh2_dlc13_political_party_vor_wulfhart_ruler',
-		array(
-			'wh2_dlc13_political_party_vor_wulfhart_ruler' => 'wh2_dlc13_trait_defeated_wulfhart'
-		)
-	),
-#endregion
-#region _greenskins_
-	array(
-		'wh_main_political_party_greenskins_ruler',
-		array(
-			'wh_main_political_party_greenskins_ruler' => 'wh2_main_trait_defeated_grimgor_ironhide',
-			'wh_main_political_party_greenskins_azhag' => 'wh2_main_trait_defeated_azhag_the_slaughterer'
-		)
-	),
-	array(
-		'wh_dlc06_political_party_wurrzag_ruler',
-		array(
-			'wh_dlc06_political_party_wurrzag_ruler' => 'wh2_main_trait_defeated_wurzzag'
-		)
-	),
-	array(
-		'wh_dlc06_political_party_skarsnik_ruler',
-		array(
-			'wh_dlc06_political_party_skarsnik_ruler' => 'wh2_main_trait_defeated_skarsnik'
-		)
-	),
-#endregion
-#region _vampire_
-	array(
-		'wh_main_political_party_vampire_ruler',
-		array(
-			'wh_main_political_party_vampire_ruler' => 'wh2_main_trait_defeated_mannfred_von_carstein',
-			'wh_dlc04_political_party_vampire_helman' => 'wh2_main_trait_defeated_helmen_ghorst'
-		)
-	),
-	array(
-		'wh_pro02_political_party_vlad_ruler',
-		array(
-			'wh_pro02_political_party_vlad_ruler' => 'wh2_main_trait_defeated_vlad_von_carstein',
-			'wh_pro02_political_party_vampire_isabella' => 'wh2_main_trait_defeated_isabella_von_carstein'
-		)
-	),
-	array(
-		'wh_main_political_party_vampire_heinrich',
-		array(
-			'wh_main_political_party_vampire_heinrich' => 'wh2_main_trait_defeated_heinrich_kemmler'
-		)
-	)
-#endregion
-);
+	ob_start();
+	$tables['_political_parties_lords_defeated']['data__'] = include('raw_start_pos.php');
+	ob_end_clean();
 }
 // YOU CAN SET YOUR LEGENDARY LORDS RIGHT ABOUT HERE
 // $tables['_political_parties_lords_defeated'][ YOURMOD ] = ...
@@ -1527,6 +1050,8 @@ if (IS_MODDED){
 
 #region Подготовка данных для вывода
 foreach ($tables['agent_subtypes'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('agent_subtypes')){ continue; }
 	foreach ($file_table as &$entry){
 		$entry = array_values($entry);
 		// key
@@ -1538,6 +1063,8 @@ foreach ($tables['agent_subtypes'] as $file => &$file_table){
 }
 
 foreach ($tables['character_trait_levels'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('character_trait_levels')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1557,6 +1084,8 @@ foreach ($tables['character_trait_levels'] as $file => &$file_table){
 }
 
 foreach ($tables['character_traits'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('character_traits')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1578,6 +1107,8 @@ foreach ($tables['character_traits'] as $file => &$file_table){
 }
 
 foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('effect_bonus_value_unit_ability_junctions')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1596,6 +1127,8 @@ foreach ($tables['effect_bonus_value_unit_ability_junctions'] as $file => &$file
 }
 
 foreach ($tables['effects'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('effects')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		// да, icon, icon_negative и category здесь не нужно проверять
 		if (
@@ -1621,6 +1154,8 @@ foreach ($tables['effects'] as $file => &$file_table){
 }
 
 foreach ($tables['faction_political_parties_junctions'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('faction_political_parties_junctions')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1640,6 +1175,8 @@ foreach ($tables['faction_political_parties_junctions'] as $file => &$file_table
 }
 
 foreach ($tables['frontend_faction_leaders'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('frontend_faction_leaders')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1659,6 +1196,8 @@ foreach ($tables['frontend_faction_leaders'] as $file => &$file_table){
 }
 // нужна для сортировки лордов
 foreach ($tables['frontend_factions'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('frontend_factions')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1676,6 +1215,8 @@ foreach ($tables['frontend_factions'] as $file => &$file_table){
 }
 
 foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('_political_parties_lords_defeated')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1698,6 +1239,8 @@ foreach ($tables['_political_parties_lords_defeated'] as $file => &$file_table){
 }
 
 foreach ($tables['political_parties'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('political_parties')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1717,6 +1260,8 @@ foreach ($tables['political_parties'] as $file => &$file_table){
 }
 
 foreach ($tables['trait_categories'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('trait_categories')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1735,6 +1280,8 @@ foreach ($tables['trait_categories'] as $file => &$file_table){
 }
 
 foreach ($tables['trait_level_effects'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('trait_level_effects')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		// !$used['trait_level_effects'][ $entry[0] ][ $entry[1] ]
 		if (
@@ -1759,6 +1306,8 @@ foreach ($tables['trait_level_effects'] as $file => &$file_table){
 }
 
 foreach ($tables['trait_to_antitraits'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('trait_to_antitraits')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		if (
 		IS_MODDED &&
@@ -1778,6 +1327,8 @@ foreach ($tables['trait_to_antitraits'] as $file => &$file_table){
 }
 
 foreach ($tables['unit_abilities'] as $file => &$file_table){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__('unit_abilities')){ continue; }
 	foreach ($file_table as $i => &$entry){
 		$entry = array_values($entry);
 		if (
@@ -1826,6 +1377,8 @@ foreach (array(
 	'effect_bonus_value_unit_set_unit_attribute_junctions',
 	'effect_bonus_value_ids_unit_sets'
 ) as $tbl_name){
+	if (IS_MODDED && $file === 'data__'
+		&& !is_modded_data__($tbl_name)){ continue; }
 	foreach ($tables[ $tbl_name ] as $file => &$file_table){
 		foreach ($file_table as $i => &$entry){
 			if (
@@ -1849,8 +1402,7 @@ foreach (array(
 
 
 foreach ($tables as $tbl_name => $data){
-	$is_modded = (isset($modded_data__[ $tbl_name ]) && $modded_data__[ $tbl_name ]);
-	if ($is_modded){ continue; }
+	if (is_modded_data__($tbl_name)){ continue; }
 	
 	if (IS_MODDED){
 		unset($tables[ $tbl_name ]['data__']);

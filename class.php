@@ -197,7 +197,6 @@ class UIC {
 				}
 			} else if ($k === 'states'){
 				foreach ($v as $state){
-					// var_dump($a->name .'.'. $state->name);
 					$this->states[] = new UIC__State($state, $this);
 				}
 			} else if ($k === 'dynamic'){
@@ -259,7 +258,7 @@ class UIC {
 			my_assert($this->num_events < 20, $this);
 			for ($i = 0; $i < $this->num_events; ++$i){
 				$a = read_string($h, 3, $this);
-				if ($v >= 124 && $v < 130){
+				if ($v >= 124 && $v < 130 || $v === 121){
 					$num_sth = my_unpack_one($this, 'l', fread($h, 4));
 					$b = array();
 					for ($j = 0; $j < $num_sth; ++$j){
@@ -519,7 +518,7 @@ class UIC {
 				else if ($v >= 110 && $v < 120){
 					// int, bool, bool, int
 				}
-				else if ($v >= 120 && $v < 127){
+				else if ($v >= 122 && $v < 127){
 					$len = 26;
 				}
 				else if ($v >= 127 && $v < 130){
@@ -588,7 +587,7 @@ class UIC {
 					// last 3 bytes: short, byte
 					$a[] = read_string($h, 1, $this);
 					$a[] = tohex(fread($h, 7));
-					if ($v >= 120 && $v < 130){
+					if ($v >= 122 && $v < 130){
 						$a[] = tohex(fread($h, 10));
 					}
 				}
@@ -893,7 +892,7 @@ class UIC {
 			}
 			foreach ($this->events as $a){
 				$res .= write_string(array_slice($a, 0, 3));
-				if ($v >= 124 && $v < 130){
+				if ($v >= 124 && $v < 130 || $v === 121){
 					$res .= pack('l', sizeof($a[3]));
 					foreach ($a[3] as $b){
 						$res .= write_string(array_slice($b, 0, 2));
@@ -1088,7 +1087,7 @@ class UIC {
 					$res .= pack('l', $a[ $j++ ]);
 					$res .= write_string($a[ $j++ ]);
 					$res .= fromhex($a[ $j++ ]);
-					if ($v >= 120 && $v < 130){
+					if ($v >= 122 && $v < 130){
 						$res .= fromhex($a[ $j++ ]);
 					}
 				}
@@ -1414,8 +1413,8 @@ class UIC__State {
 				$this->b4 = tohex(fread($h, 4));
 			}
 		}
-		// else if ($v >= 120 && $v < 130){
-		else if ($v === 129){
+		else if ($v === 121 || $v === 129){
+		// else if ($v === 129){
 			$this->b5 = read_string($h, 1, $my);
 		}
 		
@@ -1520,7 +1519,7 @@ class UIC__State {
 			$a->read($h, $my, $this);
 		}
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$a = read_string($h, 1, $my);
 			if (empty($a)){
 				$this->b8 = array($a);
@@ -1666,7 +1665,8 @@ class UIC__State {
 				$res .= fromhex($this->b4);
 			}
 		}
-		else if ($v === 129){
+		else if ($v === 121 || $v === 129){
+		// else if ($v === 129){
 			$res .= write_string($this->b5);
 		}
 		
@@ -1720,7 +1720,7 @@ class UIC__State {
 			$res .= $mouse->dumpFile();
 		}
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$a = $this->b8;
 			$res .= write_string($a[0]);
 			
@@ -2011,20 +2011,21 @@ class UIC__State_Mouse {
 		// 2 - mousedown
 		// 3 - mouseup (click)
 		// 8 - mouseup (blur?)
-		$this->mouse_state = array_shift(unpack('l', fread($h, 4)));
+		$this->mouse_state = my_unpack_one($this, 'l', fread($h, 4));
 		$this->state_uid = tohex(fread($h, 4));
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b_sth = tohex(fread($h, 16));
 		}
+		
 		// гипотеза: аудио?
 		$this->b0 = tohex(fread($h, 8)); // ?, ?
 		
-		$this->num_sth = array_shift(unpack('l', fread($h, 4)));
+		$this->num_sth = my_unpack_one($this, 'l', fread($h, 4));
 		my_assert($this->num_sth < 20, $my);
 		for ($i = 0; $i < $this->num_sth; ++$i){
 			$a = array();
 			$a[] = tohex(fread($h, 4));
-			if ($v >= 120 && $v < 130){
+			if ($v >= 122 && $v < 130){
 				$a[] = tohex(fread($h, 16));
 			}
 			$a[] = read_string($h, 1, $my);
@@ -2059,7 +2060,7 @@ class UIC__State_Mouse {
 		
 		$res .= pack('l', $this->mouse_state);
 		$res .= fromhex($this->state_uid);
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$res .= fromhex($this->b_sth);
 		}
 		$res .= fromhex($this->b0);
@@ -2068,7 +2069,7 @@ class UIC__State_Mouse {
 		foreach ($this->sth as $a){
 			$i = 0;
 			$res .= fromhex($a[ $i++ ]);
-			if ($v >= 120 && $v < 130){
+			if ($v >= 122 && $v < 130){
 				$res .= fromhex($a[ $i++ ]);
 			}
 			$res .= write_string($a[ $i++ ]);
@@ -2297,7 +2298,7 @@ class UIC__Func_Anim {
 				$this->b_hex[0] = tohex(fread($h, 2));
 				$this->b_hex[1] = tohex(fread($h, 2));
 			}
-			else if ($v >= 120 && $v < 130){
+			else if ($v >= 122 && $v < 130){
 				$this->b_hex[0] = tohex(fread($h, 2));
 				$this->b_str[1] = read_string($h, 1, $my);
 			}
@@ -2382,7 +2383,7 @@ class UIC__Func_Anim {
 		}
 		else if ($v >= 120 && $v < 130){
 			$this->b2 = tohex(fread($h, 2));
-			$this->b3 = read_string($h, 1, $my);
+			if ($v >= 122){ $this->b3 = read_string($h, 1, $my); }
 		}
 	}
 	public function debug(){
@@ -2493,7 +2494,7 @@ class UIC__Func_Anim {
 		}
 		else if ($v >= 120 && $v < 130){
 			$res .= fromhex($this->b2);
-			$res .= write_string($this->b3);
+			if ($v >= 122){ $res .= write_string($this->b3); }
 		}
 		
 		return $res;
@@ -2616,7 +2617,7 @@ class UIC_Template {
 		if ($v >= 110 && $v < 130){
 			$this->uid = tohex(fread($h, 4));
 		}
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b_sth = tohex(fread($h, 16));
 		}
 		
@@ -2626,15 +2627,15 @@ class UIC_Template {
 		$uic_t->read($h_t);
 		$uic_t = $uic_t->child[0];
 		
-		$this->num_template = array_shift(unpack('l', fread($h, 4)));
+		$this->num_template = my_unpack_one($this, 'l', fread($h, 4));
 		my_assert($this->num_template < 64, $this);
 		for ($i = 0; $i < $this->num_template; ++$i){
 			$this->template[] = $a = new UI_Template_Child();
 			$a->read($h, $this, $uic_t);
 		}
 		
-		$this->num_child = array_shift(unpack('l', fread($h, 4)));
-		my_assert($this->num_child < 20, $this);
+		$this->num_child = my_unpack_one($this, 'l', fread($h, 4));
+		my_assert($this->num_child < 40, $this);
 		for ($i = 0; $i < $this->num_child; ++$i){
 			$this->child[] = $a = new UIC();
 			$a->read($h, $this);
@@ -2698,7 +2699,7 @@ class UIC_Template {
 		if ($v >= 110 && $v < 130){
 			$res .= fromhex($this->uid);
 		}
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$res .= fromhex($this->b_sth);
 		}
 		
@@ -2784,7 +2785,7 @@ class UI_Template_Child {
 		$this->name_src = read_string($h, 1, $my); 
 		$this->name_dst = read_string($h, 1, $my, false); // uic dest name
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b_sth = tohex(fread($h, 16));
 			$num_states = my_unpack_one($my, 'l', fread($h, 4));
 			$this->states_sth = array();
@@ -2805,7 +2806,7 @@ class UI_Template_Child {
 			my_assert($this->num_events < 20, $my);
 			for ($i = 0; $i < $this->num_events; ++$i){
 				$a = read_string($h, 3, $this);
-				if ($v >= 125 && $v < 130){
+				if ($v >= 124 && $v < 130 || $v === 121){
 					$num_sth = my_unpack_one($this, 'l', fread($h, 4));
 					$b = array();
 					for ($j = 0; $j < $num_sth; ++$j){
@@ -2824,7 +2825,7 @@ class UI_Template_Child {
 		$this->b_floats = my_unpack_array($my, 'f4', fread($h, 4 * 4));
 		$this->b_ints = my_unpack_array($my, 'l2', fread($h, 4 * 2));
 		 // unknown
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b1 = tohex(fread($h, 2));
 		} else{
 			$this->b1 = tohex(fread($h, 1));
@@ -2841,7 +2842,7 @@ class UI_Template_Child {
 			$ch = $uic_t->find($this->name_src);
 		} else{ $ch = $uic_t; }
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b3 = tohex(fread($h, 1));
 		}
 		$i = 0;
@@ -2868,7 +2869,7 @@ class UI_Template_Child {
 			$a[] = read_utf8_string($h, 1, $my);
 			$a[] = read_utf8_string($h, 1, $my);
 			$a[] = read_utf8_string($h, 1, $my);
-			if ($v >= 120 && $v < 130){
+			if ($v >= 122 && $v < 130){
 				$a[] = tohex(fread($h, 1));
 			}
 			++$i;
@@ -2893,7 +2894,7 @@ class UI_Template_Child {
 			$this->images[] = read_string($h, 1, $my);
 		}
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$this->b4 = tohex(fread($h, 4));
 			
 			$num_sth = my_unpack_one($my, 'l', fread($h, 4));
@@ -2972,7 +2973,7 @@ class UI_Template_Child {
 		$res .= write_string($this->name_src);
 		$res .= write_string($this->name_dst);
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$res .= fromhex($this->b_sth);
 			$res .= pack('l', sizeof($this->states_sth));
 			foreach ($this->states_sth as $a){
@@ -2990,7 +2991,7 @@ class UI_Template_Child {
 			$res .= pack('l', sizeof($this->events));
 			foreach ($this->events as $a){
 				$res .= write_string(array_slice($a, 0, 3));
-				if ($v >= 125 && $v < 130){
+				if ($v >= 124 && $v < 130 || $v === 121){
 					$res .= pack('l', sizeof($a[3]));
 					foreach ($a[3] as $b){
 						$res .= write_string(array_slice($b, 0, 2));
@@ -3016,7 +3017,7 @@ class UI_Template_Child {
 		$res .= write_utf8_string($this->tooltip_id);
 		$res .= write_utf8_string($this->tooltip_text);
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$res .= fromhex($this->b3);
 		}
 		
@@ -3026,7 +3027,7 @@ class UI_Template_Child {
 			$res .= write_utf8_string($a[2]);
 			$res .= write_utf8_string($a[3]);
 			$res .= write_utf8_string($a[4]);
-			if ($v >= 120 && $v < 130){
+			if ($v >= 122 && $v < 130){
 				$res .= fromhex($a[5]);
 			}
 		}
@@ -3041,7 +3042,7 @@ class UI_Template_Child {
 			$res .= write_string($image);
 		}
 		
-		if ($v >= 120 && $v < 130){
+		if ($v >= 122 && $v < 130){
 			$res .= fromhex($this->b4);
 			
 			$res .= pack('l', sizeof($this->arr_sth));
@@ -3049,6 +3050,7 @@ class UI_Template_Child {
 				$res .= write_string($a[0]);
 				$res .= write_string($a[1]);
 				$res .= fromhex($a[2]);
+				$res .= fromhex($a[3]);
 			}
 			
 			$res .= pack('l', sizeof($this->images_sth));
