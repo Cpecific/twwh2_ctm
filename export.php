@@ -1124,7 +1124,14 @@ if (0){
 	}
 	
 	// help pages button
-	array_splice($ch->child, 1, 1);
+	// button_holder
+	list($btn_holder) = array_splice($ch->child, 1, 1);
+	// btn_info
+	$btn = $btn_holder->child[0];
+	$btn = $btn->template[0];
+	$btn->name_dst = 'CTM_change_theme';
+	$btn->tooltip_id = 'button_next_theme_Tooltip_650013';
+	$btn->tooltip_text = 'Next theme';
 	
 	// panel_title
 	$state = $ch->child[0]->child[0]->states[0];
@@ -1217,6 +1224,8 @@ if (0){
 	});
 	
 	// CTM
+	array_splice($ch->child, 1, 0, array($btn_holder));
+	$btn->images[0] = 'ui/campaign ui/edicts/wh_main_edict_venerate_the_ancestors.png';
 	$uic->eachChild(function($uic){
 		if ($uic instanceof UIC){
 			foreach ($uic->images as $im){
@@ -1231,6 +1240,7 @@ if (0){
 	file_put_contents('export/CTM_mortuary_cult', $uic->dumpFile());
 	
 	// warhammer2
+	$btn->images[0] = 'ui/campaign ui/edicts/lzd_alignment_of_artisanry.png';
 	$uic->eachChild(function($uic){
 		if ($uic instanceof UIC){
 			foreach ($uic->images as $im){
@@ -1294,30 +1304,30 @@ if (0){
 	}
 	
 	// invalid
-	array_splice($ch->states, 6, 1);
+	array_splice($ch->states, 3, 1);
 	
 	foreach ($ch->states as $state){
 		TF_SetBg($state);
 	}
 	
 	
-	$ch->states[] = $state = new UIC__State($ch->states[5]); // down
+	$ch->states[] = $state = new UIC__State($ch->states[0]); // down
 	$state->uid = '40 21 53 21';
 	$state->name = 'selected_down';
 	
-	$ch->states[] = $state = new UIC__State($ch->states[3]); // down_off
+	$ch->states[] = $state = new UIC__State($ch->states[1]); // down_off
 	$state->uid = 'A0 FD B0 1F';
 	$state->name = 'selected_down_off';
 	
 	$states = array(
-		'hover' => $ch->states[0],
-		'selected_hover' => $ch->states[1],
-		'unselected' => $ch->states[2],
-		'down_off' => $ch->states[3],
-		'selected' => $ch->states[4],
-		'down' => $ch->states[5],
+		'hover' => $ch->states[2],
+		'selected_hover' => $ch->states[4],
+		'unselected' => $ch->states[5],
+		'down_off' => $ch->states[1],
+		'selected' => $ch->states[3],
+		'down' => $ch->states[0],
 		'selected_down' => $ch->states[6],
-		'selected_down_off' => $ch->states[7]
+		'selected_down_off' => $ch->states[7],
 	);
 	
 	// hover
@@ -1328,6 +1338,7 @@ if (0){
 		'b0' => '00 00 00 00 00 00 00 00',
 		'sth' => array()
 	), $states['selected_hover']);
+	
 	// unselected
 	// down_off
 	// selected
