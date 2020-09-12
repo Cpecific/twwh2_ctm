@@ -318,6 +318,30 @@ $current_data = array(
 			'wh2_main_political_party_vor_hef_tyrion' => 'wh2_main_trait_defeated_tyrion'
 		)
 	),
+	array(
+		'wh2_dlc15_political_party_hef_eltharion',
+		array(
+			'wh2_dlc15_political_party_hef_eltharion' => 'wh2_dlc15_trait_defeated_eltharion'
+		)
+	),
+	array(
+		'wh2_dlc15_political_party_vor_hef_eltharion',
+		array(
+			'wh2_dlc15_political_party_vor_hef_eltharion' => 'wh2_dlc15_trait_defeated_eltharion'
+		)
+	),
+	array(
+		'wh2_dlc15_political_party_hef_imrik',
+		array(
+			'wh2_dlc15_political_party_hef_imrik' => 'wh2_dlc15_trait_defeated_imrik'
+		)
+	),
+	array(
+		'wh2_dlc15_political_party_vor_hef_imrik',
+		array(
+			'wh2_dlc15_political_party_vor_hef_imrik' => 'wh2_dlc15_trait_defeated_imrik'
+		)
+	),
 #endregion
 #region _cst_
 	array(
@@ -612,6 +636,18 @@ $current_data = array(
 		array(
 			'wh_main_political_party_greenskins_azhag' => 'wh2_main_trait_defeated_azhag_the_slaughterer',
 			'wh_main_political_party_greenskins_ruler' => 'wh2_main_trait_defeated_grimgor_ironhide'
+		)
+	),
+	array(
+		'wh2_dlc15_political_party_grn_grom',
+		array(
+			'wh2_dlc15_political_party_grn_grom' => 'wh2_dlc15_trait_defeated_grom'
+		)
+	),
+	array(
+		'wh2_dlc15_political_party_vor_grn_grom',
+		array(
+			'wh2_dlc15_political_party_vor_grn_grom' => 'wh2_dlc15_trait_defeated_grom'
 		)
 	),
 #endregion

@@ -106,7 +106,7 @@ foreach (
 		
 		$version = fread($h, 10);
 		$v = (int)substr($version, 7);
-		if ($v < 70 || $v >= 130){
+		if ($v < 70 || $v > 133){
 			var_dump('Unsupported Version'. $v.': '. $arr['FOLDER'] . $file);
 			continue;
 		}

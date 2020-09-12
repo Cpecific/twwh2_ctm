@@ -25,6 +25,8 @@ if (isset($DIR_DATA['templates'])){
 
 foreach ($DIR_DATA as $dir_key => $arr){
 	if (in_array($dir_key, array('export'))){ continue; }
+	// if (in_array($dir_key, array('templates', 'battle', 'campaign'))){ continue; }
+	// if (!in_array($dir_key, array('frontend'))){ continue; }
 	// if (!in_array($dir_key, array('templates'))){ continue; }
 	
 	$dir = $arr['DIR'];
@@ -64,6 +66,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 			fseek($h, 0, SEEK_SET);
 			$content = fread($h, $len);
 			
+			// continue;
 			file_put_contents('_check.tmp', $uic->dumpFile());
 			
 			$type = 'error_reconstruct';
@@ -83,7 +86,7 @@ foreach ($DIR_DATA as $dir_key => $arr){
 						break;
 					}
 				}
-				var_dump($i);
+				var_dump('Difference at: '. $i);
 				// var_dump(substr($content, $i - 40),
 					// substr($new, $i - 40));
 				throw new Exception('reconstruct');

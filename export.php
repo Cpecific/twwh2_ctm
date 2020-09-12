@@ -46,20 +46,81 @@ if (0){
 	// dy_trait
 	$ch_dy = $ch->child[0];
 	// bar_holder
-	$ch_holder = $ch->child[2];
+	$ch_holder = $ch->child[1];
 	// trait_bar
 	$ch_bar = $ch_holder->child[0];
 	// template_entry
 	$ch_level = $ch_bar->child[0];
-	$ch_bar->child = array(); // очищаем trait_bar
+	$ch_bar->child = array($ch_level);
+	
+// $ch_bar
+if (true){
+	$ch_bar->offset = array('top' => 32 + 4, 'left' => 10);
+	$ch_bar->docking = 0;
+	// $ch_bar->images[0]->path = 'ui/skins/default/CTM_trait_frame.png';
+	$ch_bar->images[0]->path = 'ui/skins/default/trait_frame.png';
+	$state = $ch_bar->states[0];
+	$state->name = 'active';
+	$state->bounds = array(67, 16 + 4);
+	$state->b7 = '00 00 00 00';
+	$state->bgs[0]->dock = array('right' => 1, 'bottom' => 0);
+	
+	$ch_bar->states[] = $state = new UIC__State($state);
+	$state->uid = 'A0 CC FE 0F';
+	$state->name = 'inactive';
+	// $state->shader_name = 'set_greyscale_t0';
+	// $state->shadervars = array(1, 0.6, 0, 0);
+	$bg = $state->bgs[0];
+	$bg->shader_name = 'set_greyscale_t0';
+	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
+}
+	
+// $ch_level
+if (true){
+	$ch_level->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	$ch_level->tooltip_text = '';
+	$ch_level->tooltip_id = '';
+	// frame_current
+	$ch_level->child[1]->b_01 = '00 00 00 00 00 00 00 00 00 00 00 00';
+	
+	$ch_level = $ch_level->child[0];
+	// $ch->images[0]->path = 'ui/skins/default/trait_fill_0.png';
+	// $ch->images[1]->path = 'ui/skins/default/trait_fill_m3.png';
+	// $ch->images[2]->path = 'ui/skins/default/trait_fill_m2.png';
+	// $ch->images[3]->path = 'ui/skins/default/trait_fill_m1.png';
+	// $ch->images[4]->path = 'ui/skins/default/trait_fill_p1.png';
+	// $ch->images[5]->path = 'ui/skins/default/trait_fill_p2.png';
+	// $ch->images[6]->path = 'ui/skins/default/trait_fill_p3.png';
+	
+	for ($i = 0, $to = sizeof($ch_level->states); $i < $to; ++$i){
+		$ch_level->states[] = $state = new UIC__State($ch_level->states[ $i ]);
+		$uid = -array_shift(unpack('L1', fromhex($state->uid)));
+		$state->uid = tohex(pack('L1', $uid));
+		$state->name = 'i'. $state->name;
+		$state->shader_name = 'set_greyscale_t0';
+		$state->shadervars = array(1, 0.6, 0, 0);
+	}
+	
+	$ch_level = $ch_level->parent->child[1];
+	// $ch->images[0]->path = 'ui/skins/default/CTM_trait_frame_current.png';
+	// $ch->images[0]->path = 'ui/skins/default/trait_frame_current.png';
+	$ch_level->states[0]->name = 'active';
+	$ch_level->states[] = $state = new UIC__State($ch_level->states[0]);
+	$uid = -array_shift(unpack('L1', fromhex($state->uid)));
+	$state->uid = tohex(pack('L1', $uid));
+	$state->name = 'inactive';
+	$state->shader_name = 'set_greyscale_t0';
+	$state->shadervars = array(1, 0.6, 0, 0);
+}
 	
 	$uic->child = array($ch);
 	$ch->parent = $uic;
-	$ch->child = array();
+	$ch->child = array($ch_bar);
 	
 	if (true){
 		$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
-		$ch->images[0]->path = 'ui\\skins\\default\\CTM_parchment_button_square_hover.png';
+		// $ch->images[0]->path = 'ui\\skins\\default\\CTM_parchment_button_square_hover.png';
+		$ch->images[0]->path = 'ui/skins/default/parchment_button_square_hover.png';
 		
 		$margin = array('top' => 3 + 4, 'left' => 10);
 		$img_size = 24;
@@ -161,7 +222,8 @@ if (0){
 	if (true){
 		$ch->images[] = $image = new UIC__Image(array(
 			'uid' => '40 13 AA 0F',
-			'path' => 'ui\\skins\\default\\CTM_alert_dot.png',
+			// 'path' => 'ui\\skins\\default\\CTM_alert_dot.png',
+			'path' => 'ui/skins/default/CTM_alert_dot.png',
 			'width' => 18,
 			'height' => 18,
 			'extra' => '00'
@@ -221,10 +283,11 @@ if (0){
 	file_put_contents('export/CTM_trait_template', $uic->dumpFile());
 	
 	// wh2
-	$ch->images[0]->path = 'ui/skins/default/CTM_parchment_button_square_hover_wh2.png';
-	file_put_contents('export/CTM_trait_template_wh2', $uic->dumpFile());
+	// $ch->images[0]->path = 'ui/skins/default/CTM_parchment_button_square_hover_wh2.png';
+	// file_put_contents('export/CTM_trait_template_wh2', $uic->dumpFile());
 	
 // CTM_trait_dy_trait
+if (true){
 	$ch = $ch_dy;
 	$uic->child = array($ch);
 	$ch->parent = $uic;
@@ -254,96 +317,61 @@ if (0){
 	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_dy_trait', $uic->dumpFile());
+}
 	
 // CTM_trait_bar_holder
+if (false){
 	$ch = new UIC($ch_bar, $uic);
 	$uic->child = array($ch);
-	
-	$ch->offset = array('top' => 32 + 4, 'left' => 10);
-	$ch->docking = 0;
-	$ch->images[0]->path = 'ui/skins/default/CTM_trait_frame.png';
-	$state = $ch->states[0];
-	$state->name = 'active';
-	$state->bounds = array(67, 16 + 4);
-	$state->b7 = '00 00 00 00';
-	$state->bgs[0]->dock = array('right' => 1, 'bottom' => 0);
-	
-	$ch->states[] = $state = new UIC__State($state);
-	$state->uid = 'A0 CC FE 0F';
-	$state->name = 'inactive';
-	// $state->shader_name = 'set_greyscale_t0';
-	// $state->shadervars = array(1, 0.6, 0, 0);
-	$bg = $state->bgs[0];
-	$bg->shader_name = 'set_greyscale_t0';
-	$bg->shadertechnique_vars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_bar_holder', $uic->dumpFile());
 	
 	// wh2
-	$ch->images[0]->path = 'ui/skins/default/CTM_trait_frame_wh2.png';
-	file_put_contents('export/CTM_trait_bar_holder_wh2', $uic->dumpFile());
+	// $ch->images[0]->path = 'ui/skins/default/CTM_trait_frame_wh2.png';
+	// file_put_contents('export/CTM_trait_bar_holder_wh2', $uic->dumpFile());
+}
 	
 // CTM_horizontal_bar
+if (true){
 	$ch = new UIC($ch_bar, $uic);
 	$uic->child = array($ch);
+	$ch->child = array();
 	
 	$ch->name = 'horizontal_bar';
 	$ch->offset = array('top' => 0, 'left' => 0);
+	$ch->docking = 0;
 	$ch->b7 = '00 00 00 00';
 	$ch->b_01 = '01 01 00 00 00 00 01 00 00 00 00 01';
 	$ch->images = array();
 	$state = $ch->states[0];
 	$state->textalign['vertical'] = 1;
 	$state->bgs = array();
+	// $state->b7 = '01 00 00 00';
+	$ch->states = array($state);
 	// padding left and right
 	$ch->after[2][6] = 0;
 	$ch->after[2][7] = 0;
 	
 	file_put_contents('export/CTM_horizontal_bar', $uic->dumpFile());
+}
 	
 // CTM_trait_level_template
+if (false){
 	$ch = $ch_level;
 	$uic->child = array($ch);
 	$ch->parent = $uic;
-	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
-	$ch->tooltip_text = '';
-	$ch->tooltip_id = '';
-	// frame_current
-	$ch->child[1]->b_01 = '00 00 00 00 00 00 00 00 00 00 00 00';
-	
-	$ch = $ch->child[0];
-	foreach ($ch->images as $im){
-		$im->path = str_replace('\\default\\', '\\default\\CTM_', $im->path);
-	}
-	for ($i = 0, $to = sizeof($ch->states); $i < $to; ++$i){
-		$ch->states[] = $state = new UIC__State($ch->states[ $i ]);
-		$uid = -array_shift(unpack('L1', fromhex($state->uid)));
-		$state->uid = tohex(pack('L1', $uid));
-		$state->name = 'i'. $state->name;
-		$state->shader_name = 'set_greyscale_t0';
-		$state->shadervars = array(1, 0.6, 0, 0);
-	}
-	
-	$ch = $ch->parent->child[1];
-	$ch->images[0]->path = str_replace('\\default\\', '\\default\\CTM_', $ch->images[0]->path);
-	$ch->states[0]->name = 'active';
-	$ch->states[] = $state = new UIC__State($ch->states[0]);
-	$uid = -array_shift(unpack('L1', fromhex($state->uid)));
-	$state->uid = tohex(pack('L1', $uid));
-	$state->name = 'inactive';
-	$state->shader_name = 'set_greyscale_t0';
-	$state->shadervars = array(1, 0.6, 0, 0);
 	
 	file_put_contents('export/CTM_trait_level_template', $uic->dumpFile());
 	
 	// warhammer2
-	$ch->images[0]->path = str_replace('.png', '_wh2.png', $ch->images[0]->path);
-	$ch = $ch->parent->child[0];
-	foreach ($ch->images as $im){
-		$im->path = str_replace('.png', '_wh2.png', $im->path);
-	}
+	// $ch->images[0]->path = str_replace('.png', '_wh2.png', $ch->images[0]->path);
+	// $ch = $ch->parent->child[0];
+	// foreach ($ch->images as $im){
+		// $im->path = str_replace('.png', '_wh2.png', $im->path);
+	// }
 	
-	file_put_contents('export/CTM_trait_level_template_wh2', $uic->dumpFile());
+	// file_put_contents('export/CTM_trait_level_template_wh2', $uic->dumpFile());
+}
 }
 
 // CTM_character_trait_tooltip
@@ -358,7 +386,8 @@ if (0){
 	
 	// root > character_trait_tooltip
 	$ch = $uic->child[0];
-	$ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame.png';
+	// $ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame.png';
+	$ch->images[0]->path = 'ui/skins/default/tooltip_frame.png';
 	// traits_list > template_entry
 	$ch_template = $ch->child[3]->child[0];
 	
@@ -371,8 +400,8 @@ if (0){
 	file_put_contents('export/CTM_character_trait_tooltip', $uic->dumpFile());
 	
 	// wh2
-	$ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame_wh2.png';
-	file_put_contents('export/CTM_character_trait_tooltip_wh2', $uic->dumpFile());
+	// $ch->images[0]->path = 'ui/skins/default/CTM_tooltip_frame_wh2.png';
+	// file_put_contents('export/CTM_character_trait_tooltip_wh2', $uic->dumpFile());
 	
 	$ch = $ch_template;
 	$uic->child = array($ch);
@@ -574,7 +603,8 @@ if (true){
 	$ch_rroot->images = array(
 		$image = new UIC__Image(array(
 			'uid' => '11 BA 52 02',
-			'path' => 'ui/skins/default/CTM_parchment_texture.png',
+			// 'path' => 'ui/skins/default/CTM_parchment_texture.png',
+			'path' => 'ui/skins/default/parchment_texture.png',
 			'width' => 256,
 			'height' => 256,
 			'extra' => '00'
@@ -687,9 +717,9 @@ if (true){
 	
 	file_put_contents('export/CTM_panel', $uic->dumpFile());
 	
-	$ch_lroot->images[0]->path = 'ui/skins/default/CTM_leather_wh2.png';
-	$ch_rroot->images[0]->path = 'ui/skins/default/CTM_parchment_texture_wh2.png';
-	file_put_contents('export/CTM_panel_wh2', $uic->dumpFile());
+	// $ch_lroot->images[0]->path = 'ui/skins/default/CTM_leather_wh2.png';
+	// $ch_rroot->images[0]->path = 'ui/skins/default/CTM_parchment_texture_wh2.png';
+	// file_put_contents('export/CTM_panel_wh2', $uic->dumpFile());
 }
 
 // CTM_lord_btn
@@ -712,8 +742,8 @@ if (0){
 	$ch->b_01 = '01 01 00 00 00 00 01 00 00 00 00 01';
 	$ch->offset = array('left' => 0, 'top' => 0);
 	
-	
-	$ch->images[1]->path = 'ui\\skins\\default\\CTM_lord_portrait_frame.png';
+	$ch->images[0]->path = '';
+	$ch->images[1]->path = 'ui/skins/default/CTM_lord_portrait_frame.png';
 	
 	list($s_active,
 		$s_down,
@@ -744,8 +774,6 @@ if (0){
 	// down
 	$a = $s_down;
 	array_splice($a->mouse, 0, 1);
-	// $b = $a->mouse[0];
-	// $b->state_uid = $s_selected_hover->uid;
 	
 	// selected
 	$a = $s_selected;
@@ -788,12 +816,6 @@ if (0){
 	$a->shadervars = array(0.5, 0, 0, 0);
 	$a->b_mouse = '0C 01 00 00 78 00 00 00';
 	$a->mouse = array(
-		// #removed in agents update
-		// new UIC__State_Mouse(array(
-			// 'mouse_state' => 3,
-			// 'state_uid' => $s_hover->uid,
-			// 'b0' => '00 00 00 00 | 00 00 00 00'
-		// ), $a),
 		new UIC__State_Mouse(array(
 			'mouse_state' => 1,
 			'state_uid' => $s_selected_down_off->uid,
@@ -857,8 +879,6 @@ if (0){
 	$ch->dynamic = array();
 	$ch->after[1] = '';
 	
-	// var_dump($uic->debug());exit;
-	
 	file_put_contents('export/CTM_lord_btn', $uic->dumpFile());
 }
 
@@ -874,8 +894,7 @@ if (0){
 	
 	$uic->events = array();
 	
-	// SI_dial > button_parent
-	// $ch = $uic->child[0]->child[5];
+	// character_information > rank
 	$ch = $uic->child[0]->child[10];
 	$ch->parent = $uic;
 	$uic->child = array($ch);
@@ -885,7 +904,8 @@ if (0){
 	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
 	$ch->docking = 1;
 	$ch->dock_offset = array('left' => 52, 'top' => 150);
-	$ch->images[0]->path = 'ui\\skins\\default\\CTM_rank_dspl_back.png';
+	// $ch->images[0]->path = 'ui/skins/default/CTM_rank_dspl_back.png';
+	$ch->images[0]->path = 'ui/skins/default/rank_dspl_back.png';
 	$ch->dynamic = array();
 	$ch->funcs = array();
 	
@@ -899,7 +919,8 @@ if (0){
 	$ch->child[0]->b_01 = '00 00 00 00 00 00 01 01 00 00 00 01';
 	
 	$ch->child[1]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
-	$ch->child[1]->images[0]->path = 'ui\\skins\\default\\CTM_rank_dspl_zero.png';
+	// $ch->child[1]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_zero.png';
+	$ch->child[1]->images[0]->path = 'ui/skins/default/rank_dspl_zero.png';
 	
 	$ch->child[2]->events = array();
 	$ch->child[2]->b_01 = '00 00 00 00 00 00 01 01 00 00 00 01';
@@ -907,7 +928,8 @@ if (0){
 	
 	$ch->child[3]->events = array();
 	$ch->child[3]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
-	$ch->child[3]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_frame.png';
+	// $ch->child[3]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_frame.png';
+	$ch->child[3]->images[0]->path = 'ui/skins/default/rank_dspl_frame.png';
 	array_splice($ch->child[3]->states, 4, 1); // inactive
 	$ch->child[3]->dynamic = array();
 	$ch->child[3]->after[1] = '';
@@ -1012,7 +1034,8 @@ if (true){
 	$uic_a->read($h);
 	fclose($h);
 	
-	$ch_a = $uic_a->child[0]->child[5]->child[0];
+	// layout > info_panel_holder > primary_info_panel_holder
+	$ch_a = $uic_a->child[0]->child[6]->child[0];
 	$ch = $uic->child[0];
 	$ch->docking = 7;
 	$ch->dock_offset = $offset = array('left' => 52, 'top' => -62);
@@ -1090,6 +1113,7 @@ if (true){
 }
 
 // CTM_mortuary_cult
+// CTM_trait_filter
 if (0){
 	$h = fopen($DIR_DATA['campaign']['DIR'] . 'mortuary_cult', 'r');
 	if (!$h){ throw new Exception('FILE'); }
@@ -1100,6 +1124,12 @@ if (0){
 	
 	// mortuary_cult
 	$ch = $uic->child[0];
+	$ch->images[0]->path = 'ui/skins/default/panel_back_border.png';
+	$ch->images[1]->path = 'ui/skins/default/panel_back_tile.png';
+	$ch->images[2]->path = 'ui/skins/default/panel_back_top.png';
+	$ch->images[3]->path = 'ui/skins/default/panel_back_bottom.png';
+	$ch->images[4]->path = 'ui/skins/default/parchment_texture.png';
+	$ch->states[0]->bgs[0]->margin = array(24, 24, 24, 24);
 	
 	if (1){
 		$ov = new UIC($ch);
@@ -1134,6 +1164,9 @@ if (0){
 	$btn->tooltip_text = 'Next theme';
 	
 	// panel_title
+	$ch->child[0]->images[0]->path = 'ui/skins/default/mortuary_cult_title_frame.png';
+	
+	// panel_title > tx
 	$state = $ch->child[0]->child[0]->states[0];
 	$state->text = '';//'{{tr:traits}}';
 	$state->textlabel = 'tx_traits_NewState_Text_680041';
@@ -1184,8 +1217,9 @@ if (0){
 		array('maxValue', '100'),
 		array('Notify', '')
 	);
-	array_splice($ch->child, 2, 0, array($list = new UIC($list)));
 	
+	// filterbox
+	array_splice($ch->child, 2, 0, array($list = new UIC($list)));
 	$right_width = 253;
 	$list->states[0]->bounds[0] = $right_width;
 	$clip = $list->child[0];
@@ -1200,7 +1234,7 @@ if (0){
 	$list->dock_offset['left'] = -16;
 	$list->images[] = $im = new UIC__Image(array(
 		'uid' => '11 BA 52 02',
-		'path' => 'ui\\skins\\default\\parchment_texture.png',
+		'path' => 'ui/skins/default/parchment_texture.png',
 		'width' => 256,
 		'height' => 256,
 		'extra' => '00'
@@ -1212,6 +1246,7 @@ if (0){
 	$bg->colour = 'FF FF FF FF';
 	$bg->tile = 1;
 	$bg->margin = array(50, 50, 50, 50);
+	$list->child[1]->template[5]->b_floats[0] -= 10;
 	$list->child[1]->template[5]->b_floats[1] += 14;
 	$list->child[1]->template[5]->b_floats[3] -= 28;
 	
@@ -1224,36 +1259,10 @@ if (0){
 	});
 	
 	// CTM
-	array_splice($ch->child, 1, 0, array($btn_holder));
-	$btn->images[0] = 'ui/campaign ui/edicts/wh_main_edict_venerate_the_ancestors.png';
-	$uic->eachChild(function($uic){
-		if ($uic instanceof UIC){
-			foreach ($uic->images as $im){
-				$pos = strpos($im->path, 'ui\\skins\\default\\');
-				if ($pos !== false){
-					$im->path = str_replace('ui\\skins\\default\\', 'ui\\skins\\default\\CTM_', $im->path);
-				}
-			}
-		}
-	});
-	
+	// next theme button (deprecated)
+	// array_splice($ch->child, 1, 0, array($btn_holder));
+	// $btn->images[0] = 'ui/campaign ui/edicts/wh_main_edict_venerate_the_ancestors.png';
 	file_put_contents('export/CTM_mortuary_cult', $uic->dumpFile());
-	
-	// warhammer2
-	$btn->images[0] = 'ui/campaign ui/edicts/lzd_alignment_of_artisanry.png';
-	$uic->eachChild(function($uic){
-		if ($uic instanceof UIC){
-			foreach ($uic->images as $im){
-				$pos = strpos($im->path, 'ui\\skins\\default\\');
-				if ($pos !== false){
-					$im->path = mb_substr($im->path, 0, mb_strlen($im->path) - 4) .'_wh2.png';
-				}
-			}
-		}
-	});
-	
-	file_put_contents('export/CTM_mortuary_cult_wh2', $uic->dumpFile());
-	
 	
 	
 	
@@ -1269,7 +1278,8 @@ if (0){
 	
 	array_splice($ch->images, 0, 0, array($im = new UIC__Image(array(
 		'uid' => '70 0B 01 0F',
-		'path' => 'ui\\skins\\default\\construction_positive.png',
+		// 'path' => 'ui/skins/default/construction_positive.png',
+		'path' => '',
 		'width' => 1,
 		'height' => 0,
 		'extra' => '00'
@@ -1354,22 +1364,19 @@ if (0){
 	$m[0]->state_uid = $states['selected_down']->uid;
 	$m[1]->state_uid = $states['selected']->uid;
 	
-	foreach ($ch->images as $i => $im){
-		if ($i > 0){
-			$im->path = str_replace('\\default\\', '\\default\\CTM_', $im->path);
-		}
-	}
+	// $ch->images[1]->path = 'ui/skins/default/parchment_row_selected_hover.png';
+	// $ch->images[2]->path = 'ui/skins/default/parchment_row_hover.png';
+	// $ch->images[3]->path = 'ui/skins/default/parchment_row_selected.png';
+	// $ch->images[4]->path = 'ui/skins/default/parchment_row_selected_hover_underline.png';
+	// $ch->images[5]->path = 'ui/skins/default/parchment_row_selected_underline.png';
+	// $ch->images[6]->path = 'ui/skins/default/parchment_row_hover_underline.png';
+	// $ch->images[7]->path = 'ui/skins/default/parchment_row_pressed.png';
+	// $ch->images[8]->path = 'ui/skins/default/parchment_row_pressed_underline.png';
 	
 	file_put_contents('export/CTM_trait_filter', $uic->dumpFile());
 	
-	// warhammer2
-	foreach ($ch->images as $i => $im){
-		if ($i > 0){
-			$im->path = str_replace('.png', '_wh2.png', $im->path);
-		}
-	}
-	
-	file_put_contents('export/CTM_trait_filter_wh2', $uic->dumpFile());
+	// warhammer2	
+	// file_put_contents('export/CTM_trait_filter_wh2', $uic->dumpFile());
 }
 
 // CTM_add_trait_template
@@ -1382,13 +1389,15 @@ if (0){
 	fclose($h);
 	
 	$ch = $uic->child[0];
+	$ch->child = array();
 	
 	array_splice($ch->states, 0, 5);
 	array_splice($ch->states, 4, 1); // inactive
 	$ch->default_state = $ch->states[0]->uid;
 	foreach ($ch->states as $state){
 		$state->name = mb_substr($state->name, 0, mb_strlen($state->name) - 9);
-		$state->bgs[1]->colour = '5F 98 AF FF';
+		// $state->bgs[1]->colour = '5F 98 AF FF';
+		$state->bgs[1]->colour = '00 00 00 2D';
 	}
 	
 	
@@ -1401,8 +1410,10 @@ if (0){
 	
 	$ch->child[] = $uic_dy->child[0];
 	$ch->child[0]->parent = $ch;
+	// $ch->images[0]->path = 'ui/skins/default/parchment_button_square_hover.png';
 	$ch = $ch->child[0];
-	$ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small.png';
+	// $ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small.png';
+	$ch->images[0]->path = 'ui/skins/default/icon_plus_small.png';
 	array_splice($ch->states, 1); // inactive
 	foreach ($ch->states as $state){
 		$state->bounds = array(253 - 10 - 2, 62 - 5);
@@ -1412,15 +1423,20 @@ if (0){
 	file_put_contents('export/CTM_add_trait_template', $uic->dumpFile());
 	
 	// wh2
+if (false){
 	$ch = $ch->parent;
-	$ch->images[0]->path = 'ui\skins\default\CTM_parchment_button_square_hover_wh2.png';
+	// $ch->images[0]->path = 'ui/skins/default/CTM_parchment_button_square_hover_wh2.png';
+	$ch->images[0]->path = 'ui/skins/warhammer2/parchment_button_square_hover.png';
 	foreach ($ch->states as $state){
+		// alert_dot
 		$state->bgs[1]->colour = '91 99 9B FF';
 	}
 	$ch = $ch->child[0];
-	$ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small_wh2.png';
+	// $ch->images[0]->path = 'ui/skins/default/CTM_icon_plus_small_wh2.png';
+	$ch->images[0]->path = 'ui/skins/warhammer2/icon_plus_small.png';
 	
 	file_put_contents('export/CTM_add_trait_template_wh2', $uic->dumpFile());
+}
 }
 
 

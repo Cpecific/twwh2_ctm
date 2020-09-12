@@ -9,8 +9,57 @@
 		top: 0; left: 0; width: @left-width; height: 100%; border-right: 2px solid #777;
 		> thead > tr > td { padding: 5px 5px 0; background: #fff; }
 		> tbody > tr > td {
-			 border-top: 2px solid #777;
+			border-top: 2px solid #777;
 			> div { height: 100%; overflow-y: scroll; }
+		}
+		.tab {
+			background: #ddd; color: #999; // 9e9e9e
+			padding: 6px 10px;
+			&:hover { backgro2und: #757575; color: #666; }
+			&.active { background: #2196f3; color: #fff; }
+			// &.active:hover { background: #1e88e5; }
+			&-cont {
+				> :nth-child(1) { border-top-left-radius: 4px; }
+				> :nth-last-child(2) { border-top-right-radius: 4px; }
+			}
+		}
+		.top-button {
+			background: #e0f7fa;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+			padding: 6px 10px;
+			&:hover { background: #b2ebf2; }
+			&-cont {
+				margin-left: auto;
+				& > .top-button { margin-left: 4px; }
+			}
+		}
+		.print {
+			&-block {
+				font-family: consolas;
+				word-break: break-word;
+			}
+			// &-key { color: #dcdccc; font-weight: bold; }
+			&-key { color: #000; font-weight: bold; }
+			&-string {
+				color: #bf4949;
+				&.has-tooltip {
+					background: #f9f3f3;
+					&:hover { background: #f5e7e7; color: #951f1f; }
+					&.tooltip-active { background: #e8d0d0; color: #951f1f; }
+				}
+			}
+			&-number { color: #2696ce; }
+			&-object { color: #a6c544; font-weight: bold; font-style: italic; }
+			&-collapsable {
+				&.hover, &.active {
+					background: #e0f7fa;
+				}
+				&.active {
+					&.hover { background: #eefdff; }
+					> :nth-child(n + 2) { display: none; }
+				}
+			}
 		}
 	}
 	#ui_left {
@@ -37,36 +86,10 @@
 		
 		#ui_info {
 			// background: #3f3f3f; color: #dcdccc;
+			white-space: break-spaces;
+			word-break: break-all;
 		}
 	}
-}
-
-.tab {
-	background: #ddd; color: #999; // 9e9e9e
-	padding: 6px 10px;
-	&:hover { backgro2und: #757575; color: #666; }
-	&.active { background: #2196f3; color: #fff; }
-	// &.active:hover { background: #1e88e5; }
-	&-cont {
-		> :nth-child(1) { border-top-left-radius: 4px; }
-		> :nth-last-child(2) { border-top-right-radius: 4px; }
-	}
-}
-
-.print {
-	&-block { font-family: consolas; }
-	// &-key { color: #dcdccc; font-weight: bold; }
-	&-key { color: #000; font-weight: bold; }
-	&-string {
-		color: #bf4949;
-		&.has-tooltip {
-			background: #f9f3f3;
-			&:hover { background: #f5e7e7; color: #951f1f; }
-			&.tooltip-active { background: #e8d0d0; color: #951f1f; }
-		}
-	}
-	&-number { color: #2696ce; }
-	&-object { color: #a6c544; font-weight: bold; font-style: italic; }
 }
 
 

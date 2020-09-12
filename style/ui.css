@@ -19,6 +19,80 @@
   height: 100%;
   overflow-y: scroll;
 }
+#ui_manager #ui_left_outer .tab {
+  background: #ddd;
+  color: #999;
+  padding: 6px 10px;
+}
+#ui_manager #ui_left_outer .tab:hover {
+  backgro2und: #757575;
+  color: #666;
+}
+#ui_manager #ui_left_outer .tab.active {
+  background: #2196f3;
+  color: #fff;
+}
+#ui_manager #ui_left_outer .tab-cont > :nth-child(1) {
+  border-top-left-radius: 4px;
+}
+#ui_manager #ui_left_outer .tab-cont > :nth-last-child(2) {
+  border-top-right-radius: 4px;
+}
+#ui_manager #ui_left_outer .top-button {
+  background: #e0f7fa;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  padding: 6px 10px;
+}
+#ui_manager #ui_left_outer .top-button:hover {
+  background: #b2ebf2;
+}
+#ui_manager #ui_left_outer .top-button-cont {
+  margin-left: auto;
+}
+#ui_manager #ui_left_outer .top-button-cont > .top-button {
+  margin-left: 4px;
+}
+#ui_manager #ui_left_outer .print-block {
+  font-family: consolas;
+  word-break: break-word;
+}
+#ui_manager #ui_left_outer .print-key {
+  color: #000;
+  font-weight: bold;
+}
+#ui_manager #ui_left_outer .print-string {
+  color: #bf4949;
+}
+#ui_manager #ui_left_outer .print-string.has-tooltip {
+  background: #f9f3f3;
+}
+#ui_manager #ui_left_outer .print-string.has-tooltip:hover {
+  background: #f5e7e7;
+  color: #951f1f;
+}
+#ui_manager #ui_left_outer .print-string.has-tooltip.tooltip-active {
+  background: #e8d0d0;
+  color: #951f1f;
+}
+#ui_manager #ui_left_outer .print-number {
+  color: #2696ce;
+}
+#ui_manager #ui_left_outer .print-object {
+  color: #a6c544;
+  font-weight: bold;
+  font-style: italic;
+}
+#ui_manager #ui_left_outer .print-collapsable.hover,
+#ui_manager #ui_left_outer .print-collapsable.active {
+  background: #e0f7fa;
+}
+#ui_manager #ui_left_outer .print-collapsable.active.hover {
+  background: #eefdff;
+}
+#ui_manager #ui_left_outer .print-collapsable.active > :nth-child(n + 2) {
+  display: none;
+}
 #ui_manager #ui_left {
   width: 100%;
 }
@@ -51,51 +125,7 @@
 #ui_manager #ui_left #ui_directories .dir-file {
   padding-left: 20px;
 }
-.tab {
-  background: #ddd;
-  color: #999;
-  padding: 6px 10px;
-}
-.tab:hover {
-  backgro2und: #757575;
-  color: #666;
-}
-.tab.active {
-  background: #2196f3;
-  color: #fff;
-}
-.tab-cont > :nth-child(1) {
-  border-top-left-radius: 4px;
-}
-.tab-cont > :nth-last-child(2) {
-  border-top-right-radius: 4px;
-}
-.print-block {
-  font-family: consolas;
-}
-.print-key {
-  color: #000;
-  font-weight: bold;
-}
-.print-string {
-  color: #bf4949;
-}
-.print-string.has-tooltip {
-  background: #f9f3f3;
-}
-.print-string.has-tooltip:hover {
-  background: #f5e7e7;
-  color: #951f1f;
-}
-.print-string.has-tooltip.tooltip-active {
-  background: #e8d0d0;
-  color: #951f1f;
-}
-.print-number {
-  color: #2696ce;
-}
-.print-object {
-  color: #a6c544;
-  font-weight: bold;
-  font-style: italic;
+#ui_manager #ui_left #ui_info {
+  white-space: break-spaces;
+  word-break: break-all;
 }

@@ -70,10 +70,9 @@ end
 If you can't make this shit work, contact me vahonin.prog@gmail.com
 
 # UI Layout Parser
-So, i fucked up a lot with wasting time. It's another example in recent years that Google is shit and I can't find anything useful in it.
-There is parser by __Alpaca__ and his inheritor __taw__, which I found, when already completed my parser (not like i wouldn't need to spend weeks of hard work on this project, but it could save me a couple of weeks).
+There is parser by __Alpaca__ and his inheritor __taw__ for older versions.
 
-Anyway, my parser "supports" version from 70 to 129; has a lot of deciphered fields; examples of use in `export.php`, outdated as a reference, but still can be used; easier (compared to xml) web representation in `ui.php`.
+My parser "supports" version from 70 to 133; has a lot of deciphered fields; examples of use in `export.php`, outdated as a reference, but still can be used; easier (compared to xml) web representation in `ui.php`.
 
 Supported games:
 * Warhammer
@@ -82,6 +81,6 @@ Supported games:
 * Three Kingdoms
 
 You need to export (preferably the whole) `/ui` folder with Pack Manager into `/game`.
-For viewing files run `/ui.php`, for debugging run `/dump.php`.
+For viewing files run `/ui.php`, for debugging use `/dump.php`.
 
 But beware pioneers, CA's UI is pain in the ass.

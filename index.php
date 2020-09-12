@@ -1,7 +1,7 @@
 <?php
 
 $mini = 2;
-define('JAVASCRIPT', !false);
+define('JAVASCRIPT', false);
 define('IS_MODDED', true);
 
 // FILL THIS ARRAY IF YOU HAVE REPLACED data__ IN SOME TABLES
@@ -55,7 +55,7 @@ function isAssoc(array $arr){
     if (array() === $arr){ return false; }
     return (array_keys($arr) !== range(0, sizeof($arr) - 1));
 }
-function my_print($a, $level, $mini){
+function my_print($a, $level = "\t", $mini = 0){
 	if ($a instanceof Ref || $a instanceof StringCnt){
 		return $a;
 	}
@@ -152,7 +152,10 @@ $tables_info = array(
 			array( 'NAME' => 'has_female_name',					'TYPE' => 'bool',			'EXCLUDE' => true ),
 			array( 'NAME' => 'can_gain_xp',						'TYPE' => 'bool' ),
 			array( 'NAME' => 'loyalty_is_applicable',			'TYPE' => 'bool',			'EXCLUDE' => true ),
-			array( 'NAME' => 'contributes_to_agent_cap',		'TYPE' => 'bool',			'EXCLUDE' => true )
+			array( 'NAME' => 'contributes_to_agent_cap',		'TYPE' => 'bool',			'EXCLUDE' => true ),
+			array( 'NAME' => 'category',						'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'magic_lore',						'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'audio_vo_culture_override',		'TYPE' => 'optstring',		'EXCLUDE' => true )
 		)
 	),
 	'character_trait_levels' => array(
@@ -606,7 +609,6 @@ $tables_info = array(
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',							'TYPE' => 'string_ascii' ),
-			array( 'NAME' => 'supercedes_ability',			'TYPE' => 'optstring',		'EXCLUDE' => true ),
 			array( 'NAME' => 'requires_effect_enabling',	'TYPE' => 'bool',			'EXCLUDE' => true ),
 			array( 'NAME' => 'icon_name',					'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'overpower_option',			'TYPE' => 'optstring',		'EXCLUDE' => true ),
@@ -615,7 +617,9 @@ $tables_info = array(
 			array( 'NAME' => 'uniqueness',					'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
 			array( 'NAME' => 'is_unit_upgrade',				'TYPE' => 'bool',			'EXCLUDE' => true ),
 			array( 'NAME' => 'is_hidden_in_ui',				'TYPE' => 'bool',			'EXCLUDE' => true ),
-			array( 'NAME' => 'source_type',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+			array( 'NAME' => 'icon_type',					'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
+			array( 'NAME' => 'supercedes_ability',			'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'is_hidden_in_ui_for_enemy',	'TYPE' => 'bool',			'EXCLUDE' => true )
 		)
 	)
 #endregion
@@ -724,8 +728,8 @@ foreach ($tables_info as $tbl_name => $tbl_info){
 // FAST WAY TO REMOVE YOUR MOD (WITHOUT REMOVING FILES)
 if (0){
 	foreach (array(
-		'trait_level_effects' => array('Isenhart_traits_data__', 'Isenhart_traitsBRT_data__'),
-		'character_trait_levels' => array('Isenhart_traits_data__', 'Isenhart_traitsBRT_data__')
+		'character_trait_levels' => array('Isenhart_BRT_data__', 'Isenhart_traits_Bad_data__', 'Isenhart_traits_data__'),
+		'trait_level_effects' => array('Isenhart_BRT_data__', 'Isenhart_traits_Bad_data__', 'Isenhart_traits_data__')
 	) as $tbl_name => $files){
 		foreach ($files as $file){
 			unset($tables[ $tbl_name ][ $file ]);
@@ -829,7 +833,7 @@ class StringCnt {
 		$this->string = $string;
 		$this->cnt = 0;
 	}
-	public function __toString(){ return $this->ref->str; }
+	public function __toString(){ return (string)$this->ref; }
 }
 class StringRefHolder {
 	public static $names0 = array();
@@ -892,6 +896,12 @@ class StringRefHolder {
 		else{ return new Ref($this->cur->name, sizeof($this->cur->arr)); }
 	}
 	public function Optimize(){
+		foreach ($this->pool as $string => $ref){
+			if ($ref->cnt === 1){
+				unset($this->pool[ $string ]);
+				$ref->ref = my_print($string);
+			}
+		}
 		// reversed
 		uasort($this->pool, function($a, $b){
 			return $b->cnt - $a->cnt;
