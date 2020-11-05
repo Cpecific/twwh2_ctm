@@ -67,8 +67,6 @@ if CpecificTraitsManager ~= nil then
 end
 ```
 
-If you can't make this shit work, contact me vahonin.prog@gmail.com
-
 # UI Layout Parser
 There is parser by __Alpaca__ and his inheritor __taw__ for older versions.
 
