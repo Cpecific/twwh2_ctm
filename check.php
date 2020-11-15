@@ -67,9 +67,9 @@ foreach ($DIR_DATA as $dir_key => $arr){
 			$content = fread($h, $len);
 			
 			// continue;
-			file_put_contents('_check.tmp', $uic->dumpFile());
 			
 			$type = 'error_reconstruct';
+			file_put_contents('_check.tmp', $uic->dumpFile());
 			
 			fclose($h);
 			$h = fopen('_check.tmp', 'r');

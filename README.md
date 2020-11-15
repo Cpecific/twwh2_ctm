@@ -2,7 +2,7 @@
 Total War Warhammer 2 Mod "Cpecific's Traits Manager" (UI Layout Parser is included).
 
 # How to use Traits Manager with your mod
-Export all database tables listed below through Pack Manager in Binary format into /game folder (and you need data__ of main game too). To export in Binary in Pack File Manager right click on entry and select Extract > Extract Selected (Ctrl + X).
+Export all database tables listed below through Pack Manager in Binary format into /game folder (and you need data__ of main game too). To export in Binary in (Rusted) Pack File Manager right click on entry and select Extract > Extract Selected (Ctrl + X or Ctrl + E).
 Your folders tree will look like this:
 - game
   - db
@@ -54,13 +54,13 @@ If your mod doesn't introduce changes to some of those tables, it's okay, don't 
 
 (after looking at this long list: "I better just export whole `db/` folder").
 
-If your mod introduces new traits of type "Defeated some noname lord", then you will need to add your data (by hand) into `$tables['_political_parties_lords_defeated']` in `index.php` (line 1072).
+If your mod introduces new traits of type "Defeated some noname lord", then you will need to add your data (by hand) into `$tables['_political_parties_lords_defeated']` in `index.php` (line 601).
 
-If your mod changes data__ files (why did you do dat?) then you will need to fill `$modded_data__` in `index.php` (line 10).
+If your mod changes data__ files (why did you do dat?) then you will need to fill `$modded_data__` in `index.php` (line 8).
 
-For those who are not familiar with web servers, just install XAMPP, make subfolder in htdocs, and put files there. You can access them at `localhost/[yourfolder]/[file].php`
+For those who are not familiar with web servers, just install XAMPP, make subfolder in htdocs, and put repository files there. You can access them at `localhost/[yourfolder]/[file].php`
 
-Run `/index.php` and copy result in new file (ex. `__tables.lua`). Then add code below. The safest time to call it is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. It is visible in global in `export_helper_[yourname]`. Considering is it visible from `campaign/~/mod/yourname.lua` I don't know.
+Run `/index.php` and copy result in new file (ex. `__tables.lua`). Then you need to tell my mod about your data. The safest time to tell is in `UICreated Event`. You won't be able to pass your data from the moment, when `FirstTickAfterWorldCreated Event` is fired. My mod is visible in global for `export_helper_[yourname]`. Whether it is visible from `campaign/~/mod/yourname.lua` I don't know.
 ```lua
 if CpecificTraitsManager ~= nil then
 	CpecificTraitsManager.SetData(require('script/~path/__tables'))
@@ -70,15 +70,18 @@ end
 # UI Layout Parser
 There is parser by __Alpaca__ and his inheritor __taw__ for older versions.
 
-My parser "supports" version from 70 to 133; has a lot of deciphered fields; examples of use in `export.php`, outdated as a reference, but still can be used; easier (compared to xml) web representation in `ui.php`.
+My parser "supports" version from 70 to 133; has a lot of deciphered fields; examples of use in `export.php` (outdated as a reference, but still can be used); easier (compared to xml) web representation in `ui.php`.
 
 Supported games:
+* Attila
+* Rome 2
+* Three Kingdoms
+* Thrones of Britannia
+* Troy
 * Warhammer
 * Warhammer II
-* Thrones of Britannia
-* Three Kingdoms
 
-You need to export (preferably the whole) `/ui` folder with Pack Manager into `/game`.
-For viewing files run `/ui.php`, for debugging use `/dump.php`.
+You need to export (preferably the whole) `/ui` folder with Pack Manager into `htdocs/[yourfolder]/game`.
+For viewing files run `/ui.php`, for debugging use `/dump.php`, for checking parser use `/check.php`.
 
 But beware pioneers, CA's UI is pain in the ass.

@@ -138,7 +138,6 @@ $tables_info = array(
 #region HIDE
 	'agent_subtypes' => array(
 		'DIR' => 'agent_subtypes_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',								'TYPE' => 'string_ascii' ),
@@ -160,7 +159,6 @@ $tables_info = array(
 	),
 	'character_trait_levels' => array(
 		'DIR' => 'character_trait_levels_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',								'TYPE' => 'string_ascii' ),
@@ -171,7 +169,6 @@ $tables_info = array(
 	),
 	'character_traits' => array(
 		'DIR' => 'character_traits_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',								'TYPE' => 'string_ascii' ),
@@ -187,7 +184,6 @@ $tables_info = array(
 #region effect_bonus_value
 	'effect_bonus_value_id_action_results_additional_outcomes_junctions' => array(
 		'DIR' => 'effect_bonus_value_id_action_results_additional_outcomes_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -199,7 +195,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_agent_junction' => array(
 		'DIR' => 'effect_bonus_value_agent_junction_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
 		'ENTRY' => array(1, 0),
 		'SCHEMA' => array(
@@ -210,7 +205,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_agent_action_record_junctions' => array(
 		'DIR' => 'effect_bonus_value_agent_action_record_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -221,7 +215,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_agent_subtype_junctions' => array(
 		'DIR' => 'effect_bonus_value_agent_subtype_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -232,7 +225,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_attrition_record_junctions' => array(
 		'DIR' => 'effect_bonus_value_attrition_record_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -243,7 +235,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_basic_junction' => array(
 		'DIR' => 'effect_bonus_value_basic_junction_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
 		'ENTRY' => array(1, 0),
 		'SCHEMA' => array(
@@ -253,7 +244,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_battle_context_army_special_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_battle_context_army_special_ability_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -265,7 +255,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_battle_context_unit_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_battle_context_unit_ability_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -277,7 +266,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_battle_context_unit_attribute_junctions' => array(
 		'DIR' => 'effect_bonus_value_battle_context_unit_attribute_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -289,7 +277,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_battle_context_junctions' => array(
 		'DIR' => 'effect_bonus_value_battle_context_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(1, 2),
 		'SCHEMA' => array(
@@ -300,7 +287,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_building_set_junctions' => array(
 		'DIR' => 'effect_bonus_value_building_set_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 2 => 'unique' ),
 		'ENTRY' => array(0, 2),
 		'SCHEMA' => array(
@@ -311,7 +297,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_faction_junctions' => array(
 		'DIR' => 'effect_bonus_value_faction_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -322,7 +307,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_loyalty_event_junctions' => array(
 		'DIR' => 'effect_bonus_value_loyalty_event_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -333,7 +317,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_military_force_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_military_force_ability_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -344,7 +327,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_missile_weapon_junctions' => array(
 		'DIR' => 'effect_bonus_value_missile_weapon_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -356,7 +338,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_pooled_resource_factor_junctions' => array(
 		'DIR' => 'effect_bonus_value_pooled_resource_factor_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -367,7 +348,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_pooled_resource_junctions' => array(
 		'DIR' => 'effect_bonus_value_pooled_resource_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -378,7 +358,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_religion_junction' => array(
 		'DIR' => 'effect_bonus_value_religion_junction_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
 		'ENTRY' => array(1, 0),
 		'SCHEMA' => array(
@@ -389,7 +368,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_resource_junction' => array(
 		'DIR' => 'effect_bonus_value_resource_junction_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
 		'ENTRY' => array(1, 0),
 		'SCHEMA' => array(
@@ -400,7 +378,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_ritual_junctions' => array(
 		'DIR' => 'effect_bonus_value_ritual_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -411,7 +388,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_siege_item_junctions' => array(
 		'DIR' => 'effect_bonus_value_siege_item_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -422,7 +398,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_special_ability_phase_record_junctions' => array(
 		'DIR' => 'effect_bonus_value_special_ability_phase_record_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -434,7 +409,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_subculture_junctions' => array(
 		'DIR' => 'effect_bonus_value_subculture_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -446,7 +420,6 @@ $tables_info = array(
 	// когда эффект ссылается на абилку, и мы ставим иконку картинки (unit_abilities)
 	'effect_bonus_value_unit_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_unit_ability_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique', 0 => 'unique' ),
 		'ENTRY' => array(1, 0, 2),
 		'SCHEMA' => array(
@@ -457,7 +430,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_unit_attribute_junctions' => array(
 		'DIR' => 'effect_bonus_value_unit_attribute_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -468,7 +440,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_unit_set_unit_ability_junctions' => array(
 		'DIR' => 'effect_bonus_value_unit_set_unit_ability_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -479,7 +450,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_unit_set_unit_attribute_junctions' => array(
 		'DIR' => 'effect_bonus_value_unit_set_unit_attribute_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -490,7 +460,6 @@ $tables_info = array(
 	),
 	'effect_bonus_value_ids_unit_sets' => array(
 		'DIR' => 'effect_bonus_value_ids_unit_sets_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'ENTRY' => array(0, 1),
 		'SCHEMA' => array(
@@ -502,7 +471,6 @@ $tables_info = array(
 	),
 	'effects' => array(
 		'DIR' => 'effects_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
@@ -518,7 +486,6 @@ $tables_info = array(
 	// тут мы получим faction для political_party
 	'faction_political_parties_junctions' => array(
 		'DIR' => 'faction_political_parties_junctions_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 1 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'faction_key',					'TYPE' => 'string_ascii' ),
@@ -528,7 +495,6 @@ $tables_info = array(
 	// здесь key = political_party_key
 	'frontend_faction_leaders' => array(
 		'DIR' => 'frontend_faction_leaders_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 3 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'uniform',						'TYPE' => 'string_ascii',	'EXCLUDE' => true ),
@@ -551,7 +517,6 @@ $tables_info = array(
 	// тут нам нужен sort_order для faction
 	'frontend_factions' => array(
 		'DIR' => 'frontend_factions_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'faction',			'TYPE' => 'string_ascii' ),
@@ -564,7 +529,6 @@ $tables_info = array(
 	),
 	'political_parties' => array(
 		'DIR' => 'political_parties_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',				'TYPE' => 'string_ascii' ),
@@ -576,7 +540,6 @@ $tables_info = array(
 	),
 	'trait_categories' => array(
 		'DIR' => 'trait_categories_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'category',		'TYPE' => 'string_ascii' ),
@@ -585,7 +548,6 @@ $tables_info = array(
 	),
 	'trait_level_effects' => array(
 		'DIR' => 'trait_level_effects_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'trait_level',		'TYPE' => 'string_ascii' ),
@@ -596,7 +558,6 @@ $tables_info = array(
 	),
 	'trait_to_antitraits' => array(
 		'DIR' => 'trait_to_antitraits_tables',
-		'HEADER_SIZE' => 83,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'trait',			'TYPE' => 'string_ascii' ),
@@ -605,7 +566,6 @@ $tables_info = array(
 	),
 	'unit_abilities' => array(
 		'DIR' => 'unit_abilities_tables',
-		'HEADER_SIZE' => 91,
 		'KEY' => array( 0 => 'unique' ),
 		'SCHEMA' => array(
 			array( 'NAME' => 'key',							'TYPE' => 'string_ascii' ),
@@ -666,10 +626,15 @@ foreach ($tables_info as $tbl_name => $tbl_info){
 		
 		$_data = array();
 		$path = realpath($dir . $file);
-		// var_dump($tbl_name .' = '. $dir, $file);
+		// var_dump($tbl_name .' = '. $dir . $file);
 		$h = fopen($dir . $file, 'r');
 		if (!$h){ continue; }
-		fread($h, $tbl_info['HEADER_SIZE'] - 4);
+		
+		fseek($h, 78);
+		$c = unpack('C', fread($h, 1));
+		fseek($h, 4, SEEK_CUR);
+		if ($c[1] !== 0x01){ fseek($h, 8, SEEK_CUR); }
+		fseek($h, -4, SEEK_CUR);
 		$entries = unpack('V', fread($h, 4));
 		$entries = $entries[1];
 		
@@ -679,27 +644,34 @@ foreach ($tables_info as $tbl_name => $tbl_info){
 			foreach ($tbl_info['SCHEMA'] as $sch_idx => $sch_column){
 				if ($sch_column['TYPE'] === 'string_ascii'){
 					$length = unpack('v', fread($h, 2));
+					if ($length === false){ return var_dump('Outdated schema: '. $file); }
 					$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
 				} else if ($sch_column['TYPE'] === 'int'){
 					$value = unpack('l', fread($h, 4));
+					if ($value === false){ return var_dump('Outdated schema: '. $file); }
 					$value = $value[1];
 				} else if ($sch_column['TYPE'] === 'bool'){
 					$value = unpack('C', fread($h, 1));
+					if ($value === false){ return var_dump('Outdated schema: '. $file); }
 					$value = ($value[1] != 0);
 				} else if ($sch_column['TYPE'] === 'float'){
 					$value = unpack('f', fread($h, 4));
+					if ($value === false){ return var_dump('Outdated schema: '. $file); }
 					$value = $value[1];
 				} else if ($sch_column['TYPE'] === 'optstring'){
 					$value = unpack('C', fread($h, 1));
+					if ($value === false){ return var_dump('Outdated schema: '. $file); }
 					if ($value[1] == 0){
 						$value = null;
 					}
 					else{
 						$length = unpack('v', fread($h, 2));
+						if ($length === false){ return var_dump('Outdated schema: '. $file); }
 						$value = ($length[1] === 0 ? '' : fread($h, $length[1]));
 					}
 				} else if ($sch_column['TYPE'] === 'byte'){
 					$value = unpack('C', fread($h, 1));
+					if ($value === false){ return var_dump('Outdated schema: '. $file); }
 					$value = $value[1];
 				}
 				if (isset($sch_column['EXCLUDE']) && $sch_column['EXCLUDE']){ continue; }
@@ -717,6 +689,11 @@ foreach ($tables_info as $tbl_name => $tbl_info){
 			else{
 				$_data[] = $entry;
 			}
+		}
+		
+		fread($h, 1);
+		if (!feof($h)){
+			return var_dump('Outdated schema: '. $dir . $file);
 		}
 		
 		fclose($h);

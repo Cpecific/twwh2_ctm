@@ -15,14 +15,31 @@ function my_assert($bool, $obj = null){
 	// global $path;
 	throw new Exception();
 }
-function my_unpack_one($obj, ...$args){
-	$r = call_user_func_array('unpack', $args);
+function my_unpack_one($obj, $format, $data){
+	$r = unpack($format, $data);
 	if ($r === false){ my_assert(false, $obj); }
+	// php is retarded, and treats negative zero as positive
+	if ($format[0] === 'f' && $r[1] === 0.0){
+		$v = unpack('l', $data);
+		if ($v[1] !== 0){
+			return round(-2.38419e-07, 1); // hack
+		}
+	}
 	return $r[1];
 }
-function my_unpack_array($obj, ...$args){
-	$r = call_user_func_array('unpack', $args);
+function my_unpack_array($obj, $format, $data){
+	$r = unpack($format, $data);
 	if ($r === false){ my_assert(false, $obj); }
+	// php is retarded, and treats negative zero as positive
+	if ($format[0] === 'f'){
+		$v = unpack('l'. (sizeof($r)), $data);
+		for ($i = sizeof($r) - 1; $i >= 0; --$i){
+			if ($r[1 + $i] !== 0.0){ continue; }
+			if ($v[1 + $i] !== 0){
+				$r[1 + $i] = round(-2.38419e-07, 1); // hack
+			}
+		}
+	}
 	return array_values($r);
 }
 function tohex($str){
@@ -399,13 +416,16 @@ class UIC {
 			$this->pos = ftell($h);
 			fseek($h, 0, SEEK_END);
 			$this->diff = ftell($h) - $this->pos;
+			fseek($h, $this->pos);
 			my_assert($this->diff === 0, $this);
 		}
 	}
-	public function readAfter($h){
+	public function readAfter($h, $ignoreFirst = false){
 		$v = $this->version;
 		
-		$this->after[] = tohex(fread($h, 1));
+		if (!$ignoreFirst){
+			$this->after[] = tohex(fread($h, 1));
+		}
 		$this->after[] = ($type = read_string($h, 1, $this));
 		
 		if ($v >= 70 && $v < 80){
@@ -437,20 +457,19 @@ class UIC {
 			}
 			return;
 		}
-		else if ($v >= 80 && $v < 90){
-			if ($v >= 80 && $v < 85){
-				$this->after[] = tohex(fread($h, 5));
-			}
-			else{
-				$this->after[] = tohex(fread($h, 6));
+		else if ($v >= 80 && $v < 85){
+			$this->after[] = tohex(fread($h, 5));
+			if ($this->after[0] === '01'){
+				$this->after[] = tohex(fread($h, 20));
 			}
 			return;
 		}
 		
-		global $has; $has_type = true;
+		global $has, $GAME; $has_type = true;
 		if ($type === 'List'){
 			$has['list'] = true;
 			$a = array();
+			$this->after[] = &$a;
 			
 			$a[] = 'num_sth = '. tohex($num_sth = fread($h, 4));
 			$num_sth = my_unpack_one($this, 'l', $num_sth);
@@ -475,7 +494,10 @@ class UIC {
 			// values: 1, 3, 20
 			$a[] = my_unpack_one($this, 'l', fread($h, 4));
 			
-			if ($v >= 91 && $v < 97){
+			if ($v >= 85 && $v < 90){
+				$this->readAfter($h);
+			}
+			else if ($v >= 91 && $v < 97){
 				$a[] = $bit = tohex(fread($h, 1));
 				if ($v === 96){
 					$a[] = tohex(fread($h, 5));
@@ -543,15 +565,11 @@ class UIC {
 				}
 			}
 			
-			$this->after[] = $a;
-			// if ($v > 130){
-				// $this->child = array();
-				// var_dump($this->debug());
-			// }
 		}
 		else if ($type === 'HorizontalList'){
 			$has['hlist'] = true;
 			$a = array();
+			$this->after[] = &$a;
 			
 			$a[] = 'num_sth = '. ($num_sth = my_unpack_one($this, 'l', fread($h, 4)));
 			$b = array();
@@ -561,10 +579,14 @@ class UIC {
 			$a[] = $b;
 			
 			$a[] = my_unpack_one($this, 'l', fread($h, 4));
-			$a[] = tohex(fread($h, 5));
+			$a[] = my_unpack_one($this, 'l', fread($h, 4));
+			$a[] = $bool = tohex(fread($h, 1));
 			$a[] = my_unpack_one($this, 'l', fread($h, 4));
 			
-			if ($v >= 91 && $v < 97){
+			if ($v >= 85 && $v < 90){
+				$this->readAfter($h);
+			}
+			else if ($v >= 91 && $v < 97){
 				$a[] = $bit = tohex(fread($h, 1));
 				if ($v === 96){
 					$a[] = tohex(fread($h, 5));
@@ -609,12 +631,8 @@ class UIC {
 				if ($v >= 110){
 					$a[] = read_string($h, 1, $this);
 				}
-				// if ($v > 130){
-					// var_dump($v, $a);
-				// }
 			}
 			
-			$this->after[] = $a;
 		}
 		else if ($type === 'RadialList'){
 			$has['rlist'] = true;
@@ -625,14 +643,22 @@ class UIC {
 			$a[] = my_unpack_one($this, 'f', fread($h, 4));
 			$a[] = my_unpack_one($this, 'f', fread($h, 4));
 			$a[] = my_unpack_one($this, 'f', fread($h, 4));
-			$a[] = tohex(fread($h, 3));
+			// I think some idiot made a decision to create
+			// a separate branch of UI Layout for Troy.
+			// As I can't figure out why would here be an extra byte,
+			// while in Warhammer 2 similar cases there isn't
+			if ($GAME === 'troy'){
+				$a[] = tohex(fread($h, 4));
+			} else{
+				$a[] = tohex(fread($h, 3));
+			}
 			if ($v > 130){ $a[] = tohex(fread($h, 1)); }
 			$this->after[] = $a;
 		}
 		else if ($type === 'Table'){
-			// i've encounteres table somewhere in frontend ui
 			$has['table'] = true;
 			$a = array();
+			$this->after[] = &$a;
 			// #attention need to be checked what comes first: rows or columns
 			$a[] = 'num_rows = '. ($num_rows = my_unpack_one($this, 'l', fread($h, 4)));
 			$b = array();
@@ -640,7 +666,7 @@ class UIC {
 				$b_val = array();
 				$b_val[] = 'num_columns = '. ($num_columns = my_unpack_one($this, 'l', fread($h, 4)));
 				$c = array();
-				for ($j = 0; $j < $num_rows; ++$j){
+				for ($j = 0; $j < $num_columns; ++$j){
 					// float, float
 					$c_val = array();
 					$c_val[] = my_unpack_one($this, 'f1', fread($h, 4));
@@ -652,14 +678,17 @@ class UIC {
 				$b[] = $b_val;
 			}
 			$a[] = $b;
-			$a[] = tohex(fread($h, 2));
-			$this->after[] = $a;
+			if ($v >= 85 && $v < 90){
+				$this->readAfter($h, true);
+			} else{
+				$a[] = tohex(fread($h, 2));
+			}
 		}
 		else{
 			$has_type = false;
 		}
 		
-		if ($has_type && $v >= 100 && $v < 110){
+		if ($has_type && ($v >= 85 && $v < 90 || $v >= 100 && $v < 110)){
 			return;
 		}
 		
@@ -689,22 +718,31 @@ class UIC {
 			// yeah, i have no idea what this shit all about, but it seems to point to 3d models.
 			// don't remember where i've seen it, probably in portholes
 			$a = array();
-			// 2 unknown, 4 unknown
-			// float?
-			// 8 unknown
-			// float, float, float?
-			// {FF FF FF | DB F2 FA}
-			// float, float?, float?
-			// byte (bool?)
-			// float, float, float?, float, float (angle), float (angle), float
-			$a[] = tohex(fread($h, 74));
+			$this->after[] = &$a;
+			if ($v >= 85 && $v < 90){
+				$a[] = tohex(fread($h, 50));
+			} else{
+				// 2 unknown, 4 unknown
+				// float?
+				// 8 unknown
+				// float, float, float?
+				// {FF FF FF | DB F2 FA}
+				// float, float?, float?
+				// byte (bool?)
+				// float, float, float?, float, float (angle), float (angle), float
+				$a[] = tohex(fread($h, 74));
+			}
 			$a[] = 'num_models = '. ($num_models = my_unpack_one($this, 'l', fread($h, 4)));
 			$models = array();
 			for ($i = 0; $i < $num_models; ++$i){
 				$b = array();
 				$b[] = read_string($h, 1, $this);
 				$b[] = read_string($h, 1, $this);
-				$b[] = tohex(fread($h, 1));
+				if ($v >= 85 && $v < 90){
+					$b[] = tohex(fread($h, 29));
+				} else{
+					$b[] = tohex(fread($h, 1));
+				}
 				$b[] = 'num_anim = '. ($num_anim = my_unpack_one($this, 'l', fread($h, 4)));
 				$anim = array();
 				for ($j = 0; $j < $num_anim; ++$j){
@@ -718,21 +756,14 @@ class UIC {
 				$models[] = $b;
 			}
 			$a[] = $models;
-			$this->after[] = $a;
-			$this->after[] = tohex(fread($h, 3));
 		}
-		// else if ($bit === '16'){
-			// die("#@");
-			// $this->after[] = tohex(fread($h, 97));
-		// }
-		else if ($v >= 90 && $v < 95){
+		
+		if ($v >= 85 && $v < 94){
 			$this->after[] = tohex(fread($h, 2));
-		}
-		else{
+		} else{
 			// bool, ?, bool
 			$this->after[] = tohex(fread($h, 3));
 		}
-		
 		
 		if ($v >= 110){
 			// float, float, float
@@ -984,13 +1015,15 @@ class UIC {
 		
 		return $res;
 	}
-	public function dumpFileAfter(){
+	public function dumpFileAfter($i = 0, $ignoreFirst = false){
 		$v = $this->version;
 		
 		$res = '';
-		$i = 0;
+		// $i = 0;
 		
-		$res .= fromhex($this->after[ $i++ ]);
+		if (!$ignoreFirst){
+			$res .= fromhex($this->after[ $i++ ]);
+		}
 		$res .= write_string($type = $this->after[ $i++ ]);
 		
 		if ($v >= 70 && $v < 80){
@@ -1018,8 +1051,10 @@ class UIC {
 			}
 			return $res;
 		}
-		else if ($v >= 80 && $v < 90){
+		else if ($v >= 80 && $v < 85){
 			$res .= fromhex($this->after[ $i++ ]);
+			$hex = $this->after[ $i++ ];
+			if ($hex){ $res .= fromhex($hex); }
 			return $res;
 		}
 		
@@ -1039,7 +1074,10 @@ class UIC {
 			$res .= fromhex($a[ $j++ ]);
 			$res .= pack('l',	$a[ $j++ ]);
 			
-			if ($v >= 91 && $v < 97){
+			if ($v >= 85 && $v < 90){
+				$res .= $this->dumpFileAfter($i);
+			}
+			else if ($v >= 91 && $v < 97){
 				$res .= fromhex($a[ $j++ ]);
 				if ($v === 96){
 					$res .= fromhex($a[ $j++ ]);
@@ -1084,11 +1122,15 @@ class UIC {
 			
 			$j = 2;
 			
-			$res .= pack('l', $a[ $j++ ]);
+			$res .= pack('l2',	$a[ $j++ ],
+								$a[ $j++ ]);
 			$res .= fromhex($a[ $j++ ]);
 			$res .= pack('l', $a[ $j++ ]);
 			
-			if ($v >= 91 && $v < 97){
+			if ($v >= 85 && $v < 90){
+				$res .= $this->dumpFileAfter($i);
+			}
+			else if ($v >= 91 && $v < 97){
 				$res .= fromhex($a[ $j++ ]);
 				if ($v === 96){
 					$res .= fromhex($a[ $j++ ]);
@@ -1154,13 +1196,17 @@ class UIC {
 					$res .= fromhex($c[2]);
 				}
 			}
-			$res .= fromhex($a[2]);
+			if ($v >= 85 && $v < 90){
+				$res .= $this->dumpFileAfter($i, true);
+			} else{
+				$res .= fromhex($a[2]);
+			}
 		}
 		else{
 			$has_type = false;
 		}
 		
-		if ($has_type && $v >= 100 && $v < 110){
+		if ($has_type && ($v >= 85 && $v < 90 || $v >= 100 && $v < 110)){
 			return $res;
 		}
 		
@@ -1205,15 +1251,8 @@ class UIC {
 					$res .= fromhex($c[2]);
 				}
 			}
-			
-			$res .= fromhex($this->after[ $i++ ]);
 		}
-		else if ($v >= 90 && $v < 95){
-			$res .= fromhex($this->after[ $i++ ]);
-		}
-		else{
-			$res .= fromhex($this->after[ $i++ ]);
-		}
+		$res .= fromhex($this->after[ $i++ ]);
 		
 		if ($v >= 110){
 			$res .= fromhex($this->after[ $i++ ]);
@@ -1299,7 +1338,7 @@ class UIC__Image {
 		$this->path = read_string($h, 1, $this);
 		$this->width = my_unpack_one($this, 'l', fread($h, 4));
 		$this->height = my_unpack_one($this, 'l', fread($h, 4));
-		if ($v >= 79){
+		if ($v >= 78){
 			$this->extra = tohex(fread($h, 1));
 		}
 	}
@@ -1333,7 +1372,7 @@ class UIC__Image {
 		}
 		$res .= write_string($this->path);
 		$res .= pack('l2', $this->width, $this->height);
-		if ($v >= 79){
+		if ($v >= 78){
 			$res .= fromhex($this->extra);
 		}
 		
@@ -1481,6 +1520,8 @@ class UIC__State {
 		// interactive, disabled, pixelcollision
 		if ($v >= 70 && $v < 80){
 			$this->b7 = tohex(fread($h, 4 + 3));
+		} else if ($v >= 86 && $v < 90){
+			$this->b7 = tohex(fread($h, 4 + 4));
 		} else if ($v >= 90){
 			// (confirmed) 2nd byte doesn't allow you to trigger ComponentMouseOn event
 			$this->b7 = tohex(fread($h, 4));
@@ -1531,13 +1572,13 @@ class UIC__State {
 		// float, float, ?, ? - ?
 		*/
 		$this->shadervars = my_unpack_array($my, 'f4', fread($h, 4 * 4));
-		foreach ($this->shadervars as &$a){ $a = round($a * 10000000) / 10000000; }
-		unset($a);
+		// foreach ($this->shadervars as &$a){ $a = round($a * 10000000) / 10000000; }
+		// unset($a);
 		
 		$this->text_shader_name = read_string($h, 1, $my); // normal_t0
 		$this->textshadervars = my_unpack_array($my, 'f4', fread($h, 4 * 4));
-		foreach ($this->textshadervars as &$a){ $a = round($a * 10000000) / 10000000; }
-		unset($a);
+		// foreach ($this->textshadervars as &$a){ $a = round($a * 10000000) / 10000000; }
+		// unset($a);
 		
 		// imagemetrics
 		$this->num_bgs = my_unpack_one($my, 'l', fread($h, 4));
@@ -1732,6 +1773,8 @@ class UIC__State {
 		
 		if ($v >= 70 && $v < 80){
 			$res .= fromhex($this->b7);
+		} else if ($v >= 86 && $v < 90){
+			$res .= fromhex($this->b7);
 		} else if ($v >= 90){
 			$res .= fromhex($this->b7);
 		}
@@ -1882,17 +1925,17 @@ class UIC__State_Background {
 			$this->b4 = tohex(fread($h, 4));
 		}
 		
-		if ($v === 79){
+		if ($v === 78){
+			$this->b5 = tohex(fread($h, 8));
+		} else if ($v === 79){
 			$this->b5 = tohex(fread($h, 8));
 		} else if ($v >= 70 && $v < 80){
 			$this->b5 = tohex(fread($h, 9));
-		} else if ($v >= 80 && $v < 95){
+		} else if ($v >= 80 && $v < 92){
 			// top-bottom, left-right?
-			if ($v === 92 || $v === 93){
-				$this->margin = my_unpack_array($my, 'f4', fread($h, 4 * 4));
-			} else{
-				$this->margin = my_unpack_array($my, 'f2', fread($h, 4 * 2));
-			}
+			$this->margin = my_unpack_array($my, 'f2', fread($h, 4 * 2));
+		} else if ($v >= 92 && $v < 95){
+			$this->margin = my_unpack_array($my, 'f4', fread($h, 4 * 4));
 		} else if ($v >= 95){
 			if ($v >= 103){
 				$this->shadertechnique_vars = my_unpack_array($my, 'f4', fread($h, 4 * 4));
@@ -1994,16 +2037,14 @@ class UIC__State_Background {
 		
 		if ($v >= 70 && $v < 80){
 			$res .= fromhex($this->b5);
-		} else if ($v >= 80 && $v < 95){
-			if ($v === 92 || $v === 93){
-				$res .= pack('f4',	$this->margin[0],
-									$this->margin[1],
-									$this->margin[2],
-									$this->margin[3]);
-			} else{
-				$res .= pack('f2',	$this->margin[0],
-									$this->margin[1]);
-			}
+		} else if ($v >= 80 && $v < 92){
+			$res .= pack('f2',	$this->margin[0],
+								$this->margin[1]);
+		} else if ($v >= 92 && $v < 95){
+			$res .= pack('f4',	$this->margin[0],
+								$this->margin[1],
+								$this->margin[2],
+								$this->margin[3]);
 		} else if ($v >= 95){
 			if ($v >= 103){
 				$res .= pack('f4',	$this->shadertechnique_vars[0],
@@ -2211,11 +2252,7 @@ class UIC__Func {
 			$a->read($h, $my, $this);
 		}
 		
-		if ($v >= 91 && $v <= 93){
-			$this->b1 = tohex(fread($h, 2));
-		} else if ($v >= 95 && $v < 97){
-			$this->b1 = tohex(fread($h, 2));
-		} else if ($v >= 97 && $v < 100){
+		if ($v >= 91 && $v < 100){
 			$this->str_sth = read_string($h, 1, $my);
 		} else if ($v >= 110){
 			$this->str_sth = read_string($h, 1, $my);
@@ -2269,9 +2306,7 @@ class UIC__Func {
 			$res .= $anim->dumpFile();
 		}
 		
-		if ($v >= 91 && $v < 97){
-			$res .= fromhex($this->b1);
-		} else if ($v >= 97 && $v < 100){
+		if ($v >= 91 && $v < 100){
 			$res .= write_string($this->str_sth);
 		} else if ($v >= 110){
 			$res .= write_string($this->str_sth);
@@ -2663,7 +2698,7 @@ class UIC_Template {
 		$uic_t = $uic_t->child[0];
 		
 		$this->num_template = my_unpack_one($this, 'l', fread($h, 4));
-		my_assert($this->num_template < 64, $this);
+		my_assert($this->num_template < 128, $this);
 		for ($i = 0; $i < $this->num_template; ++$i){
 			$this->template[] = $a = new UI_Template_Child();
 			$a->read($h, $this, $uic_t);
@@ -2891,6 +2926,7 @@ class UI_Template_Child {
 		while (true){
 			$a = array();
 			$num = unpack('S2', fread($h, 4));
+			my_assert($num !== false, $my);
 			fseek($h, -4, SEEK_CUR);
 			// so we can make sure that we are not overflowing with states,
 			// is to check strlen and next 2 bytes. we know that all strings are not empty and
@@ -2915,9 +2951,9 @@ class UI_Template_Child {
 			if ($ch){
 				// if ($i >= $ch->num_states || $i === 1 && !$ch->hasState($state)){
 				// if ($i > $ch->num_states || !$ch->hasState($state)){
-				if ($i > $ch->num_states && !$ch->hasState($state)){
-					break;
-				}
+				// if ($i > $ch->num_states && !$ch->hasState($state)){
+					// break;
+				// }
 			}
 		}
 		

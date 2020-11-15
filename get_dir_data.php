@@ -1,9 +1,12 @@
 <?php
 
-// $GAME = 'warhammer';
-$GAME = 'warhammer2';
+// $GAME = 'attila';
+// $GAME = 'rome_2';
+// $GAME = 'three_kingdoms';
 // $GAME = 'thrones_of_britannia';
-// $GAME = '3kingdoms';
+// $GAME = 'troy';
+// $GAME = 'warhammer';
+$GAME = 'warhammer_2';
 $dir = 'ui';
 // $dir = 'ui-'. $GAME;
 
@@ -38,6 +41,11 @@ $DIR_DATA = array(
 		'FOLDER' => $dir. '/loading_ui/',
 		'FILES' => array()
 	),
+	'lcd' => array(
+		'NAME' => 'LCD',
+		'FOLDER' => $dir. '/lcd/',
+		'FILES' => array()
+	),
 	'templates' => array(
 		'NAME' => 'Templates',
 		'FOLDER' => $dir. '/templates/',
@@ -52,14 +60,19 @@ $DIR_DATA = array(
 $dirs = null;
 if (!isset($GAME)){ $GAME = null; }
 switch ($GAME){
+case 'attila':
+case 'rome_2':
+	$dirs = array('battle', 'campaign', 'common', 'frontend', 'lcd', 'loading');
+	break;
+case 'troy':
 case 'warhammer':
-case 'warhammer2':
+case 'warhammer_2':
 	$dirs = array('battle', 'campaign', 'common', 'frontend', 'loading', 'templates');
 	break;
 case 'thrones_of_britannia':
 	$dirs = array('battle', 'campaign', 'common', 'frontend', 'loading');
 	break;
-case '3kingdoms':
+case 'three_kingdoms':
 	$dirs = array('battle', 'campaign', 'common', 'frontend', 'historical_battles', 'loading', 'templates', 'tech_trees');
 	break;
 }
@@ -105,14 +118,16 @@ foreach (
 		if (!$h){ continue; }
 		
 		$version = fread($h, 10);
-		$v = (int)substr($version, 7);
-		if ($v < 70 || $v > 133){
-			var_dump('Unsupported Version'. $v.': '. $arr['FOLDER'] . $file);
-			continue;
+		if (!feof($h)){
+			$v = (int)substr($version, 7);
+			if ($v < 70 || $v > 133){
+				var_dump('Unsupported Version'. $v.': '. $arr['FOLDER'] . $file);
+				continue;
+			}
+			
+			$arr['FILES'][ $file ] = $v;
+			$all[] = array($path, $file, $v);
 		}
-		
-		$arr['FILES'][ $file ] = $v;
-		$all[] = array($path, $file, $v);
 		
 		fclose($h);
 		$h = null;
