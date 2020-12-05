@@ -105,9 +105,7 @@ unset($a);
 $all = array();
 
 unset($arr);
-foreach (
-	$DIR_DATA as $dir_key => &$arr
-){
+foreach ($DIR_DATA as $dir_key => &$arr){
 	$dir = $arr['DIR'];
 	foreach (scandir($dir) as $file){
 		if ($file === '.' || $file === '..' || is_dir($dir . $file) || strpos($file, '.') !== false){ continue; }

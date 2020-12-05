@@ -154,7 +154,8 @@ $tables_info = array(
 			array( 'NAME' => 'contributes_to_agent_cap',		'TYPE' => 'bool',			'EXCLUDE' => true ),
 			array( 'NAME' => 'category',						'TYPE' => 'optstring',		'EXCLUDE' => true ),
 			array( 'NAME' => 'magic_lore',						'TYPE' => 'optstring',		'EXCLUDE' => true ),
-			array( 'NAME' => 'audio_vo_culture_override',		'TYPE' => 'optstring',		'EXCLUDE' => true )
+			array( 'NAME' => 'audio_vo_culture_override',		'TYPE' => 'optstring',		'EXCLUDE' => true ),
+			array( 'NAME' => 'spam_click_vo_enabled',			'TYPE' => 'bool',			'EXCLUDE' => true )
 		)
 	),
 	'character_trait_levels' => array(
@@ -384,6 +385,16 @@ $tables_info = array(
 			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
 			array( 'NAME' => 'ritual',						'TYPE' => 'string_ascii',	'EXCLUDE' => true )
+		)
+	),
+	'effect_bonus_value_ritual_category_junctions' => array(
+		'DIR' => 'effect_bonus_value_ritual_category_junctions_tables',
+		'KEY' => array( 0 => 'unique', 1 => 'unique' ),
+		'ENTRY' => array(0, 1),
+		'SCHEMA' => array(
+			array( 'NAME' => 'bonus_value_id',				'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'effect',						'TYPE' => 'string_ascii' ),
+			array( 'NAME' => 'ritual_category',				'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	),
 	'effect_bonus_value_siege_item_junctions' => array(
@@ -1355,6 +1366,7 @@ foreach (array(
 	'effect_bonus_value_religion_junction',
 	'effect_bonus_value_resource_junction',
 	'effect_bonus_value_ritual_junctions',
+	'effect_bonus_value_ritual_category_junctions',
 	'effect_bonus_value_siege_item_junctions',
 	'effect_bonus_value_special_ability_phase_record_junctions',
 	'effect_bonus_value_subculture_junctions',

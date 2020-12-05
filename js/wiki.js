@@ -347,6 +347,7 @@ var tables_info = {
 	effect_bonus_value_religion_junction: { '0': 'unique', '1': 'unique' },
 	effect_bonus_value_resource_junction: { '0': 'unique', '1': 'unique' },
 	effect_bonus_value_ritual_junctions: { '0': 'unique', '1': 'unique' },
+	effect_bonus_value_ritual_category_junctions: { '0': 'unique', '1': 'unique' },
 	effect_bonus_value_siege_item_junctions: { '0': 'unique', '1': 'unique' },
 	effect_bonus_value_special_ability_phase_record_junctions: { '0': 'unique', '1': 'unique' },
 	effect_bonus_value_subculture_junctions: { '0': 'unique', '1': 'unique' },

@@ -1122,7 +1122,8 @@ var filters = []
 			'enable',
 			'percentage_cost_mod',
 			'slave_cost_mod',
-			'slave_percentage_cost_mod'
+			'slave_percentage_cost_mod',
+			'global_cooldown_mod'
 		]]
 	]
 	filters.push([
@@ -1136,11 +1137,14 @@ var filters = []
 
 // lua export
 if (0){
-var res = ''
+var res = 'filters = {\n'
 filters.each(function(filter){
 	res += '-- '+ filter[0] +'\n\
-do\n\
-	local tbl = Merge({\n\
+{\n\
+	'+ (typeof filter[3] === 'string' ? '{\''+ filter[3] +'\'}' : '{\''+ filter[3].join('\',\n\
+	\'') +'\'}') +',\n\
+	\''+ filter[1] +'\',\n\
+	Check({\n\
 	'
 	filter[2].each(function(a, idx){
 		res +=	'	'+ a[0] +' = {'
@@ -1156,15 +1160,7 @@ do\n\
 	'
 	})
 	res += '})\n\
-	table.insert(filters, {\n\
-		'+ (typeof filter[3] === 'string' ? '{\''+ filter[3] +'\'}' : '{\''+ filter[3].join('\',\n\
-		\'') +'\'}') +',\n\
-		\''+ filter[1] +'\',\n\
-		function(t_key, t_data, at_key, at_data)\n\
-			return Check(t_data, at_data, tbl)\n\
-		end\n\
-	})\n\
-end\n'
+},\n'
 })
 console.log(res)
 }
