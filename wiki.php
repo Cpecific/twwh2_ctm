@@ -17,7 +17,7 @@
 <body>
 <script>$.publish('bodyShow')</script>
 <script>
-(function(){
+(async function(){
 
 var wiki = new WIKI({
 	el: document.body
@@ -125,14 +125,31 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'armour_mod',
-			'unit_stat_bonus_armour'
+			'unit_stat_bonus_armour',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
-			'armour_mod'
+			'armour_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'armour_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'armour_mod',
+			'unit_stat_bonus_armour',
+			'unit_stat_bonus_shield',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'unit_stat_bonus_armour',
+			'unit_stat_bonus_shield',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'armour_mod',
+			'unit_stat_bonus_armour',
+			'unit_stat_bonus_shield',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'armour_mod'
-		]]
+			'armour_mod',
+		]],
 	]
 	filters.push([
 		'Armour',
@@ -179,18 +196,35 @@ var filters = []
 			'morale_land',
 			'morale_naval',
 			'unit_stat_bonus_morale_mod',
-			'unit_winter_morale_bonus'
+			'unit_winter_morale_bonus',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'general_aoe_mod',
 			'general_aoe_morale_effect_mod',
-			'morale'
+			'morale',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'morale',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'morale',
+			'unit_stat_bonus_morale',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'morale',
+			'unit_stat_bonus_morale',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'general_aoe_mod',
+			'general_aoe_morale_effect_mod',
+			'morale',
+			'unit_stat_bonus_morale',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'general_aoe_mod',
 			'general_aoe_morale_effect_mod',
-			'morale'
-		]]
+			'morale',
+		]],
 	]
 	filters.push([
 		'Leadership',
@@ -204,12 +238,19 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'mod_ship_movement_battle',
-			'mod_ship_movement_battle_top_gallants'
+			'mod_ship_movement_battle_top_gallants',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'mod_land_movement_battle',
+			'movement_mod',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'movement_mod',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'mod_land_movement_battle',
-			'movement_mod'
-		]]
+			'movement_mod',
+		]],
 	]
 	filters.push([
 		'Speed',
@@ -223,19 +264,29 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'melee_attack_mod',
-			'melee_damage_ap_mod_add',
-			'melee_damage_ap_mod_mult',
-			'melee_damage_mod_add',
-			'melee_damage_mod_mult',
-			'splash_attack_power_mod_add',
-			'unit_stat_bonus_attack'
+			'unit_stat_bonus_attack',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
-			'melee_attack_mod'
+			'melee_attack_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'melee_attack_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'melee_attack_mod',
+			'unit_stat_bonus_attack',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'melee_attack_mod',
+			'unit_stat_bonus_attack',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'melee_attack_mod',
+			'unit_stat_bonus_attack',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'melee_attack_mod'
-		]]
+			'melee_attack_mod',
+		]],
 	]
 	filters.push([
 		'Melee attack',
@@ -250,14 +301,29 @@ var filters = []
 		['effect_bonus_value_basic_junction', [
 			'melee_defence_mod',
 			'unit_stat_bonus_defence',
-			'unit_stat_bonus_hull_armour'
+			'unit_stat_bonus_hull_armour',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
-			'melee_defence_mod'
+			'melee_defence_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'melee_defence_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'melee_defence_mod',
+			'unit_stat_bonus_defence',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'melee_defence_mod',
+			'unit_stat_bonus_defence',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'melee_defence_mod',
+			'unit_stat_bonus_defence',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'melee_defence_mod'
-		]]
+			'melee_defence_mod',
+		]],
 	]
 	filters.push([
 		'Melee defence',
@@ -277,7 +343,7 @@ var filters = []
 			'splash_attack_power_mod_add',
 			'unit_flaming_attack_mod',
 			'unit_is_magical',
-			'unit_stat_bonus_weapon'
+			'unit_stat_bonus_weapon',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'melee_damage_ap_mod_add',
@@ -285,7 +351,42 @@ var filters = []
 			'melee_damage_mod_add',
 			'melee_damage_mod_mult',
 			'splash_attack_power_mod_add',
-			'unit_flaming_attack_mod'
+			'unit_flaming_attack_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'melee_damage_ap_mod_add',
+			'melee_damage_ap_mod_mult',
+			'melee_damage_mod_add',
+			'melee_damage_mod_mult',
+			'splash_attack_power_mod_add',
+			'unit_flaming_attack_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'melee_damage_ap_mod_add',
+			'melee_damage_ap_mod_mult',
+			'melee_damage_mod_add',
+			'melee_damage_mod_mult',
+			'splash_attack_power_mod_add',
+			'unit_flaming_attack_mod',
+			'unit_stat_bonus_weapon',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'melee_damage_ap_mod_add',
+			'melee_damage_ap_mod_mult',
+			'melee_damage_mod_add',
+			'melee_damage_mod_mult',
+			'splash_attack_power_mod_add',
+			'unit_flaming_attack_mod',
+			'unit_stat_bonus_weapon',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'melee_damage_ap_mod_add',
+			'melee_damage_ap_mod_mult',
+			'melee_damage_mod_add',
+			'melee_damage_mod_mult',
+			'splash_attack_power_mod_add',
+			'unit_flaming_attack_mod',
+			'unit_stat_bonus_weapon',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'melee_damage_ap_mod_add',
@@ -293,8 +394,8 @@ var filters = []
 			'melee_damage_mod_add',
 			'melee_damage_mod_mult',
 			'splash_attack_power_mod_add',
-			'unit_flaming_attack_mod'
-		]]
+			'unit_flaming_attack_mod',
+		]],
 	]
 	filters.push([
 		'Weapon strength',
@@ -308,17 +409,28 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'charge_bonus_for_land_units',
-			'unit_stat_bonus_charge_bonus_mod'
+			'unit_stat_bonus_charge_bonus_mod',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'charge_bonus',
-			'ship_ram_damage_mod'
+			'ship_ram_damage_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'charge_bonus',
+			'unit_stat_bonus_charge',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'charge_bonus',
+			'unit_stat_bonus_charge',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'unit_stat_bonus_charge',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'charge_add',
 			'charge_bonus',
-			'ship_ram_damage_mod'
-		]]
+			'ship_ram_damage_mod',
+		]],
 	]
 	filters.push([
 		'Charge bonus',
@@ -332,36 +444,83 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'ammo_mod',
+			'missile_damage_ap_mod_add',
 			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
 			'missile_damage_mod_mult',
 			'mod_misfire_land',
 			'mod_misfire_naval',
 			'mod_reload_land',
 			'mod_reload_naval',
+			'tower_damage_mod',
+			'tower_reload_mod',
 			'unit_stat_bonus_accuracy_mod',
-			'unit_stat_bonus_ammunition'
+			'unit_stat_bonus_ammunition',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'ammo_mod',
+			'missile_damage_ap_mod_add',
 			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
 			'missile_damage_mod_mult',
 			'range_mod',
-			'reload_mod'
+			'reload_mod',
+		]],
+		['effect_bonus_value_projectile_junctions', [
+			'reload_mod',
+			'tower_projectile_enabled',
+		]],
+		['effect_bonus_value_shot_type_junctions', [
+			'enable',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'missile_damage_ap_mod_add',
+			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
+			'missile_damage_mod_mult',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'missile_damage_ap_mod_add',
+			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
+			'missile_damage_mod_mult',
+			'unit_stat_bonus_accuracy',
+			'unit_stat_bonus_ammunition',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'ammo_mod',
+			'missile_damage_ap_mod_add',
+			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
+			'missile_damage_mod_mult',
+			'range_mod',
+			'reload',
+			'unit_stat_bonus_accuracy',
+			'unit_stat_bonus_ammunition',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'missile_damage_ap_mod_add',
+			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
+			'missile_damage_mod_mult',
+			'unit_stat_bonus_accuracy',
+			'unit_stat_bonus_ammunition',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'ammo_mod',
+			'missile_damage_ap_mod_add',
 			'missile_damage_ap_mod_mult',
+			'missile_damage_mod_add',
 			'missile_damage_mod_mult',
 			'range_mod',
-			'reload'
-		]]
+			'reload',
+		]],
 	]
 	filters.push([
 		'Range',
 		'accuracy',
 		tbl,
 		'uied_component_texts_localised_string_button_missile_attack_Tooltip_280064'
-		// 'unit_stat_localisations_onscreen_name_stat_missile_damage_base'
 	])
 })()
 // Resistance and health
@@ -373,10 +532,11 @@ var filters = []
 			'damage_resistance_magic_mod',
 			'damage_resistance_missile_mod',
 			'damage_resistance_physical_mod',
-			'general_bodyguard_size_mod', // in wh hit points is equivalent
+			'general_bodyguard_size_mod',
 			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
 			'unit_stat_bonus_hull_health',
-			'unit_stat_bonus_shield'
+			'unit_stat_bonus_shield',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'ship_health_mod',
@@ -385,7 +545,44 @@ var filters = []
 			'unit_damage_resistance_magic_mod',
 			'unit_damage_resistance_missile_mod',
 			'unit_damage_resistance_physical_mod',
-			'unit_fatigue_resistance_mod'
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'damage_resistance_all_mod',
+			'damage_resistance_flame_mod',
+			'damage_resistance_magic_mod',
+			'damage_resistance_missile_mod',
+			'damage_resistance_physical_mod',
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'damage_resistance_all_mod',
+			'damage_resistance_flame_mod',
+			'damage_resistance_magic_mod',
+			'damage_resistance_missile_mod',
+			'damage_resistance_physical_mod',
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'damage_resistance_all_mod',
+			'damage_resistance_flame_mod',
+			'damage_resistance_magic_mod',
+			'damage_resistance_missile_mod',
+			'damage_resistance_physical_mod',
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'damage_resistance_all_mod',
+			'damage_resistance_flame_mod',
+			'damage_resistance_magic_mod',
+			'damage_resistance_missile_mod',
+			'damage_resistance_physical_mod',
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'ship_health_mod',
@@ -394,8 +591,9 @@ var filters = []
 			'unit_damage_resistance_magic_mod',
 			'unit_damage_resistance_missile_mod',
 			'unit_damage_resistance_physical_mod',
-			'unit_fatigue_resistance_mod'
-		]]
+			'unit_fatigue_resistance_mod',
+			'unit_starting_fatigue_state',
+		]],
 	]
 	filters.push([
 		'Resistance and health',
@@ -410,30 +608,44 @@ var filters = []
 		['effect_bonus_value_basic_junction', [
 			'damage_vs_cavalry',
 			'damage_vs_infantry',
-			'damage_vs_large_entities'
-		]],
-		['effect_bonus_value_basic_junction', [
-			'damage_vs_cavalry',
-			'damage_vs_infantry',
 			'damage_vs_large_entities',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
 			'damage_vs_cavalry',
 			'damage_vs_infantry',
-			'damage_vs_large_entities'
+			'damage_vs_large_entities',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'damage_vs_cavalry',
+			'damage_vs_infantry',
+			'damage_vs_large_entities',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'damage_vs_cavalry',
+			'damage_vs_infantry',
+			'damage_vs_large_entities',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'damage_vs_cavalry',
+			'damage_vs_infantry',
+			'damage_vs_large_entities',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'damage_vs_cavalry',
+			'damage_vs_infantry',
+			'damage_vs_large_entities',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'damage_vs_cavalry',
 			'damage_vs_infantry',
-			'damage_vs_large_entities'
-		]]
+			'damage_vs_large_entities',
+		]],
 	]
 	filters.push([
 		'Bonus vs',
 		'bonus_vs_large',
 		tbl,
 		'uied_component_texts_localised_string_tx_bonuses_NewState_Text_7f002c'
-		// 'unit_stat_localisations_onscreen_name_stat_bonus_vs_large'
 	])
 })()
 // Magic and abilities
@@ -449,13 +661,23 @@ var filters = []
 			'max_winds_of_magic_depletion_mod_region',
 			'max_winds_of_magic_depletion_mod_stances',
 			'miscast_chance_mod',
-			'starting_winds_of_magic_mod'
+			'starting_winds_of_magic_mod',
+		]],
+		['effect_bonus_value_battle_context_army_special_ability_junctions', [
+			'disable',
+			'enable',
 		]],
 		['effect_bonus_value_battle_context_junctions', [
-			'miscast_chance_mod'
+			'miscast_chance_mod',
 		]],
 		['effect_bonus_value_battle_context_unit_ability_junctions', [
-			'enable'
+			'disable',
+			'enable',
+		]],
+		['effect_bonus_value_military_force_ability_junctions', [
+			'disable',
+			'enable',
+			'uses_mod',
 		]],
 		['effect_bonus_value_unit_ability_junctions', [
 			'cost_mod',
@@ -466,7 +688,19 @@ var filters = []
 			'enable_overchage',
 			'miscast_percentage_mod',
 			'recharge_mod',
-			'uses_mod'
+			'uses_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'miscast_chance_mod',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'miscast_chance_mod',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'miscast_chance_mod',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'miscast_chance_mod',
 		]],
 		['effect_bonus_value_unit_set_unit_ability_junctions', [
 			'cost_mod',
@@ -477,11 +711,11 @@ var filters = []
 			'enable_overchage',
 			'miscast_percentage_mod',
 			'recharge_mod',
-			'uses_mod'
+			'uses_mod',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'miscast_chance_mod'
-		]]
+			'miscast_chance_mod',
+		]],
 	]
 	filters.push([
 		'Magic and abilities',
@@ -492,31 +726,37 @@ var filters = []
 })()
 // Attributes
 ;(function(){
-	tbl = [
-		// no entries
+	var tbl = [
+		['effect_bonus_value_agent_junction', [
+			'attribute_authority_mod',
+			'attribute_subterfuge_mod',
+			'attribute_zeal_mod',
+		]],
 		['effect_bonus_value_basic_junction', [
-			'military_force_ability_strength'
+			'military_force_ability_strength',
+			'military_force_enable_assault_without_equipment',
 		]],
 		['effect_bonus_value_special_ability_phase_record_junctions', [
-			'active'
+			'active',
 		]],
 		['effect_bonus_value_battle_context_unit_attribute_junctions', [
-			'enable'
+			'enable',
 		]],
 		['effect_bonus_value_unit_attribute_junctions', [
-			'enable'
+			'enable',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'scares_men',
 		]],
 		['effect_bonus_value_unit_set_unit_attribute_junctions', [
-			'enable'
+			'enable',
 		]],
 	]
 	filters.push([
 		'Attributes',
 		'attribute_fatigue_immune',
 		tbl,
-		['encyclopedia_template_strings_text_attributes', // was working at some point in vortex
-		// 'encyclopedia_pages_title_6004c_tw_game_guide_wh_battle_gameplay_attributes',
-		'uied_component_texts_localised_string_tx_attributes_NewState_Text_480072']
+		['encyclopedia_template_strings_text_attributes', 'uied_component_texts_localised_string_tx_attributes_NewState_Text_480072']
 	])
 })()
 // Post battle
@@ -539,11 +779,11 @@ var filters = []
 			'provided_sacking_loot_mod',
 			'provided_settlement_loot_mod',
 			'razing_mod',
-			'sacking_mod'
+			'sacking_mod',
 		]],
 		['effect_bonus_value_subculture_junctions', [
-			'sacking_mod'
-		]]
+			'sacking_mod',
+		]],
 	]
 	filters.push([
 		'Post battle',
@@ -602,22 +842,25 @@ var filters = []
 			'tax_bonus_minister',
 			'tax_bonus_technology',
 			'upkeep_cost_mod_land_all',
-			'upkeep_cost_mod_naval_all'
+			'upkeep_cost_mod_naval_all',
+		]],
+		['effect_bonus_value_building_chain_junctions', [
+			'mod_gdp',
 		]],
 		['effect_bonus_value_building_set_junctions', [
-			'mod_gdp'
+			'mod_gdp',
+		]],
+		['effect_bonus_value_subculture_junctions', [
+			'raid_income_mod',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'no_upkeep',
-			'upkeep_mod'
+			'upkeep_mod',
 		]],
-		['effect_bonus_value_subculture_junctions', [
-			'raid_income_mod'
-		]]
 	]
 	filters.push([
 		'Income',
-		'income', // treasury
+		'income',
 		tbl,
 		'random_localisation_strings_string_finance_header_income'
 	])
@@ -625,6 +868,9 @@ var filters = []
 // Recruitment
 ;(function(){
 	var tbl = [
+		['effect_bonus_value_agent_subtype_junctions', [
+			'recruitment_level',
+		]],
 		['effect_bonus_value_basic_junction', [
 			'ercenary_province_pool_cap_mod',
 			'faction_mercenary_pool_cost_mod',
@@ -642,7 +888,44 @@ var filters = []
 			'recruitment_mod_cost_land_all',
 			'recruitment_mod_cost_naval_all',
 			'recruitment_points',
-			'recruitment_points_home_region'
+			'recruitment_points_home_region',
+		]],
+		['effect_bonus_value_battle_context_junctions', [
+			'xp_gain_rate_mod',
+		]],
+		['effect_bonus_value_unit_caste_junctions', [
+			'cost_mod',
+			'unit_xp_mod',
+			'upkeep_mod',
+			'vampiric_mercenary_recruitment_capacity',
+			'vampiric_mercenary_recruitment_replenishment_rate',
+		]],
+		['effect_bonus_value_unit_category_junction', [
+			'cost_mod',
+			'global_recruit_time_mod',
+			'recruit_time_mod',
+			'training_mod',
+			'unit_xp_mod',
+			'upkeep_mod',
+			'vampiric_mercenary_recruitment_capacity',
+			'vampiric_mercenary_recruitment_replenishment_rate',
+		]],
+		['effect_bonus_value_unit_class_junction', [
+			'cost_mod',
+			'unit_xp_mod',
+			'upkeep_mod',
+			'vampiric_mercenary_recruitment_capacity',
+			'vampiric_mercenary_recruitment_replenishment_rate',
+		]],
+		['effect_bonus_value_unit_record_junctions', [
+			'cost_mod',
+			'global_recruit_time_mod',
+			'recruit_time_mod',
+			'unit_cap',
+			'unit_xp_mod',
+			'upkeep_mod',
+			'vampiric_mercenary_recruitment_capacity',
+			'vampiric_mercenary_recruitment_replenishment_rate',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'cost_mod',
@@ -651,8 +934,8 @@ var filters = []
 			'recruit_time_mod',
 			'unit_xp_mod',
 			'vampiric_mercenary_recruitment_capacity',
-			'vampiric_mercenary_recruitment_replenishment_rate'
-		]]
+			'vampiric_mercenary_recruitment_replenishment_rate',
+		]],
 	]
 	filters.push([
 		'Recruitment',
@@ -667,7 +950,7 @@ var filters = []
 		['effect_bonus_value_attrition_record_junctions', [
 			'active',
 			'damage_mod',
-			'immunity'
+			'immunity',
 		]],
 		['effect_bonus_value_basic_junction', [
 			'attrition_difficulty_addition',
@@ -680,11 +963,11 @@ var filters = []
 			'provided_replenishment_percentage_bonus',
 			'replenishment_partial_bankruptcy_mod',
 			'replenishment_percentage_bonus',
-			'unrestricted_replenishment_bonus'
+			'unrestricted_replenishment_bonus',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'replenishment_percentage_bonus'
-		]]
+			'replenishment_percentage_bonus',
+		]],
 	]
 	filters.push([
 		'Replenishment',
@@ -730,12 +1013,13 @@ var filters = []
 			'province_public_order_happiness_technology_factor',
 			'province_public_order_repression_threshold_mod',
 			'province_public_order_satisfaction_threshold_mod',
-			'province_slaves_slave_public_order_modifier'
+			'province_slaves_slave_public_order_modifier',
+			'region_resistance_modifier',
 		]],
 		['effect_bonus_value_religion_junction', [
 			'faction_public_order',
-			'public_order'
-		]]
+			'public_order',
+		]],
 	]
 	filters.push([
 		'Public order',
@@ -769,8 +1053,8 @@ var filters = []
 			'province_development_growth_added_province',
 			'province_development_growth_added_taxes',
 			'province_development_growth_added_tech_per_region_in_province',
-			'province_development_growth_added_technology'
-		]]
+			'province_development_growth_added_technology',
+		]],
 	]
 	filters.push([
 		'Growth',
@@ -786,6 +1070,7 @@ var filters = []
 			'character_gravitas_per_turn',
 			'faction_level_points',
 			'foreign_slot_building_denies_line_of_sight',
+			'geomancy',
 			'general_admiral_action_point_bonus',
 			'general_start_of_turn_action_point_penalty',
 			'immortal',
@@ -809,12 +1094,34 @@ var filters = []
 			'unit_xp_mod_land',
 			'unit_xp_mod_naval',
 			'unit_xp_mod_training',
-			'unit_xp_mod_training_garrison'
+			'unit_xp_mod_training_garrison',
+		]],
+		['effect_bonus_value_name_record_junctions', [
+			'active',
+			'priority',
+		]],
+		['effect_bonus_value_provincial_initiative_effect_record_junctions', [
+			'value_addition',
+			'value_pct_mod',
+		]],
+		['effect_bonus_value_siege_item_junctions', [
+			'siege_item_allowed',
+			'siege_item_disabled',
+			'siege_item_enabled',
+			'siege_item_number_of_vehicles_per_construction_item',
+		]],
+		['effect_bonus_value_technology_junctions', [
+			'disable_tech',
+		]],
+		['effect_bonus_value_technology_category_junctions', [
+			'research_cost_mod',
+			'research_points',
+			'research_rate_mod',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
 			'training_mod',
-			'unit_xp_mod_training'
-		]]
+			'unit_xp_mod_training',
+		]],
 	]
 	filters.push([
 		'Campaign',
@@ -828,7 +1135,7 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_id_action_results_additional_outcomes_junctions', [
 			'action_results_additional_outcome_record_value_addition',
-			'action_results_additional_outcome_record_value_pct_mod'
+			'action_results_additional_outcome_record_value_pct_mod',
 		]],
 		['effect_bonus_value_agent_junction', [
 			'action_cost_mod',
@@ -843,7 +1150,7 @@ var filters = []
 			'recruit_cost_mod',
 			'recruitment_level',
 			'success_mod',
-			'success_mod_opponent'
+			'success_mod_opponent',
 		]],
 		['effect_bonus_value_agent_action_record_junctions', [
 			'active',
@@ -856,12 +1163,13 @@ var filters = []
 			'opportune_failure_mod',
 			'opportune_failure_mod_opponent',
 			'success_mod',
-			'success_mod_opponent'
+			'success_mod_opponent',
 		]],
 		['effect_bonus_value_agent_subtype_junctions', [
 			'availability',
 			'cap',
-			'loyalty_initial_mod' // is this feasible?
+			'loyalty_initial_mod',
+			'recruitment_level',
 		]],
 		['effect_bonus_value_basic_junction', [
 			'agent_action_failure_cost_mod',
@@ -877,16 +1185,16 @@ var filters = []
 			'loyalty_recruitment_accuracy_mod',
 			'percentage_of_xp_to_give_other_characters_of_same_type',
 			'percentage_of_xp_to_steal_from_characters_of_same_type',
-			'recuperation_time_mod'
+			'recuperation_time_mod',
 		]],
 		['effect_bonus_value_faction_junctions', [
-			'loyalty_initial_mod'
+			'loyalty_initial_mod',
 		]],
 		['effect_bonus_value_loyalty_event_junctions', [
 			'amount_mod',
 			'chance_mod',
-			'threshold_mod'
-		]]
+			'threshold_mod',
+		]],
 	]
 	filters.push([
 		'Characters',
@@ -912,17 +1220,25 @@ var filters = []
 			'military_force_building_cost_mod',
 			'military_force_building_dev_point_cost_mod',
 			'military_force_building_upkeep_mod',
-			'mod_build_time'
+			'mod_build_time',
+		]],
+		['effect_bonus_value_building_chain_junctions', [
+			'mod_build_time',
+			'mod_conversion_cost',
+			'mod_conversion_time',
+			'mod_cost',
+			'slot_unlock_count',
 		]],
 		['effect_bonus_value_building_set_junctions', [
+			'add_build_time',
 			'add_conversion_time',
 			'mod_build_time',
 			'mod_conversion_cost',
 			'mod_conversion_time',
 			'mod_cost',
 			'mod_food_cost',
-			'num_buildings_to_spawn_for_new_horde_army'
-		]]
+			'num_buildings_to_spawn_for_new_horde_army',
+		]],
 	]
 	filters.push([
 		'Construction',
@@ -941,14 +1257,17 @@ var filters = []
 			'trade_income_mod',
 			'trade_node_commodity_mod',
 			'trade_route_all_mod_growth_rate',
-			'trade_route_cap_sea'
+			'trade_route_cap_sea',
+		]],
+		['effect_bonus_value_building_chain_junctions', [
+			'mod_resource_production',
 		]],
 		['effect_bonus_value_building_set_junctions', [
-			'mod_resource_production'
+			'mod_resource_production',
 		]],
 		['effect_bonus_value_resource_junction', [
-			'production'
-		]]
+			'production',
+		]],
 	]
 	filters.push([
 		'Trade',
@@ -964,15 +1283,15 @@ var filters = []
 			'agent_religion_conversion',
 			'state_conversion_from_technology',
 			'state_religion_conversion_bonus',
-			'state_religion_conversion_bonus_minister'
+			'state_religion_conversion_bonus_minister',
 		]],
 		['effect_bonus_value_religion_junction', [
 			'conversion',
 			'conversion_events',
 			'conversion_when_state',
 			'osmotic_conversion',
-			'osmotic_conversion_when_state'
-		]]
+			'osmotic_conversion_when_state',
+		]],
 	]
 	filters.push([
 		'Religion',
@@ -995,29 +1314,29 @@ var filters = []
 			'political_event_chance_mod_per_turn',
 			'political_gravitas_mod',
 			'political_gravitas_per_situation_mod',
-			'political_support_per_turn'
+			'political_support_per_turn',
 		]],
 		['effect_bonus_value_faction_junctions', [
 			'diplomatic_mod',
 			'diplomatic_mod_imperium',
 			'diplomatic_mod_other',
 			'diplomatic_mod_ritual',
-			'diplomatic_mod_tech'
+			'diplomatic_mod_tech',
 		]],
 		['effect_bonus_value_religion_junction', [
 			'diplomatic_mod',
 			'diplomatic_mod_imperium',
 			'diplomatic_mod_other',
 			'diplomatic_mod_ritual',
-			'diplomatic_mod_tech'
+			'diplomatic_mod_tech',
 		]],
 		['effect_bonus_value_subculture_junctions', [
 			'diplomatic_mod',
 			'diplomatic_mod_imperium',
 			'diplomatic_mod_other',
 			'diplomatic_mod_ritual',
-			'diplomatic_mod_tech'
-		]]
+			'diplomatic_mod_tech',
+		]],
 	]
 	filters.push([
 		'Diplomacy',
@@ -1031,8 +1350,8 @@ var filters = []
 	var tbl = [
 		['effect_bonus_value_basic_junction', [
 			'ambush_chance_of_success_attack_bonus',
-			'ambush_chance_of_success_defence_bonus'
-		]]
+			'ambush_chance_of_success_defence_bonus',
+		]],
 	]
 	filters.push([
 		'Ambush',
@@ -1045,22 +1364,21 @@ var filters = []
 ;(function(){
 	var tbl = [
 		['effect_bonus_value_agent_junction', [
-			'cap'
+			'cap',
 		]],
 		['effect_bonus_value_basic_junction', [
 			'army_cap_bonus',
-			'navy_cap_bonus'
+			'navy_cap_bonus',
 		]],
 		['effect_bonus_value_ids_unit_sets', [
-			'unit_cap'
-		]]
+			'unit_cap',
+		]],
 	]
 	filters.push([
 		'Capacity',
 		'unit_capacity',
 		tbl,
 		'uied_component_texts_localised_string_tx_label_NewState_Text_100024'
-		// 'uied_component_texts_localised_string_unit_cap_Tooltip_200035'
 	])
 })()
 // Pooled resources
@@ -1094,18 +1412,25 @@ var filters = []
 			'food_production_settle_stance_neutral_territory',
 			'food_production_settle_stance_vassal_territory',
 			'food_production_technologies',
+			'honour',
 			'influence',
-			'region_horde_food_consumption'
+			'region_horde_food_consumption',
+			'unit_purchasable_effect_cost_percentage_mod',
+			'unit_purchasable_effects_refund_disabled',
+			'unit_refund_disabled',
 		]],
 		['effect_bonus_value_pooled_resource_factor_junctions', [
 			'base_amount',
-			'percentage_multiplier_mod'
+			'percentage_multiplier_mod',
 		]],
 		['effect_bonus_value_pooled_resource_junctions', [
 			'maximum_mod',
 			'minimum_mod',
-			'percentage_multiplier_mod'
-		]]
+			'percentage_multiplier_mod',
+		]],
+		['effect_bonus_value_technology_junctions', [
+			'food_cost_mod',
+		]],
 	]
 	filters.push([
 		'Pooled resources',
@@ -1117,14 +1442,24 @@ var filters = []
 // Rituals
 ;(function(){
 	var tbl = [
-		['effect_bonus_value_ritual_junctions', [
+		['effect_bonus_value_ritual_chains_junctions', [
 			'disable',
 			'enable',
 			'percentage_cost_mod',
 			'slave_cost_mod',
 			'slave_percentage_cost_mod',
-			'global_cooldown_mod'
-		]]
+		]],
+		['effect_bonus_value_ritual_junctions', [
+			'cooldown_mod',
+			'disable',
+			'enable',
+			'percentage_cost_mod',
+			'slave_cost_mod',
+			'slave_percentage_cost_mod',
+		]],
+		['effect_bonus_value_ritual_category_junctions', [
+			'global_cooldown_mod',
+		]],
 	]
 	filters.push([
 		'Rituals',
@@ -1134,33 +1469,93 @@ var filters = []
 	])
 })()
 
+var replace_json, replace_tbl
+;await (async function(){
+replace_json = await fetch('js/ctm-wiki.json').then(r => r.json())
+replace_tbl = [
+	'effect_bonus_value_agent_action_record_junctions',
+	'effect_bonus_value_agent_junction',
+	'effect_bonus_value_agent_subtype_junctions',
+	'effect_bonus_value_attrition_record_junctions',
+	'effect_bonus_value_basic_junction',
+	'effect_bonus_value_battle_context_army_special_ability_junctions',
+	'effect_bonus_value_battle_context_junctions',
+	'effect_bonus_value_battle_context_unit_ability_junctions',
+	'effect_bonus_value_battle_context_unit_attribute_junctions',
+	'effect_bonus_value_battlefield_deployables_junctions',
+	'effect_bonus_value_building_chain_junctions',
+	'effect_bonus_value_building_set_junctions',
+	'effect_bonus_value_faction_junctions',
+	'effect_bonus_value_id_action_results_additional_outcomes_junctions',
+	'effect_bonus_value_ids_unit_sets',
+	'effect_bonus_value_loyalty_event_junctions',
+	'effect_bonus_value_military_force_ability_junctions',
+	'effect_bonus_value_missile_weapon_junctions',
+	'effect_bonus_value_name_record_junctions',
+	'effect_bonus_value_pooled_resource_factor_junctions',
+	'effect_bonus_value_pooled_resource_junctions',
+	'effect_bonus_value_population_class_junction',
+	'effect_bonus_value_projectile_junctions',
+	'effect_bonus_value_provincial_initiative_effect_record_junctions',
+	'effect_bonus_value_religion_junction',
+	'effect_bonus_value_resource_junction',
+	'effect_bonus_value_ritual_category_junctions',
+	'effect_bonus_value_ritual_chains_junctions',
+	'effect_bonus_value_ritual_junctions',
+	'effect_bonus_value_shot_type_junctions',
+	'effect_bonus_value_siege_item_junctions',
+	'effect_bonus_value_special_ability_phase_record_junctions',
+	'effect_bonus_value_subculture_junctions',
+	'effect_bonus_value_technology_category_junctions',
+	'effect_bonus_value_technology_junctions',
+	'effect_bonus_value_unit_ability_junctions',
+	'effect_bonus_value_unit_attribute_junctions',
+	'effect_bonus_value_unit_caste_junctions',
+	'effect_bonus_value_unit_category_junction',
+	'effect_bonus_value_unit_class_junction',
+	'effect_bonus_value_unit_record_junctions',
+	'effect_bonus_value_unit_set_unit_ability_junctions',
+	'effect_bonus_value_unit_set_unit_attribute_junctions',
+]
+})();
 
 // lua export
-if (0){
-var res = 'filters = {\n'
+if (1){
+var doReplace = !true // true for memreader
+// var res = 'filters = {\n'
+var res = ''
 filters.each(function(filter){
-	res += '-- '+ filter[0] +'\n\
-{\n\
-	'+ (typeof filter[3] === 'string' ? '{\''+ filter[3] +'\'}' : '{\''+ filter[3].join('\',\n\
-	\'') +'\'}') +',\n\
-	\''+ filter[1] +'\',\n\
-	Check({\n\
-	'
+	res += '		-- '+ filter[0] +'\n\
+		{\n\
+			'+ (typeof filter[3] === 'string' ? '{\''+ filter[3] +'\'}' : '{\''+ filter[3].join('\',\n\
+			\'') +'\'}') +',\n\
+			\''+ filter[1] +'\',\n\
+			Check({\n\
+			'
 	filter[2].each(function(a, idx){
-		res +=	'	'+ a[0] +' = {'
+		res +=	'	'+ (doReplace ? '['+ (replace_tbl.indexOf(a[0]) + 1) +']' : a[0]) +' = {'
 		if (a[1].length){
-			res += '\n\
-			\''+ a[1].join('\',\n\
-			\'') +'\'\n\
-		'
+			var a1 = a[1]
+			if (doReplace){
+				var rep = replace_json[ a[0] ]
+				a1 = a1.map(q => rep[ q ])
+				rep = JSON.stringify(a1)
+				rep = rep.substr(1, rep.length - 2)
+				res += rep
+			} else{
+				res += '\n\
+					'+ a1.map(q => JSON.stringify(q)).join(',\n\
+					') +'\n\
+				'
+			}
 		}
 		res += '}'
 		if (idx + 1 < filter[2].length){ res += ',' }
 		res += '\n\
-	'
+			'
 	})
 	res += '})\n\
-},\n'
+		},\n'
 })
 console.log(res)
 }

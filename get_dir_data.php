@@ -87,6 +87,11 @@ $DIR_DATA['export'] = array(
 	'DIR' => __DIR__ .'/export/',
 	'FILES' => array()
 );
+// $DIR_DATA['export_CSQ'] = array(
+	// 'NAME' => 'Export CSQ',
+	// 'DIR' => __DIR__ .'/export_CSQ/',
+	// 'FILES' => array()
+// );
 
 unset($a);
 foreach ($DIR_DATA as &$a){

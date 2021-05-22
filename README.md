@@ -34,6 +34,7 @@ If your mod doesn't introduce changes to some of those tables, it's okay, don't 
 * effect_bonus_value_religion_junction_tables
 * effect_bonus_value_resource_junction_tables
 * effect_bonus_value_ritual_junctions_tables
+* effect_bonus_value_ritual_category_junctions
 * effect_bonus_value_siege_item_junctions_tables
 * effect_bonus_value_special_ability_phase_record_junctions_tables
 * effect_bonus_value_subculture_junctions_tables

@@ -786,7 +786,8 @@ class UIC {
 		}
 		foreach ($this as $k => $v){
 			if (in_array($k, array(
-				'version', 'parent',
+				'version',
+				'parent',
 				// 'b0',
 				// 'num_events', 'events', 'offset', 'b_01', 'tooltip_text', 'tooltip_id',
 				// 'b2', 'b3', 'default_state', 'b5', 'b6',
@@ -1057,8 +1058,9 @@ class UIC {
 		}
 		else if ($v >= 80 && $v < 85){
 			$res .= fromhex($this->after[ $i++ ]);
-			$hex = $this->after[ $i++ ];
-			if ($hex){ $res .= fromhex($hex); }
+			if (isset($this->after[ $i ])){
+				$res .= fromhex($this->after[ $i++ ]);
+			}
 			return $res;
 		}
 		
@@ -1464,6 +1466,8 @@ class UIC__State {
 		$this->text = read_utf8_string($h, 1, $my);
 		$this->tooltip = read_utf8_string($h, 1, $my);
 		
+		// maybe I got this all wrong?
+		// for v106 textbounds = textalign, textalign = ? (haven't tested enough)
 		list($this->textbounds['width'],
 			$this->textbounds['height'],
 			// 0 - left, 1 - center, 2 - right
@@ -1503,6 +1507,7 @@ class UIC__State {
 		$this->font_m_font_name = read_string($h, 1, $my); // georgia_italic, Norse-Bold
 		
 		list($this->font_m_size,
+			// line_spacing?
 			$this->font_m_leading,
 			$this->font_m_tracking) = my_unpack_array($my, 'l3', fread($h, 4 * 3));
 		$this->font_m_colour = tohex(fread($h, 4));
@@ -2877,7 +2882,7 @@ class UI_Template_Child {
 			my_assert($this->num_events < 20, $my);
 			for ($i = 0; $i < $this->num_events; ++$i){
 				$a = read_string($h, 3, $this);
-				if ($v === 121 || $v === 122 || $v >= 124){
+				if ($v >= 121){
 					$num_sth = my_unpack_one($this, 'l', fread($h, 4));
 					$b = array();
 					for ($j = 0; $j < $num_sth; ++$j){
@@ -3066,7 +3071,7 @@ class UI_Template_Child {
 			$res .= pack('l', sizeof($this->events));
 			foreach ($this->events as $a){
 				$res .= write_string(array_slice($a, 0, 3));
-				if ($v === 121 || $v === 122 || $v >= 124){
+				if ($v >= 121){
 					$res .= pack('l', sizeof($a[3]));
 					foreach ($a[3] as $b){
 						$res .= write_string(array_slice($b, 0, 2));

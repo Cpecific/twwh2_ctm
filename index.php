@@ -3,6 +3,7 @@
 $mini = 2;
 define('JAVASCRIPT', false);
 define('IS_MODDED', true);
+define('EXCLUDE_LORDS', true); // either print only lords or everything else
 
 // FILL THIS ARRAY IF YOU HAVE REPLACED data__ IN SOME TABLES
 $modded_data__ = array(
@@ -59,7 +60,10 @@ function my_print($a, $level = "\t", $mini = 0){
 	if ($a instanceof Ref || $a instanceof StringCnt){
 		return $a;
 	}
-	if (is_string($a)){
+	if ($a === null){
+		return JAVASCRIPT ? 'null' : 'nil';
+	}
+	else if(is_string($a)){
 		// return json_encode($a, 256);
 		return '"'. str_replace(array("\\", "\"", "\r\n"), array("\\\\", "\\\"", "\\r\\n"), $a) .'"';
 	}
@@ -480,6 +484,8 @@ $tables_info = array(
 			array( 'NAME' => 'unit_set',					'TYPE' => 'string_ascii',	'EXCLUDE' => true )
 		)
 	),
+#endregion
+#region HIDE
 	'effects' => array(
 		'DIR' => 'effects_tables',
 		'KEY' => array( 0 => 'unique' ),
@@ -492,8 +498,6 @@ $tables_info = array(
 			array( 'NAME' => 'is_positive_value_good',		'TYPE' => 'bool' )
 		)
 	),
-#endregion
-#region HIDE
 	// тут мы получим faction для political_party
 	'faction_political_parties_junctions' => array(
 		'DIR' => 'faction_political_parties_junctions_tables',
@@ -990,6 +994,18 @@ if (JAVASCRIPT){
 	}
 }
 
+if (!JAVASCRIPT){
+	$key = '_political_parties_lords_defeated';
+	if (EXCLUDE_LORDS){
+		$tables[ $key ] = array();
+	} else{
+		foreach ($tables as $tbl_name => $data){
+			if ($tbl_name === $key){ continue; }
+			$tables[ $tbl_name ] = array();
+		}
+	}
+}
+
 #region USED
 if (IS_MODDED){
 	foreach ($tables['character_trait_levels'] as $file_1 => $file_table_1){
@@ -1076,6 +1092,10 @@ foreach ($tables['character_trait_levels'] as $file => &$file_table){
 		$entry[0] = $StringHolder->Add($entry[0]);
 		// trait
 		$entry[2] = $StringHolder->Add($entry[2]);
+		if (!JAVASCRIPT){
+			// we should add extra for lua table preaalocation
+			$entry[4] = null; // effects
+		}
 	}
 	$file_table = array_values($file_table);
 	unset($entry, $file_table);
@@ -1099,6 +1119,19 @@ foreach ($tables['character_traits'] as $file => &$file_table){
 		$entry[2] = new Ref($entry[2] ? 'T' : 'F');
 		// icon
 		$entry[4] = $StringHolder->Add($entry[4]);
+		if (!JAVASCRIPT){
+			// we should add extra for lua table preaalocation
+			$entry[6] = 0; // self_idx
+			$entry[7] = null; // at_arr
+			$entry[8] = null; // at_subscribers
+			$entry[9] = array(); // levels
+			$entry[10] = array(); // all_levels
+			// 0 = no antitrait
+			// 1 = bidirectional antitrait (t_data is no the right)
+			// -1 = bidirectional antitrait (t_data is no the left)
+			// 2 = 
+			$entry[11] = 0; // enum flag
+		}
 	}
 	$file_table = array_values($file_table);
 	unset($entry, $file_table);
@@ -1146,6 +1179,10 @@ foreach ($tables['effects'] as $file => &$file_table){
 		$entry[4] = $StringHolder->Add($entry[4]);
 		// is_positive_value_good
 		$entry[5] = new Ref($entry[5] ? 'T' : 'F');
+		if (!JAVASCRIPT){
+			// we should add extra for lua table preaalocation
+			$entry[6] = null; // unit_ability_icon_name
+		}
 	}
 	$file_table = array_values($file_table);
 	unset($entry, $file_table);
@@ -1290,14 +1327,12 @@ foreach ($tables['trait_level_effects'] as $file => &$file_table){
 			unset($file_table[ $i ]);
 			continue;
 		}
-		// foreach ($effects as $entry){
-			// trait_level
-			$entry[0] = $StringHolder->Add($entry[0]);
-			// effect
-			$entry[1] = $StringHolder->Add($entry[1]);
-			// effect_scope
-			$entry[2] = $StringHolder->Add($entry[2]);
-		// }
+		// trait_level
+		$entry[0] = $StringHolder->Add($entry[0]);
+		// effect
+		$entry[1] = $StringHolder->Add($entry[1]);
+		// effect_scope
+		$entry[2] = $StringHolder->Add($entry[2]);
 	}
 	$file_table = array_values($file_table);
 	unset($entry, $file_table);
@@ -1458,7 +1493,7 @@ DB_TEXT = $.extend(typeof DB_TEXT === "undefined" ? {} : DB_TEXT, {';
 })()';
 }
 // lua
-else{
+else {
 	echo '
 local ', implode(',', $left), ' = ', implode(',', $right),'
 return ', my_print($tables, "\t", $mini);

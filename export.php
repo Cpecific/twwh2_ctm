@@ -16,6 +16,7 @@ function for_all($uic, $func){
 	}
 }
 
+#region CPECIFIC_TRAITS_MANAGER
 // CTM_trait_template
 // CTM_trait_dy_trait
 // CTM_trait_bar_holder
@@ -747,20 +748,22 @@ if (0){
 	
 	list($s_active,
 		$s_down,
-		$s_down_off,
 		$s_hover,
-		$s_selected) = $ch->states;
+		$s_selected,
+		$s_down_off) = $ch->states;
 	
-	$ch->states[] = $s_selected_hover = new UIC__State($s_selected);
-	$ch->states[] = $s_selected_down = new UIC__State($s_down);
-	$ch->states[] = $s_selected_down_off = new UIC__State($s_selected);
-	$ch->states[] = $s_inactive = new UIC__State($s_active);
-	$ch->states[] = $s_selected_inactive = new UIC__State($s_selected);
+	$s_selected_hover = new UIC__State($s_selected);
+	$s_selected_down = new UIC__State($s_down);
+	$s_selected_down_off = new UIC__State($s_selected);
+	$s_inactive = new UIC__State($s_active);
+	$s_active_inactive = new UIC__State($s_active);
+	$s_selected_inactive = new UIC__State($s_selected);
 	
 	$s_selected_hover->uid = '00 1F 40 21';
 	$s_selected_down->uid = '40 21 53 21';
 	$s_selected_down_off->uid = 'A0 FD B0 1F';
 	$s_inactive->uid = 'D5 BB 9D 01';
+	$s_active_inactive->uid = 'AE BB 1D 03';
 	$s_selected_inactive->uid = 'FF AD 05 20';
 	
 	// active
@@ -851,6 +854,12 @@ if (0){
 	$a->b_mouse = '00 00 00 00 00 00 00 00';
 	$a->mouse = array();
 	
+	// active_inactive
+	$a = $s_active_inactive;
+	$a->name = 'active_inactive';
+	$a->b_mouse = '00 00 00 00 00 00 00 00';
+	$a->mouse = array();
+	
 	// selected_inactive
 	$a = $s_selected_inactive;
 	$a->name = 'selected_inactive';
@@ -867,6 +876,7 @@ if (0){
 		$s_selected_down,
 		$s_selected_down_off,
 		$s_inactive,
+		$s_active_inactive,
 		$s_selected_inactive
 	);
 	
@@ -926,6 +936,8 @@ if (0){
 	$ch->child[2]->b_01 = '00 00 00 00 00 00 01 01 00 00 00 01';
 	$ch->child[2]->funcs = array();
 	
+	// skill_button
+	$ch->child[3]->name = 'CTM_button_skill';
 	$ch->child[3]->events = array();
 	$ch->child[3]->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
 	// $ch->child[3]->images[0]->path = 'ui/skins/default/CTM_rank_dspl_frame.png';
@@ -1052,8 +1064,9 @@ if (true){
 			$ch->events = '';
 			$ch->b5 = '00 00 00 00';
 			foreach ($ch->states as $state){
+				$state->b3 = '00 00';
 				$state->tooltip_id = '';
-				$state->b5 = '00 00';
+				$state->b5 = '';
 			}
 			$ch->after = array('00', '', '', '00', '00', '00 00 00');
 		});
@@ -1128,7 +1141,10 @@ if (0){
 	$ch->images[1]->path = 'ui/skins/default/panel_back_tile.png';
 	$ch->images[2]->path = 'ui/skins/default/panel_back_top.png';
 	$ch->images[3]->path = 'ui/skins/default/panel_back_bottom.png';
-	$ch->images[4]->path = 'ui/skins/default/parchment_texture.png';
+	// it's transparent unused bg
+	array_splice($ch->images, 4); // parchment_texture
+	array_splice($ch->states[0]->bgs, 4); // parchment_texture
+	// $ch->images[4]->path = 'ui/skins/default/parchment_texture.png';
 	$ch->states[0]->bgs[0]->margin = array(24, 24, 24, 24);
 	
 	if (1){
@@ -1156,6 +1172,9 @@ if (0){
 	// help pages button
 	// button_holder
 	list($btn_holder) = array_splice($ch->child, 1, 1);
+	// we got: [0] panel_title, [2] listview, [3] button_ok_frame, 
+	// [4] resources_holder, [5] treasury_jars_list, [6] header_list, [7] no_items_panel
+	
 	// btn_info
 	$btn = $btn_holder->child[0];
 	$btn = $btn->template[0];
@@ -1185,18 +1204,11 @@ if (0){
 	$box->after[2][1] = array();
 	// headers
 	array_splice($list->child, 2, 1);
+	// we got: [0] list_clip, [1] parchment_slider_vertical
 	
-	// resources_holder
-	array_splice($ch->child, 3, 2);
-	// header_list
-	$head = $ch->child[3];
-	// button_recycle_holder
-	array_splice($head->child, 3, 1);
-	
-	// no_items_panel
-	array_splice($ch->child, 4, 1);
-	// header_list
-	array_splice($ch->child, 3, 1);
+	// resources_holder, treasury_jars_list, header_list, no_items_panel
+	array_splice($ch->child, 3, 4);
+	// we got: [0] panel_title, [2] listview, [3] button_ok_frame
 	
 	$ch->events = array();
 	$list->dynamic = array();
@@ -1220,6 +1232,8 @@ if (0){
 	
 	// filterbox
 	array_splice($ch->child, 2, 0, array($list = new UIC($list)));
+	// we got: [0] panel_title, [2] listview, filterbox, [3] button_ok_frame
+	
 	$right_width = 253;
 	$list->states[0]->bounds[0] = $right_width;
 	$clip = $list->child[0];
@@ -1228,6 +1242,7 @@ if (0){
 	$clip->child[0]->states[0]->bounds = $clip->states[0]->bounds;
 	
 	$list->uid = '80 67 EC 1B';
+	$list->name = 'filterbox';
 	$list->child[0]->uid = '80 BE F8 24';
 	$list->child[0]->child[0]->uid = '00 9F C3 25';
 	$list->docking = 3;
@@ -1250,13 +1265,19 @@ if (0){
 	$list->child[1]->template[5]->b_floats[1] += 14;
 	$list->child[1]->template[5]->b_floats[3] -= 28;
 	
+	// listview
 	$list = $ch->child[1];
 	$list->docking = 1;
 	$list->dock_offset['left'] = 16;
 	for_all($list, function($uic){
+		if ($uic instanceof UIC_Template){ return; }
 		global $right_width;
 		$uic->states[0]->bounds[0] -= $right_width + 8;
 	});
+	
+	// button_ok_frame > button_ok
+	$button_ok = $ch->child[3]->child[0];
+	$button_ok->template[0]->name_dst = 'CTM_wiki_btn_ok_';
 	
 	// CTM
 	// next theme button (deprecated)
@@ -1438,5 +1459,616 @@ if (false){
 	file_put_contents('export/CTM_add_trait_template_wh2', $uic->dumpFile());
 }
 }
+#endregion
 
+
+#region CPECIFIC_SKILL_QUEUE
+$entry_width = 330;
+$entry_height = 72;
+// CSQ_skill_list
+if (0){
+	$h = fopen($DIR_DATA['common']['DIR'] . 'multiplayer_chat', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic = new UIC();
+	$uic->read($h);
+	fclose($h);
+	for_all($uic, function($ch){
+		$ch->events = '';
+	});
+	
+	$uic->states[0]->bgs = array();
+	
+	$scroll_btns = 34;
+	$scroll_width = 20;
+	$padding = 7;
+	$skill_bounds = array(185, 67);
+	$rank_size = 56;
+	$bottom_padding = 66;
+	$button_start_width = 142;
+	$width = $entry_width;
+	$height = 856 - ($padding * 2 + $bottom_padding);
+	$scrollbar_yoffset = $bottom_padding;
+	$scrollbar_height = $height - $scroll_btns * 2 + $scrollbar_yoffset;
+	
+	// multiplayer_chat
+	$ch = $ch_mp = $uic->child[0];
+	$ch->name = 'CSQ_skill_list';
+	$ch->b_01 = '00 01 00 00 00 00 01 00 00 00 00 01';
+	$ch->offset = array('left' => 0, 'top' => 0);
+	$ch->images = array($im = $im_texture = $ch->images[0]); // parchment_texture
+	$im->path = 'ui/skins/default/parchment_texture.png';
+	$ch->images[] = $im = $im_bottom_stain = new UIC__Image($im); // parchment_bottom_stain
+	$im->uid = '00 2E 12 35';
+	$im->path = 'ui/skins/default/parchment_bottom_stain.png';
+	$im->width = 427; $im->height = 280;
+	$ch->states = array($state = $ch->states[0]); // default
+	$state->bounds = array(
+		$width + $padding * 2 + $scroll_width,
+		$height + $padding * 2 + $bottom_padding);
+	$state->b1 = '00';
+	$state->b7 = '00 00 00 00';
+	$state->bgs = array($bg = $state->bgs[0]); // parchment_texture
+	$bg->bounds = $state->bounds;
+	$bg->margin = array(50, 50, 50, 50);
+	$state->bgs[] = $bg = new UIC__State_Background($bg); // parchment_bottom_stain
+	$bg->uid = $im_bottom_stain->uid;
+	$bg->bounds = array($im_bottom_stain->width, $im_bottom_stain->height);
+	$bg->tile = 0;
+	$bg->dockpoint = 9;
+	$bg->dock = array('right' => 0, 'bottom' => 0);
+	$bg->margin = array(0, 0, 0, 0);
+	$ch->dynamic = array();
+	$ch->b6 = '32 00 00 00';
+	$ch_listview = $ch->child[1];
+	$ch->child = array($ch_listview);
+	$ch->after[5] = '00 00 00';
+	
+	// chat_listview
+	$ch = $ch_listview;
+	$ch->events = 'Listview';
+	$ch->b_01 = '01 01 00 00 00 00 01 00 00 00 00 01';
+	$ch->offset = array('left' => 0, 'top' => 0);
+	// $ch->docking = 0;
+	$ch->dock_offset = array('left' => 0, 'top' => 0);
+	$ch->images = array();
+	$ch->states = array($state = $ch->states[0]); // default
+	$state->bounds = array(
+		$width + $padding * 2 + $scroll_width,
+		$height + $padding * 2);
+	$state->b7 = '01 00 00 00';
+	$ch->b6 = '0C 00 00 00';
+	$ch_listclip = $ch->child[0];
+	$ch_scroll = $ch->child[1];
+	$ch->after[5] = '00 00 00';
+	
+	$ch = $ch_listclip;
+	// $ch->b_01 = '00 01 00 00 00 00 01 01 00 00 00 01';
+	$ch->offset = array('top' => $padding, 'left' => $padding);
+	$state = $ch->states[0];
+	$state->bounds = array($width, $height);
+	$state->b7 = '01 00 00 00';
+	$state->shader_name = 'normal_t0';
+	$state->shadervars = array(0, 0, 0, 0);
+	$ch->b6 = '0C 00 00 00';
+	$ch_box = $ch_listclip->child[0];
+	
+	// listbox
+	$ch = $ch_box;
+	// $ch->b_01 = '00 01 00 00 00 00 01 00 00 00 00 01';
+	$ch->docking = 1;
+	$ch->events = 'List';
+	$state = $ch->states[0];
+	$state->bounds = array($width, $height);
+	$state->b7 = '01 00 00 00';
+	$ch->b6 = '0C 00 00 00';
+	$ch_template = $ch->child[0];
+	$ch->after[2][1] = array();
+	$ch->after[2][4] = '00';
+	
+	// template_item
+	$ch = $ch_template;
+	$ch->name = 'template_item';
+	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	$state = $ch->states[0];
+	$state->name = 'default';
+	$state->bounds = array($entry_width, $entry_height);
+	$state->text = '';
+	$state->localized = '';
+	$state->textoffset = array(0, 0, 0, 0);
+	$ch_rank = new UIC($ch, $ch);
+	$ch_overlay = new UIC($ch, $ch);
+	$ch->child = array($ch_rank, $ch_overlay);
+	$ch->images[] = $im = new UIC__Image(array(
+		'uid' => '11 BB 52 02',
+		'path' => '',
+		'width' => 1,
+		'height' => 1,
+		'extra' => '00'
+	), $ch);
+	$ch->states[] = $state = new UIC__State($state);
+	$state->uid = '40 47 5C 2C';
+	$state->name = 'blue';
+	$state->bgs[] = $bg = new UIC__State_Background($uic->child[0]->states[0]->bgs[0], $state);
+	$bg->uid = $im->uid;
+	$bg->bounds = $state->bounds;
+	$bg->colour = 'FF 00 00 64';
+	$bg->tile = 0;
+	$bg->margin = array(0, 0, 0, 0);
+	
+	// rank
+	$ch = $ch_rank;
+	$ch->uid = 'C0 43 5C 2C';
+	$ch->name = 'CSQ_rank';
+	$ch->offset = array('left' => 0, 'top' => 0);
+	$ch->docking = 6;
+	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	// $ch->b3 = '01'; // text 3
+	$ch->images[] = $im = $im_rank = new UIC__Image($ch_mp->images[0], $ch); // rank
+	$im->path = 'ui/skins/default/rank_exp_display_2.png';
+	$im->width = 155; $im->height = 159;
+	$state = $ch->states[0];
+	$state->bounds = array(55, 55);
+	$state->textbounds = array('width' => 4, 'height' => 4);
+	$state->textalign['horizontal'] = 1;
+	$state->b1 = '00'; // text 1
+	$state->b7 = '00 00 00 00'; // text 2
+	$state->font_m_leading = 2;
+	$state->font_m_colour = '00 00 00 FF';
+	$state->fontcat_name = 'Default Font Category';
+	
+	/*$state->font_m_font_name = 'la_gioconda_uppercase';
+	$state->font_m_size = 16;
+	$state->font_m_leading = 2;
+	$state->font_m_colour = '00 00 00 FF';
+	// $state->font_m_colour = 'D7 F8 FF FF';
+	$state->fontcat_name = 'fe_paragraph_heading';
+	// $state->text_shader_name = 'text_outline_t0';
+	// $state->textshadervars = array(0, 0, 0, 2);*/
+	
+	$state->bgs[] = $bg = new UIC__State_Background($ch_mp->states[0]->bgs[0], $state);
+	$bg->uid = $im_rank->uid;
+	$bg->bounds = $state->bounds;
+	$bg->tile = 0;
+	$bg->dock = array('right' => 0, 'bottom' => 0);
+	$bg->margin = array(0, 0, 0, 0);
+	$ch->child = array();
+	// $ch->child[] = $ch_dy_rank = new UIC($ch);
+	
+	// dy_rank
+	// $ch = $ch_dy_rank;
+	// $ch->uid = 'C0 43 6C 2C';
+	// $ch->name = 'CSQ_dy_rank';
+	// $ch->docking = 5;
+	// $ch->images = array();
+	// $state = $ch->states[0];
+	// $state->bounds = array(20, 20);
+	// $state->bgs = array();
+	// $state->textalign['horizontal'] = 1;
+	
+	// overlay
+	$ch = $ch_overlay;
+	$ch->uid = 'C0 43 5C 3C';
+	$ch->name = 'CSQ_overlay';
+	$ch->b_01 = '00 00 00 00 00 00 01 00 00 00 00 01';
+	$ch->images[] = $im = new UIC__Image(array(
+		'uid' => '11 BA 52 02',
+		'path' => '',
+		'width' => 1,
+		'height' => 1,
+		'extra' => '00'
+	), $ch);
+	$state = $ch->states[0];
+	$state->name = 'black';
+	$state->b7 = '01 00 00 00';
+	$state->bgs[] = $bg = new UIC__State_Background($uic->child[0]->states[0]->bgs[0], $state);
+	$bg->uid = $im->uid;
+	$bg->bounds = $state->bounds;
+	$bg->colour = '00 00 00 00'; // 32
+	$bg->tile = 0;
+	$bg->margin = array(0, 0, 0, 0);
+	
+	function set122to106($ch){
+		$ch->setVersion(106);
+		$ch->events = '';
+		$ch->b5 = '00 00 00 00';
+		foreach ($ch->states as $state){
+			$state->b3 = '00 00';
+			$state->tooltip_id = '';
+		}
+	}
+	
+	$h = fopen($DIR_DATA['templates']['DIR'] . 'skills_tab_toggle', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic_stt = new UIC();
+	$uic_stt->read($h);
+	fclose($h);
+	
+	// skills_tab_toggle
+	$ch = $ch_skills_tab_toggle = $uic_stt->child[0];
+	set122to106($ch);
+	$ch->name = 'CSQ_unknown_skill';
+	$ch_template->child[] = $ch;
+	$ch->offset = array('left' => 0, 'top' => 0);
+	$ch->docking = 1;
+	$ch->dock_offset = array('left' => 15, 'top' => 2);
+	$im = $ch->images[0];
+	$im->path = 'ui/cpecific/CSQ_unknown_skill.png';
+	$s_available = $ch->states[0];
+	$s_hover = $ch->states[3];
+	$s_locked = $ch->states[4];
+	$ch->states = array($s_available, $s_hover, $s_locked);
+	foreach ($ch->states as $state){
+		$state->b5 = '';
+		foreach ($state->bgs as $bg){
+			if ($bg->uid !== $im->uid){
+				$bg->colour = '9A CF E5'. substr($bg->colour, 8);
+			}
+		}
+	}
+	$s_available->uid = 'C0 EF 42 12';
+	$s_hover->mouse[0]->state_uid = $s_available->uid;
+	$ch->default_state = $s_available->uid;
+	$ch->dynamic = array();
+	$ch->funcs = array();
+	// $ch->child = array($ch_type_icon = $ch->child[2]); // type_icon
+	$ch->child = array();
+	$ch->after[1] = '';
+	
+	// type_icon
+	// $ch = $ch_type_icon;
+	// set122to106($ch);
+	
+	
+	$h = fopen($DIR_DATA['campaign']['DIR'] . 'character_details_panel', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic_cdp = new UIC();
+	$uic_cdp->read($h);
+	fclose($h);
+	
+	// skills_tab_toggle < template_skill_entry < chain0 < list_box < list_clip < listview < skills_subpanel < background < character_details_panel
+	$ch = $uic_cdp->child[0]->child[9]->child[2]->child[0]->child[0]->child[0]->child[1]->child[1]->child[1];
+	$ch_dy_skill = $ch->child[0];
+	$ch_level_parent = $ch->child[1];
+	
+	$ch = $ch_skills_tab_toggle;
+	$ch->child[] = $ch_dy_skill = new UIC($ch_dy_skill, $ch);
+	// $ch->child[] = $ch_level_parent = new UIC($ch_level_parent, $ch);
+	set122to106($ch_dy_skill);
+	
+	// dy_skill
+	$ch = $ch_dy_skill;
+	$state = $ch->states[0];
+	$state->text = '';
+	$state->textlabel = '';
+	// $state->textbounds = array('width' => 0, 'height' => 0);
+	// $state->textalign = array('horizontal' => 2, 'vertical' => 2);
+	$ch->dynamic = array();
+	
+	
+	// vslider
+	$ch = $ch_scroll->template[5];
+	$ch->b_floats[0] -= 7 + $scroll_width;
+	$ch->b_floats[1] += $scrollbar_yoffset / 2;
+	$ch->b_floats[3] = $scrollbar_height;
+	// for ($i = 0; $i < 6; ++$i){
+		// $ch = $ch_scroll->template[$i];
+		// $ch->b_floats[0] -= $scroll_width;
+	// }
+	
+	$ch = $ch_mp;
+	$ch->images = array(); // REMOVE PARCHMENT
+	$state = $ch->states[0];
+	$state->bgs = array(); // REMOVE PARCHMENT
+	
+	file_put_contents('export_CSQ/CSQ_skill_list', $uic->dumpFile());
+}
+
+// CSQ_parchment_round_medium_button_toggle
+if (0){
+	$h = fopen($DIR_DATA['templates']['DIR'] . 'round_medium_button_toggle', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic = new UIC();
+	$uic->read($h);
+	fclose($h);
+	for_all($uic, function($ch){
+		$ch->events = '';
+	});
+	
+	$ch = $uic->child[0];
+	foreach (array(
+		'ui/skins/default/parchment_button_round_selected_inactive.png',
+		'ui/skins/default/parchment_button_round_pressed.png',
+		'ui/skins/default/parchment_button_round_selected_hover.png',
+		'ui/skins/default/parchment_button_round_active.png',
+		'ui/skins/default/parchment_button_round_hover.png',
+		'ui/skins/default/parchment_button_round_inactive.png',
+		'ui/skins/default/parchment_button_round_selected.png',
+		'ui/skins/default/parchment_button_round_selected_pressed.png',
+		'ui/skins/default/parchment_button_round_underlay.png',
+		'ui/skins/default/parchment_button_round_selected_underlay.png',
+	) as $i => $path){
+		$im = $ch->images[1 + $i];
+		$im->path = $path;
+		$im->width = 41; $im->height = 42;
+	}
+	$im = $ch->images[0];
+	$im->width = 82; $im->height = 84;
+	
+	$ch->images[] = $im = new UIC__Image($im);
+	$im->uid = '00 22 B7 37';
+	$im->path = 'ui/cpecific/CSQ_red_circle.png';
+	$im->width = 82; $im->height = 84;
+	
+	$imMap = array(
+		'icon' => $ch->images[0]->uid,
+		'red_circle' => $im->uid,
+	);
+	foreach(array(
+		'selected_inactive',
+		'pressed',
+		'selected_hover',
+		'active',
+		'hover',
+		'inactive',
+		'selected',
+		'selected_pressed',
+		'underlay',
+		'selected_underlay',
+	) as $key){
+		foreach ($ch->images as $im){
+			if ($im->path === 'ui/skins/default/parchment_button_round_'. $key .'.png'){
+				$imMap[ $key ] = $im->uid;
+			}
+		}
+	}
+	#region
+	function onlyLeaveTheseBgs($state, $images){
+		global $imMap;
+		$images[] = 'icon';
+		foreach ($images as $i => $v){
+			$images[$i] = $imMap[ $v ];
+		}
+		$output = array();
+		foreach ($images as $im){
+			foreach ($state->bgs as $bg){
+				if ($bg->uid === $im){
+					$output[] = $bg;
+					continue 2;
+				}
+			}
+		}
+		if ($output[0]->uid !== $images[0]){
+			array_splice($output, 0, 0, array($bg = new UIC__State_Background($output[0])));
+			$bg->uid = $images[0];
+		}
+		$state->bgs = $output;
+		return $state->bgs;
+	}
+	foreach ($ch->states as $state){
+		foreach ($state->bgs as $bg){
+			$bg->offset = array('left' => 0, 'top' => 0);
+			$bg->bounds = array(41, 42);
+			$bg->dock_offset = array('left' => 0, 'top' => 0);
+			if ($bg->uid !== $imMap['icon']){
+				$bg->tile = 1;
+				$bg->dockpoint = 0;
+				$bg->margin = array(0, 19, 0, 19);
+			} else{
+				$bg->tile = 0;
+				$bg->dockpoint = 5;
+				// $bg->dock = array('right' => 0, 'bottom' => 0);
+				$bg->shader_name = '';
+				$bg->shadervars = array(0, 0, 0, 0);
+			}
+		}
+		$state->bounds = array(41, 42);
+		$state->textbounds = array('width' => 4, 'height' => 4);
+		$state->textalign['horizontal'] = 1;
+		$state->shader_name = 'normal_t0';
+		$state->shadervars = array(0, 0, 0, 0);
+		$state->text_shader_name = 'normal_t0';
+		$state->textshadervars = array(0, 0, 0, 0);
+	}
+	$s_hover = $ch->states[0];
+	$s_selected_down_off = $ch->states[1];
+	$s_active = $ch->states[2];
+	$s_selected_hover = $ch->states[3];
+	$s_selected = $ch->states[4];
+	$s_down_off = $ch->states[5];
+	$s_selected_inactive = $ch->states[6];
+	$s_selected_down = $ch->states[7];
+	$s_down = $ch->states[8];
+	$s_inactive = $ch->states[9];
+	$ch->dynamic = array();
+	$ch->funcs = array();
+	#endregion
+	
+	$state = $s_active;
+	$bgs = onlyLeaveTheseBgs($state, array('inactive', 'active', 'hover'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 00';
+	$state = $s_hover;
+	$bgs = onlyLeaveTheseBgs($state, array('inactive', 'active', 'hover'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 96';
+	$state = $s_down;
+	$bgs = onlyLeaveTheseBgs($state, array('inactive', 'active', 'pressed'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 96';
+	$state = $s_down_off;
+	$bgs = onlyLeaveTheseBgs($state, array('inactive', 'active'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$state = $s_inactive;
+	$bgs = onlyLeaveTheseBgs($state, array('inactive', 'active'));
+	$bgs[1]->colour = 'FF FF FF 00';
+	
+	$state = $s_selected;
+	$bgs = onlyLeaveTheseBgs($state, array('selected_inactive', 'selected', 'selected_hover'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 00';
+	$state = $s_selected_hover;
+	$bgs = onlyLeaveTheseBgs($state, array('selected_inactive', 'selected', 'selected_hover'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 96';
+	$state = $s_selected_down;
+	$bgs = onlyLeaveTheseBgs($state, array('selected_inactive', 'selected', 'selected_pressed'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$bgs[2]->colour = 'FF FF FF 32';
+	$state = $s_selected_down_off;
+	$bgs = onlyLeaveTheseBgs($state, array('selected_inactive', 'selected'));
+	$bgs[1]->colour = 'FF FF FF 32';
+	$state = $s_selected_inactive;
+	$bgs = onlyLeaveTheseBgs($state, array('selected_inactive', 'selected'));
+	$bgs[1]->colour = 'FF FF FF 00';
+	
+	foreach ($ch->states as $state){
+		$bg = $state->bgs[0];
+		$bg->colour = 'FF FF FF FF';
+		// if ($bg->uid === $imMap['selected_inactive']){
+			// $bg->uid = $imMap['inactive'];
+		// }
+		
+		$bg = $state->bgs[sizeof($state->bgs) - 1];
+		$bg->colour = '00 00 00 DC';
+		if (strpos($state->name, '_inactive') !== false){
+			$bg->color = '00 00 00 96';
+		}
+	}
+	
+	file_put_contents('export_CSQ/CSQ_parchment_square_medium_button_toggle', $uic->dumpFile());
+	
+	
+	$ch->states[] = $state = new UIC__State($s_inactive);
+	$state->uid = 'E0 A5 E8 07';
+	$state->name = 'inactive_red';
+	$im = $imMap['red_circle'];
+	array_splice($state->bgs, 2, 0, array($bg = $bg_red = new UIC__State_Background($state->bgs[0])));
+	$bg->uid = $im;
+	$bg->tile = 0;
+	$bg->dockpoint = 5;
+	$bg->margin = array(0, 0, 0, 0);
+	foreach ($ch->states as $state){
+		foreach ($state->bgs as $bg){
+			$bg->tile = 0;
+			$bg->dockpoint = 5;
+			$bg->margin = array(0, 0, 0, 0);
+		}
+	}
+	$bg_red->dockpoint = 0;
+	$bg_red->offset = array('left' => 0, 'top' => -1);
+	file_put_contents('export_CSQ/CSQ_parchment_round_medium_button_toggle', $uic->dumpFile());
+}
+
+// CSQ_parchment_row
+if (0){
+	$h = fopen($DIR_DATA['templates']['DIR'] . 'parchment_row', 'r');
+	if (!$h){ throw new Exception('FILE'); }
+	
+	$uic = new UIC();
+	$uic->read($h);
+	fclose($h);
+	
+	$ch = $uic->child[0];
+	$ch->b_01 = '00 00 01 00 00 00 01 00 00 00 00 01';
+	$ch->offset = array('left' => 0, 'top' => 0);
+	#region
+	foreach (array(
+		'ui/skins/default/parchment_row_selected_hover.png',
+		'ui/skins/default/parchment_row_hover.png',
+		'ui/skins/default/parchment_row_selected.png',
+		'ui/skins/default/parchment_row_selected_hover_underline.png',
+		'ui/skins/default/parchment_row_selected_underline.png',
+		'ui/skins/default/parchment_row_hover_underline.png',
+		'ui/skins/default/parchment_row_pressed.png',
+		'ui/skins/default/parchment_row_pressed_underline.png',
+	) as $i => $path){
+		$im = $ch->images[$i];
+		$im->path = $path;
+		// $im->width = 41; $im->height = 42;
+	}
+	$ch->images[] = $im = new UIC__Image($im);
+	$im->uid = '00 22 B1 27';
+	$im->path = '';
+	$im->width = 1; $im->height = 1;
+	$imMap = array(
+		'white' => $im->uid,
+	);
+	foreach(array(
+		'selected_hover',
+		'hover',
+		'selected',
+		'selected_hover_underline',
+		'selected_underline',
+		'hover_underline',
+		'pressed',
+		'pressed_underline',
+	) as $key){
+		foreach ($ch->images as $im){
+			if ($im->path === 'ui/skins/default/parchment_row_'. $key .'.png'){
+				$imMap[ $key ] = $im->uid;
+			}
+		}
+	}
+	#endregion
+	
+	$s_down = $ch->states[0];
+	$s_down_off = $ch->states[1];
+	$s_hover = $ch->states[2];
+	$s_invalid = $ch->states[3];
+	$s_selected = $ch->states[4];
+	$s_selected_hover = $ch->states[5];
+	$s_unselected = $ch->states[6];
+	
+	$s_unselected->name = 'default';
+	
+	// array_splice($s_down->mouse, 0, 1); // remove click->hover
+	// $s_down->mouse[0]->state_uid = $s_unselected->uid;
+	
+	$ch->states[] = $state = new UIC__State($ch->states[0]);
+	$state->uid = '60 A2 AF 10';
+	$state->name = 'blue';
+	$state->bgs = array($bg = $state->bgs[0]);
+	$bg->uid = $imMap['white'];
+	$bg->offset = array('left' => 0, 'top' => 0);
+	$bg->colour = 'FF 00 00 64';
+	$bg->dockpoint = 1;
+	$bg->margin = array(0, 0, 0, 0);
+	$state->mouse = array();
+	$ch->dynamic = array();
+	$ch->funcs = array();
+	
+	foreach ($ch->states as $state){
+		$state->bounds = array($entry_width, 56); // default height 28
+		// $state->bounds[0] = $entry_width;
+		$state->textbounds['width'] = 0;
+		$state->textbounds['height'] = 0;
+		$state->textalign = array('horizontal' => 0, 'vertical' => 0);
+		// $state->textoffset = array(15, 45, 10, 10);
+		$state->textoffset = array(15, 7 + 42 + 7, 20, 0);
+		$state->font_m_font_name = 'la_gioconda';
+		$state->font_m_size = 14;
+		$state->font_m_leading = 10;
+		$state->font_m_colour = '00 00 00 FF';
+		foreach ($state->bgs as $bg){
+			$bg->bounds = $state->bounds;
+			$bg->offset = array('left' => 0, 'top' => 0);
+			if ($bg->dock_offset['top'] !== 0){
+				// $bg->dock_offset = array('left' => 0, 'top' => 0);
+				$bg->margin = array(0, 43, 12, 43);
+			}
+		}
+	}
+	// $bounds = $ch->states[0]->bounds;
+	// foreach ($ch->images as $im){
+		// $im->width = $bounds[0];
+		// $im->height = $bounds[1];
+	// }
+	
+	file_put_contents('export_CSQ/CSQ_parchment_row', $uic->dumpFile());
+}
+#endregion
 

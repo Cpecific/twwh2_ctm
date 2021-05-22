@@ -101,8 +101,10 @@ $raw_start_pos =
 1954124103	48583370	48583370	10	0	wh2_dlc13_political_party_wulfhart_ruler	wh2_dlc13_lord_trait_emp_wulfhart	 
 1985889420	2137376097	2137376097	10	0	wh2_dlc11_political_party_vor_cst_noctilus_ruler	wh2_dlc11_lord_trait_cst_noctilus	 
 2014514877	1661976522	1661976522	10	0	wh2_dlc09_political_party_vor_tmb_khalida	wh2_dlc09_lord_trait_tmb_khalida	 
+2044355460	1547312149	1547312149	10	0	wh2_twa03_political_party_vor_def_rakarth	wh2_twa03_lord_trait_rakarth	 
 2061284838	2140784558	2140784558	10	0	wh2_dlc12_political_party_vor_skv_ikit_claw	wh2_dlc12_lord_trait_skv_lord_ikit_claw	 
-2081989364	2140784599	2140784599	10	0	wh2_dlc10_political_party_vor_hef_alith_anar	wh2_dlc10_lord_trait_hef_alith_anar	 ';
+2081989364	2140784599	2140784599	10	0	wh2_dlc10_political_party_vor_hef_alith_anar	wh2_dlc10_lord_trait_hef_alith_anar	 
+2115134412	2017958139	2017958139	10	0	wh2_twa03_political_party_def_rakarth	wh2_twa03_lord_trait_rakarth	 ';
 
 $current_data = array(
 #region _skv_
@@ -288,6 +290,18 @@ $current_data = array(
 		'wh2_main_political_party_vor_def_morathi',
 		array(
 			'wh2_main_political_party_vor_def_morathi' => 'wh2_main_trait_defeated_morathi'
+		)
+	),
+	array(
+		'wh2_twa03_political_party_def_rakarth',
+		array(
+			'wh2_twa03_political_party_def_rakarth' => 'wh2_twa03_trait_defeated_rakarth'
+		)
+	),
+	array(
+		'wh2_twa03_political_party_vor_def_rakarth',
+		array(
+			'wh2_twa03_political_party_vor_def_rakarth' => 'wh2_twa03_trait_defeated_rakarth'
 		)
 	),
 #endregion
