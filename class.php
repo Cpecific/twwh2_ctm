@@ -164,6 +164,9 @@ class UIC {
 	#region vars
 	public $version;
 	public $parent;
+
+	public $pos;
+	public $diff;
 	
 	public $uid = null;
 	public $b_sth = null;
